@@ -10,6 +10,7 @@ done
 
 for beta in `cat list_beta.dat`; do
 	cd "beta${beta}"
+	touch "list_samples.dat"
   echo "${len_x} ${len_z} ${J} ${beta} ${vel} ${n_sweep_therm} ${n_sweep_stead} ${id_init} ${id_bound} ${n_samples}" | ../simulate
 	cd ../
 done

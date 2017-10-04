@@ -15,9 +15,12 @@ for dir in `ls`; do
   id_init=2; id_bound=3 #antiparallel
   cd antiparallel
   source ../../../sh/simulate.sh
+  cd ../
 
   id_init=1; id_bound=2 #parallel
-  source ../../sh/simulate.sh
+  cd parallel
+  source ../../../sh/simulate.sh
+  cd ../
 
   cd ../
 done

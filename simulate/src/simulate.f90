@@ -720,7 +720,7 @@ PROGRAM main
   END DO
   !$omp end parallel do
 
-  OPEN(10, file="list_samples.dat")
+  OPEN(10, file="list_samples.dat", status="old")
   DO i_sample = 1, n_samples, 1
     modifying = LOGICAL(n_sweeps_therm > n_sweeps_therm0(i_sample) &
     .OR. n_sweeps_stead > n_sweeps_stead0(i_sample))
