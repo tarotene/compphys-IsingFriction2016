@@ -7,6 +7,8 @@ cp average/bin/average resdir/antiparallel/
 cp average/bin/average resdir/parallel/
 cp sh/simulate.sh resdir/antiparallel/
 cp sh/simulate.sh resdir/parallel/
+cp sh/average.sh resdir/antiparallel/
+cp sh/average.sh resdir/parallel/
 
 for len_z in `seq -w 4 2 16`; do
   dir1="Lz${len_z}Lx`echo \"scale=0; ${len_z} * 10\" | bc`_Vel1"
