@@ -12,6 +12,8 @@ for dir in `ls`; do
   vel=`pwd | sed -e "s/^.*_Vel\(.*\).*$/\1/"`
   len_x=`pwd | sed -e "s/^.*Lx\(.*\)_Vel.*$/\1/"`
 
+  echo "running: len_x = ${len_x}, len_z = ${len_z}"
+
   id_init=2; id_bound=3 #antiparallel
   cd antiparallel
   source ../../../sh/simulate.sh
