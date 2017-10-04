@@ -6,5 +6,10 @@ cp simulate/bin/average temp/parallel/
 cp sh/average.sh temp/antiparallel/
 cp sh/average.sh temp/parallel/
 
-cp -rf temp/ dat/**/
+cd dat/
+for dir in `ls`; do
+    cp -r ../temp/ ${dir}/
+done
+cd ../
+
 rm -rf temp

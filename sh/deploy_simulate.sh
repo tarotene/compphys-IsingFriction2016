@@ -6,5 +6,10 @@ cp simulate/bin/simulate temp/parallel/
 cp sh/simulate.sh temp/antiparallel/
 cp sh/simulate.sh temp/parallel/
 
-cp -rf temp/ dat/**/
+cd dat/
+for dir in `ls`; do
+    cp -r ../temp/ ${dir}/
+done
+cd ../
+
 rm -rf temp
