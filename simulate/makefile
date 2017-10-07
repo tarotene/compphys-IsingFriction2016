@@ -6,19 +6,19 @@ include $(wildcard make.d/*)
 #
 FC    = ifort
 DEPS  = -fpp -gen-dep=$(@:%.o=%.d)
-FLIB  =  -L${MKLROOT}/lib -Wl,-rpath,${MKLROOT}/lib -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -liomp5 -lpthread -ldl -I${MKLROOT}/include
-FOPT  = -fopenmp
-#FOPT += -ipo
-#FOPT += -mcmodel=medium -xHOST -O2 -ipo -no-prec-div
-#FOPT += -heap-arrays 10240
-#FOPT += -fstack-protector-all
-FDBG  = -traceback -g -debug extended
-#FDBG += -O0 -fno-eliminate-unused-debug-types
-#FDBG += -check all
-#FDBG += -warn all
-#FDBG += -fpe0 -ffpe-trap=invalid,zero,overflow
-#FDBG += -opt-report
-#FPRP  = -Dverbose=1
+FLIB  = -mkl
+# FOPT = -I${MKLROOT}/include
+FOPT = -fast -fopenmp
+# FOPT += -mcmodel=medium -xHOST -O2 -ipo -no-prec-div
+# FOPT += -heap-arrays 10240
+# FOPT += -fstack-protector-all
+# FDBG  = -traceback -g -debug extended
+# FDBG += -O0 -fno-eliminate-unused-debug-types
+# FDBG += -check all
+# FDBG += -warn all
+# FDBG += -fpe0 -ffpe-trap=invalid,zero,overflow
+# FDBG += -opt-report
+# FPRP  = -Dverbose=1
 
 ###############################################################################
 SRCDIR  = ./src
@@ -55,7 +55,7 @@ DEPENDS = $(OBJECTS:.o=.d)
 ###############################################################################
 
 $(TARGET): $(OBJECTS)
-		$(FC) $(FLIB) $(FOPT) $(FMOD) $(FDBG) $(FPRP) -o $(EXEDIR)/$@ $^ \
+		$(FC) $(FLIB) $(FMOD) $(FDBG) $(FPRP) -o $(EXEDIR)/$@ $^ \
 		$(SRCDIR)/$@.f90
 
 $(OBJDIR)/%.o: $(LIBDIR)/%.f90

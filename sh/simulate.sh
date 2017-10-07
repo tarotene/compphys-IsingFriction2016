@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+#!/
+#!/
 
 if [[ ! -e list_beta.dat  ]]; then
 	for t in `seq 0.1 0.1 5.0`; do echo "scale=3; 1 / ${t}" | bc; done > list_beta.dat
