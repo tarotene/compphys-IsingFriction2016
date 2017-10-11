@@ -2,7 +2,7 @@
 
 cd dat
 for dir in `ls`; do
-  cp ../simulate/bin/simulate ${dir}/antiparallel
-  cp ../simulate/bin/simulate ${dir}/parallel
+  cp -f ../simulate/bin/simulate ${dir}/antiparallel
+  cp -f ../simulate/bin/simulate ${dir}/parallel
 done
 cd ../

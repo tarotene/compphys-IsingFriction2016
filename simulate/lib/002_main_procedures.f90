@@ -99,7 +99,8 @@ CONTAINS
              DO south = -1, 1, 1
                 DO north = -1, 1, 1
                    deltaE(center, east, west, south, north)=&
-                        2 * J * DBLE(center * (east + west + south + north))
+                   2 * J * &
+                   DBLE(center * (east + west + south + north))
                 END DO
              END DO
           END DO
