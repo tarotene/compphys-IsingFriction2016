@@ -2,7 +2,7 @@
 
 source /opt/intel/mkl/bin/mklvars.sh intel64 mod ilp64
 
-n_samples=100; n_sweeps_therm=1000; n_sweeps_stead=2000; begin_sweep=1001
+n_samples=10; n_sweeps_therm=5000; n_sweeps_stead=5000
 
 cd dat
 for dir in `ls`; do
