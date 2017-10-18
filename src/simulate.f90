@@ -9,7 +9,7 @@ PROGRAM main
   IMPLICIT NONE
 
   !observables
-  INTEGER(kind = 4), ALLOCATABLE :: spin(:, :), temp_spin(:, :)
+  INTEGER(kind = 4), ALLOCATABLE :: spin(:, :)
   REAL(kind = 8), ALLOCATABLE :: m_z(:)
   REAL(kind = 8) :: pump, diss, energy
 
@@ -318,6 +318,6 @@ PROGRAM main
 
   CALL refreshList_samples(slot, filename, &
     n_samples, len_x, len_z, J, beta, vel, &
-    n_sweeps_therm, n_sweeps_stead, id_init, id_bound, &
-    wh_stream, exists_m_z, av_stream(1:n_samples), av_m_z(1:n_samples))
+    n_sweeps_therm, n_sweeps_stead, id_IC, id_BC, &
+    e_stream, e_m_z, a_stream(1:n_samples), a_m_z(1:n_samples))
 END PROGRAM main
