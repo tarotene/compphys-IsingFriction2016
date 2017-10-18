@@ -6,9 +6,9 @@ include $(wildcard make.d/*)
 #
 FC    = ifort
 DEPS  = -fpp -gen-dep=$(@:%.o=%.d)
-FLIB  = -mkl
+FLIB  = -mkl -fopenmp
 # FOPT = -I${MKLROOT}/include
-FOPT = -fast -fopenmp
+FOPT = -O2
 # FOPT += -mcmodel=medium -xHOST -O2 -ipo -no-prec-div
 # FOPT += -heap-arrays 10240
 # FOPT += -fstack-protector-all

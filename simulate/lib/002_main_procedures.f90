@@ -11,7 +11,7 @@ CONTAINS
 
     n_samples = 0
     OPEN(slot, file="list_samples.dat", status="old")
-    DO i_line = 1, 10000, 1
+    DO i_line = 1, 100000, 1
        READ (slot, *, iostat = ios) n_dum
        IF (ios < 0) EXIT
        n_samples = n_samples + 1
@@ -35,7 +35,7 @@ CONTAINS
     OPEN(slot, file=filename, status="old")
     READ (slot, '()')
 
-    DO i_line = 1, 10000, 1
+    DO i_line = 1, 100000, 1
        READ (slot, *, iostat = ios) n0
        IF (ios == 0) THEN
           n_sweeps_therm = n_sweeps_therm + 1
@@ -44,7 +44,7 @@ CONTAINS
        END IF
     END DO
 
-    DO i_line = 1, 10000, 1
+    DO i_line = 1, 100000, 1
        READ (slot, *, iostat = ios) n0
        IF (ios == 0) THEN
           n_sweeps_stead = n_sweeps_stead + 1
@@ -72,14 +72,18 @@ CONTAINS
     CLOSE(slot)
   END SUBROUTINE getStatsSamples
 
-  SUBROUTINE inputParameters
+  SUBROUTINE inputParameters(len_x, len_z, J, beta, vel, &
+    n_sweeps_therm, n_sweeps_stead, id_init, id_bound, &
+    n_samples, e_stream, e_m_z)
+    INTEGER(kind = 4), INTENT(out) :: len_x, len_z, vel
+    REAL(kind = 8), INTENT(out) :: J, beta
+    INTEGER(kind = 4), INTENT(out) :: n_sweeps_therm, n_sweeps_stead
+    INTEGER(kind = 4), INTENT(out) :: id_init, id_bound
+    INTEGER(kind = 4), INTENT(out) :: n_samples, e_m_z
     ! WRITE(0, '(a)') "len_x, len_z, J, beta, vel, n_sweeps_therm, n_sweeps_stead, id_init, id_bound, n_clones = ?"
     ! WRITE(0, '(a)') "(id_init: 1. all-up, 2. DW, 3. random)"
     ! WRITE(0, '(a)') "(id_bound: 1. anti-parallel, 2. parallel, 3. free)"
-    READ(*, *) len_x, len_z, J, beta, vel, n_sweeps_therm, n_sweeps_stead, id_init, id_bound, n_samples
-
-    n_steps = len_x * len_z
-    n_sweeps = n_sweeps_therm + n_sweeps_stead
+    READ(*, *) len_x, len_z, J, beta, vel, n_sweeps_therm, n_sweeps_stead, id_init, id_bound, n_samples, e_stream, e_m_z
   END SUBROUTINE inputParameters
 
   SUBROUTINE makeProbArray
@@ -99,8 +103,8 @@ CONTAINS
              DO south = -1, 1, 1
                 DO north = -1, 1, 1
                    deltaE(center, east, west, south, north)=&
-                   2 * J * &
-                   DBLE(center * (east + west + south + north))
+                        2 * J * &
+                        DBLE(center * (east + west + south + north))
                 END DO
              END DO
           END DO
@@ -304,4 +308,100 @@ CONTAINS
     END DO
     CLOSE(slot)
   END SUBROUTINE exportSnapshot
+
+  SUBROUTINE exportM_z_onfile(wh_mz, len_x, len_z, slot, i_sweep, spin)
+    INTEGER(kind = 4), INTENT(in) :: wh_mz, len_x, len_z, &
+         slot, i_sweep, spin(1:, 1:)
+
+    INTEGER(kind = 4) :: z
+    REAL(kind = 8) :: m_z(1:len_z)
+
+    SELECT CASE (wh_mz)
+    CASE (0)
+       RETURN
+    CASE (1)
+       DO z = 1, len_z, 1
+          m_z(z) = DBLE(SUM(spin(1:len_x, z), dim=1)) / DBLE(len_x)
+          WRITE(slot, '( i5, a, i5, a, f0.4)') &
+               i_sweep, ", ", z, ", ", m_z(z)
+       END DO
+       WRITE(slot, '()')
+    END SELECT
+  END SUBROUTINE exportM_z_onfile
+
+  SUBROUTINE readthroughM_z_onfile(start_sweep, end_sweep, &
+    wh_mz, len_z, slot)
+    INTEGER(kind = 4), INTENT(in) :: start_sweep, end_sweep, wh_mz, len_z, slot
+
+    INTEGER(kind = 4) :: i_sweep, z
+
+    SELECT CASE (wh_mz)
+    CASE (0)
+       RETURN
+    CASE (1)
+      DO i_sweep = start_sweep, end_sweep, 1
+       DO z = 1, len_z, 1
+          READ(slot, '()')
+       END DO
+       READ(slot, '()')
+      END DO
+    END SELECT
+  END SUBROUTINE readthroughM_z_onfile
+
+  SUBROUTINE exportStream_onfile(slot, i_sweep, pump, diss, energy)
+    INTEGER(kind = 4), INTENT(in) :: slot, i_sweep
+    REAL(kind = 8), INTENT(in) :: pump, diss, energy
+
+    WRITE(slot, '(  i5, a, f0.4, a, f0.4, a, f0.4, a, &
+         f0.4, a, f0.4, a, f0.4)') &
+         i_sweep, ", ", pump, ", ", diss, ", ", energy, ", ", &
+         0.0d0, ", ", 0.0d0, ", ", 0.0d0
+  END SUBROUTINE exportStream_onfile
+
+  SUBROUTINE readthroughStream_onfile(start_sweep, end_sweep, &
+    slot, pump, diss, energy)
+    INTEGER(kind = 4), INTENT(in) :: start_sweep, end_sweep, slot
+    REAL(kind = 8), INTENT(in) :: pump, diss, energy
+
+    INTEGER(kind = 4) :: i_sweep
+
+    DO i_sweep = start_sweep, end_sweep, 1
+      WRITE(slot, '(  i5, a, &
+      f0.4, a, f0.4, a, f0.4, a, &
+      f0.4, a, f0.4, a, f0.4)') &
+      i_sweep, ", ", &
+      pump, ", ", diss, ", ", energy, ", ", &
+      0.0d0, ", ", 0.0d0, ", ", 0.0d0
+    END DO
+  END SUBROUTINE readthroughStream_onfile
+
+  SUBROUTINE refreshList_samples(slot, filename, &
+    n_samples, len_x, len_z, J, beta, vel, &
+    n_sweeps_therm, n_sweeps_stead, id_init, id_bound, &
+    wh_stream, e_m_z, av_stream, av_m_z)
+    INTEGER(kind = 4), INTENT(in) :: slot
+    CHARACTER(length = *), INTENT(in) :: filename
+    INTEGER(kind = 4), INTENT(in) :: n_samples, len_x, len_z, vel
+    REAL(kind = 8), INTENT(in) :: J, beta
+    INTEGER(kind = 4), INTENT(in) :: n_sweeps_therm, n_sweeps_stead
+    INTEGER(kind = 4), INTENT(in) :: id_init, id_bound
+    INTEGER(kind = 4), INTENT(in) :: wh_stream, e_m_z
+    INTEGER(kind = 4), INTENT(in) :: av_stream(1:), av_m_z(1:)
+
+    OPEN(slot, file=filename, status="replace")
+    DO i_sample = 1, n_samples, 1
+       WRITE(slot, '(i5, a, &
+       i4, a, i4, a, f0.4, a, f0.4, a, i4, &
+       i5, a, i5, a, &
+       i2, a, i2, a, &
+       i2, a, i2, a, i2, a, i2)') &
+       i_sample, ", ", &
+       len_x, ", ", len_z, ", ", J, ", ", beta, ", ", vel, ", ", &
+       n_sweeps_therm, ", ", n_sweeps_stead, ", ", &
+       id_init, ", ", id_bound, ", ", &
+       e_stream, ", ", e_m_z, ", ", &
+       a_stream(i_sample), ", ", a_m_z(i_sample)
+    END DO
+    CLOSE(slot)
+  END SUBROUTINE refreshList_samples
 END MODULE main_procedures

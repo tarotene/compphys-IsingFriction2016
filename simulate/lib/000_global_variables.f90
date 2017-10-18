@@ -9,7 +9,7 @@ MODULE global_variables
   !input variables
   INTEGER(kind = 4), SAVE :: len_x, len_z, vel, &
        n_sweeps_therm, n_sweeps_stead, id_init, id_bound, &
-       n_samples
+       n_samples, wh_mz
   REAL(kind = 8), SAVE :: J, beta
 
   !reduced variables

@@ -117,8 +117,8 @@ PROGRAM main
 
   DO i_th = 0, n_ths - 1
      slot_stream(i_th) = 20 + i_th
-     slot_snap(i_th) = slot_stream(i_th) + n_ths
-     slot_m_z(i_th) = slot_snap(i_th) + n_ths
+     slot_snap(i_th) = 20 + i_th + n_ths
+     slot_m_z(i_th) = 20 + i_th + 2 * n_ths
   END DO
 
   ALLOCATE(spin(1:len_x, 1:len_y, 1:len_z), &
@@ -146,7 +146,7 @@ PROGRAM main
   !$omp private(i_sweep, i_vel, i_th, si_sample, x, y, z, n_steps) &
   !$omp private(temp_spin, pump, diss, energy, m_z) &
   !$omp private(filename_stream, filename_m_z, filename_snap, filename_str) &
-  !$omp shared(n_samples, len_x, len_y, len_z, vel, len_rns) &
+  !$omp shared(n_ths, n_samples, len_x, len_y, len_z, vel, len_rns) &
   !$omp shared(rn_x, rn_y, rn_z, rn_prob) &
   !$omp shared(n_sweeps_therm, n_sweeps_therm0) &
   !$omp shared(n_sweeps_stead, n_sweeps_stead0) &

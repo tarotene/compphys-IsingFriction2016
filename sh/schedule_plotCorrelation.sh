@@ -2,8 +2,6 @@
 
 source /opt/intel/mkl/bin/mklvars.sh intel64 mod ilp64
 
-n_samples=10; n_sweeps_therm=5000; n_sweeps_stead=5000
-
 cd dat
 for dir in `ls`; do
   cd ${dir}
@@ -12,12 +10,12 @@ for dir in `ls`; do
   len_x=`pwd | sed -e "s/^.*Lx\(.*\)_Vel.*$/\1/"`
 
   cd antiparallel
-  source ../../../sh/extract.sh
+  source ../../../sh/plotCorrelation.sh
   echo "Done: z-bc = antiparallel"
   cd ../
 
   cd parallel
-  source ../../../sh/extract.sh
+  source ../../../sh/plotCorrelation.sh
   echo "Done: z-bc = parallel"
   cd ../
 

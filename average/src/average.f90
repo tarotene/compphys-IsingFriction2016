@@ -108,14 +108,19 @@ PROGRAM main
   ave_pump_new(1:n_sweeps) = 0.0d0
   ave_diss_new(1:n_sweeps) = 0.0d0
   ave_energy_new(1:n_sweeps) = 0.0d0
-  !TODO: 足しこみを並列化すればよろし．
+  !$omp parallel do default(none) &
+  !$omp shared(n_samples_old, n_samples, n_sweeps, slot_in_stream1) &
+  !$omp private(slot) &
+  !$omp reduction(+:ave_pump_new, ave_diss_new, ave_energy_new)
   DO i_sample = n_samples_old + 1, n_samples, 1
     slot = slot_in_stream1
+    !$ slot = slot_in_stream1 + omp_get_thread_num()
     CALL addNewStreamSample2Sum(i_sample, slot, &
     ave_pump_new(1:n_sweeps), &
     ave_diss_new(1:n_sweeps), &
     ave_energy_new(1:n_sweeps))
   END DO
+  !$omp end parallel do
   ave_pump_new(1:n_sweeps) = ave_pump_new(1:n_sweeps) / DBLE(n_samples_new)
   ave_diss_new(1:n_sweeps) = ave_diss_new(1:n_sweeps) / DBLE(n_samples_new)
   ave_energy_new(1:n_sweeps) = ave_energy_new(1:n_sweeps) / DBLE(n_samples_new)
@@ -123,8 +128,14 @@ PROGRAM main
   fluc_pump_new(1:n_sweeps) = 0.0d0
   fluc_diss_new(1:n_sweeps) = 0.0d0
   fluc_energy_new(1:n_sweeps) = 0.0d0
+  !$omp parallel do default(none) &
+  !$omp shared(n_samples_old, n_samples, n_sweeps, slot_in_stream2) &
+  !$omp shared(ave_pump_new, ave_diss_new, ave_energy_new) &
+  !$omp private(slot) &
+  !$omp reduction(+:fluc_pump_new, fluc_diss_new, fluc_energy_new)
   DO i_sample = n_samples_old + 1, n_samples, 1
-     slot = slot_in_stream2
+    slot = slot_in_stream2
+    !$ slot = slot_in_stream2 + omp_get_thread_num()
     CALL addNewStreamSample2Sumsd( i_sample, slot, &
     ave_pump_new(1:n_sweeps), &
     ave_diss_new(1:n_sweeps), &
@@ -133,6 +144,7 @@ PROGRAM main
     fluc_diss_new(1:n_sweeps), &
     fluc_energy_new(1:n_sweeps))
   END DO
+  !$omp end parallel do
   fluc_pump_new(1:n_sweeps) = fluc_pump_new(1:n_sweeps) / &
   DBLE(n_samples_new)
   fluc_diss_new(1:n_sweeps) = fluc_diss_new(1:n_sweeps) / &
@@ -210,19 +222,32 @@ PROGRAM main
   ! m_zの新平均値と新ゆらぎの算出
   ! - 新平均値
   ave_m_z_new(1:len_z, 1:n_sweeps) = 0.0d0
+  !$omp parallel do default(none) &
+  !$omp shared(n_samples_old, n_samples, len_z, n_sweeps, slot_in_m_z1) &
+  !$omp private(slot) &
+  !$omp reduction(+:ave_m_z_new)
   DO i_sample = n_samples_old + 1, n_samples, 1
     slot = slot_in_m_z1
+    !$ slot = slot_in_m_z1 + omp_get_thread_num()
     CALL addNewM_zSample2Sum(i_sample, slot, ave_m_z_new(1:len_z, 1:n_sweeps))
   END DO
+  !$omp end parallel do
   ave_m_z_new(1:len_z, 1:n_sweeps) = ave_m_z_new(1:len_z, 1:n_sweeps) / &
   DBLE(n_samples_new)
   ! - 新ゆらぎ
   fluc_m_z_new(1:len_z, 1:n_sweeps) = 0.0d0
+  !$omp parallel do default(none) &
+  !$omp shared(n_samples_old, n_samples, len_z, n_sweeps, slot_in_m_z2) &
+  !$omp shared(ave_m_z_new) &
+  !$omp private(slot) &
+  !$omp reduction(+:fluc_m_z_new)
   DO i_sample = n_samples_old + 1, n_samples, 1
     slot = slot_in_m_z2
+    !$ slot = slot_in_m_z2 + omp_get_thread_num()
     CALL addNewM_zSample2Sumsd(i_sample, slot, &
     ave_m_z_new(1:len_z, 1:n_sweeps), fluc_m_z_new(1:len_z, 1:n_sweeps))
   END DO
+  !$omp end parallel do
   fluc_m_z_new(1:len_z, 1:n_sweeps) = fluc_m_z_new(1:len_z, 1:n_sweeps) / &
   DBLE(n_samples_new)
 
