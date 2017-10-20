@@ -8,49 +8,50 @@ PROGRAM main
 
   IMPLICIT NONE
 
-  !observables
-  INTEGER(kind = 4), ALLOCATABLE :: spin(:, :)
-  REAL(kind = 8), ALLOCATABLE :: m_z(:)
-  REAL(kind = 8) :: pump, diss, energy
+  ! !observables
+  ! INTEGER(kind = 4), ALLOCATABLE :: spin(:, :)
+  ! REAL(kind = 8), ALLOCATABLE :: m_z(:)
+  ! REAL(kind = 8) :: pump, diss, energy
 
-  !simulation variables
-  INTEGER(kind = 4) :: seed_master
-  INTEGER(kind = 4) :: seed_x, seed_z, seed_prob
-  INTEGER(kind = 4), ALLOCATABLE :: rn_x(:, :), rn_z(:, :)
-  REAL(kind = 8), ALLOCATABLE :: rn_prob(:, :)
+  ! !simulation variables
+  ! INTEGER(kind = 4) :: seed_master
+  ! INTEGER(kind = 4) :: seed_x, seed_z, seed_prob
+  ! INTEGER(kind = 4), ALLOCATABLE :: rn_x(:, :), rn_z(:, :)
+  ! REAL(kind = 8), ALLOCATABLE :: rn_prob(:, :)
 
-  !loop variables
-  INTEGER(kind = 4) :: i_line, ios, i_vel, i_sweep, i_sample, x, z
-  INTEGER(kind = 4) :: n_samples0
-  INTEGER(kind = 4), ALLOCATABLE :: n_sweeps_therm0(:), n_sweeps_stead0(:)
-  CHARACTER(len = 4, kind = 1) :: si_sample
-  CHARACTER(len = 30, kind = 1) :: &
-       filename_stream, filename_m_z, filename_snap
-  CHARACTER(len = 40, kind = 1) :: filename_str
+  ! !loop variables
+  ! INTEGER(kind = 4) :: i_line, ios, i_vel, i_sweep, i_sample, x, z
+  ! INTEGER(kind = 4) :: n_samples0
+  ! INTEGER(kind = 4), ALLOCATABLE :: n_sweeps_therm0(:), n_sweeps_stead0(:)
+  ! CHARACTER(len = 4, kind = 1) :: si_sample
+  ! CHARACTER(len = 30, kind = 1) :: &
+  !      filename_stream, filename_m_z, filename_snap
+  ! CHARACTER(len = 40, kind = 1) :: filename_str
 
-  !slot variables
-  INTEGER(kind = 4), ALLOCATABLE :: slot_stream(:), slot_snap(:), slot_m_z(:)
+  ! !slot variables
+  ! INTEGER(kind = 4), ALLOCATABLE :: slot_stream(:), slot_snap(:), slot_m_z(:)
 
-  !omp variables
-  INTEGER(kind = 4) :: i_th, n_ths, err_x, err_z, err_prob
+  ! !omp variables
+  ! INTEGER(kind = 4) :: i_th, n_ths, err_x, err_z, err_prob
+  !
+  ! !stat variables
+  ! INTEGER(kind = 4) :: stat_snap
+  ! INTEGER(kind = 4), ALLOCATABLE :: stat_stream_e(:), stat_m_z_e(:)
+  ! INTEGER(kind = 4), ALLOCATABLE :: stat_stream_a(:), stat_m_z_a(:)
+  ! CHARACTER(:), ALLOCATABLE :: command_cpStream, command_cpM_z
+  ! INTEGER(kind = 4) :: averaged
 
-  !stat variables
-  INTEGER(kind = 4) :: stat_snap
-  INTEGER(kind = 4), ALLOCATABLE :: stat_stream_e(:), stat_m_z_e(:)
-  INTEGER(kind = 4), ALLOCATABLE :: stat_stream_a(:), stat_m_z_a(:)
-  CHARACTER(:), ALLOCATABLE :: command_cpStream, command_cpM_z
-  INTEGER(kind = 4) :: averaged
+  CALL inputParameters_2d(len_x, len_z, J, beta, vel, &
+       n_sweeps_therm, n_sweeps_stead, id_IC, id_BC, n_samples, &
+       onoff_stream, onoff_m_z)
+  !TODO: 対応する基底状態の順にICとBCを揃える
+  ! id_IC: 1. all-up, 2. DW, 3. random
+  ! id_BC: 1. anti-parallel, 2. parallel, 3. free
+  ! n_sweeps = n_sweeps_therm + n_sweeps_stead
 
-  CALL inputParameters(len_x, len_z, J, beta, vel, &
-    n_sweeps_therm, n_sweeps_stead, id_init, id_bound, &
-    n_samples, e_stream, e_m_z)
-  ! id_init: 1. all-up, 2. DW, 3. random
-  ! id_bound: 1. anti-parallel, 2. parallel, 3. free
-  n_sweeps = n_sweeps_therm + n_sweeps_stead
-
-  ALLOCATE(n_sweeps_therm0(1:n_samples), n_sweeps_stead0(1:n_samples))
-  n_sweeps_therm0(1:n_samples) = 0; n_sweeps_stead0(1:n_samples) = 0
-  CALL getNumSamples(40, n_samples0)
+  ! ALLOCATE(n_sweeps_therm0(1:n_samples), n_sweeps_stead0(1:n_samples))
+  ! n_sweeps_therm0(1:n_samples) = 0; n_sweeps_stead0(1:n_samples) = 0
+  ! CALL getNumSamples(40, n_samples0)
   ALLOCATE(e_stream0(1:n_samples0), e_m_z0(1:n_samples0))
   ALLOCATE(a_stream0(1:n_samples0), e_stream0(1:n_samples0))
   CALL getStatsSamples(40, n_samples0, &
