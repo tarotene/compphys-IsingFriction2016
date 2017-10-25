@@ -2,7 +2,7 @@ PROGRAM main
   USE global_variables
   USE main_procedures
   IMPLICIT NONE
-
+  
   INTEGER(kind = 4) :: i_sweep, i_tsample, i_dum, z, z_dum, i_sample
   INTEGER(kind = 4) :: n_samples, n_tsamples, n_tstrides
   DOUBLE PRECISION, ALLOCATABLE :: pump(:, :), diss(:, :), energy(:, :)

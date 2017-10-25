@@ -154,15 +154,12 @@ CONTAINS
   END SUBROUTINE refreshListParameters_3d
 
   SUBROUTINE getStatSamples(slot, filename, &
-       n_samples, stat_stream_e, stat_stream_a, &
-       stat_m_z_e, stat_m_z_a)
+       n_samples, stat_sample_e, stat_sample_a)
     INTEGER(kind = 4), INTENT(in) :: slot
     CHARACTER(length = *), INTENT(in) :: filename
     INTEGER(kind = 4), INTENT(in) :: n_samples
-    INTEGER(kind = 4), INTENT(out) :: stat_stream_e(1:)
-    INTEGER(kind = 4), INTENT(out) :: stat_stream_a(1:)
-    INTEGER(kind = 4), INTENT(out) :: stat_m_z_e(1:)
-    INTEGER(kind = 4), INTENT(out) :: stat_m_z_a(1:)
+    INTEGER(kind = 4), INTENT(out) :: stat_sample_e(1:)
+    INTEGER(kind = 4), INTENT(out) :: stat_sample_a(1:)
 
     INTEGER(kind = 4) :: i_sample, i_dum
 
@@ -170,33 +167,26 @@ CONTAINS
     READ(slot, '()')
     DO i_sample = 1, n_samples, 1
        READ (slot, *) &
-            i_dum, stat_stream_e(i_sample), stat_stream_a(i_sample), &
-            stat_m_z_e(i_sample), stat_m_z_a(i_sample)
+            i_dum, stat_sample_e(i_sample), stat_sample_a(i_sample)
     END DO
     CLOSE(slot)
   END SUBROUTINE getStatSamples
 
   SUBROUTINE refreshStatSamples(slot, filename, &
-       n_samples, stat_stream_e, stat_stream_a, &
-       stat_m_z_e, stat_m_z_a)
+       n_samples, stat_sample_e, stat_sample_a)
     INTEGER(kind = 4), INTENT(in) :: slot
     CHARACTER(length = *), INTENT(in) :: filename
     INTEGER(kind = 4), INTENT(in) :: n_samples
-    INTEGER(kind = 4), INTENT(in) :: stat_stream_e(1:)
-    INTEGER(kind = 4), INTENT(in) :: stat_stream_a(1:)
-    INTEGER(kind = 4), INTENT(in) :: stat_m_z_e(1:)
-    INTEGER(kind = 4), INTENT(in) :: stat_m_z_a(1:)
+    INTEGER(kind = 4), INTENT(in) :: stat_sample_e(1:)
+    INTEGER(kind = 4), INTENT(in) :: stat_sample_a(1:)
 
     INTEGER(kind = 4) :: i_sample, i_dum
 
     OPEN(slot, file=filename, status="old")
-    WRITE (slot, '(a)') "# i_sample, stat_stream_e, stat_stream_a, &
-         stat_m_z_e, stat_m_z_a"
+    WRITE (slot, '(a)') "# i_sample, stat_sample_e, stat_sample_a"
     DO i_sample = 1, n_samples, 1
-       WRITE (slot, '(i5, a, i2, a, i2, a, i2, a, i2)')
-       i_dum, ", ", &
-            stat_stream_e(i_sample), ", ", stat_stream_a(i_sample), &
-            stat_m_z_e(i_sample), ", ", stat_m_z_a(i_sample)
+       WRITE (slot, '(i5, a, i2, a, i2)')
+       i_dum, ", ", stat_sample_e(i_sample), ", ", stat_sample_a(i_sample)
     END DO
     CLOSE(slot)
   END SUBROUTINE refreshStatSamples
@@ -259,6 +249,60 @@ CONTAINS
     END DO
     CLOSE(slot)
   END SUBROUTINE readStream
+
+  SUBROUTINE writeStream(slot, filename, n_sweeps_therm, n_sweeps_stead, &
+    pump, diss, energy, fluc_pump, fluc_diss, fluc_energy)
+    INTEGER(kind = 4), INTENT(in) :: slot
+    CHARACTER(length = *), INTENT(in) :: filename
+    INTEGER(kind = 4), INTENT(in) :: n_sweeps_therm, n_sweeps_stead
+    REAL(kind = 8), INTENT(in) :: pump(1:), diss(1:), energy(1:)
+    REAL(kind = 8), INTENT(in) :: fluc_pump(1:)
+    REAL(kind = 8), INTENT(in) :: fluc_diss(1:)
+    REAL(kind = 8), INTENT(in) :: fluc_energy(1:)
+
+    INTEGER(kind = 4) :: i_sweep, i_dum
+
+    OPEN(slot, file=filename, status="new")
+    WRITE(slot, '(a)') &
+    "# i_sweep, pump, diss, energy, fluc_pump, fluc_diss, fluc_energy"
+    DO i_sweep = 1, n_sweeps_therm, 1
+       CALL exportStream_onfile(1, slot, &
+            i_sweep, pump(i_sweep), diss(i_sweep), energy(i_sweep))
+    END DO
+    WRITE(slot, '(a)') "# -- Thermalized --"
+    DO i_sweep = n_sweeps_therm + 1, n_sweeps_therm + n_sweeps_stead, 1
+      CALL exportStream_onfile(1, slot, &
+           i_sweep, pump(i_sweep), diss(i_sweep), energy(i_sweep))
+    END DO
+    WRITE(slot, '(a)') "# -- Steadized --"
+    CLOSE(slot)
+  END SUBROUTINE writeStream
+
+  SUBROUTINE copyStream2Stream(slot, filename1, filename2, &
+    n_sweeps_therm, n_sweeps_stead)
+    INTEGER(kind = 4), INTENT(in) :: slot
+    CHARACTER(length = *), INTENT(in) :: filename1, filename2
+    INTEGER(kind = 4), INTENT(in) :: n_sweeps_therm, n_sweeps_stead
+
+    REAL(kind = 8) :: pump(1:n_sweeps_therm + n_sweeps_stead)
+    REAL(kind = 8) :: diss(1:n_sweeps_therm + n_sweeps_stead)
+    REAL(kind = 8) :: energy(1:n_sweeps_therm + n_sweeps_stead)
+    REAL(kind = 8) :: fluc_pump(1:n_sweeps_therm + n_sweeps_stead)
+    REAL(kind = 8) :: fluc_diss(1:n_sweeps_therm + n_sweeps_stead)
+    REAL(kind = 8) :: fluc_energy(1:n_sweeps_therm + n_sweeps_stead)
+
+    INTEGER(kind = 4) :: n_sweeps
+
+    n_sweeps = n_sweeps_therm + n_sweeps_stead
+
+    CALL readStream(slot, filename1, n_sweeps_therm, n_sweeps_stead, &
+    pump(1:n_sweeps), diss(1:n_sweeps), energy(1:n_sweeps), &
+    fluc_pump(1:n_sweeps), fluc_diss(1:n_sweeps), fluc_energy(1:n_sweeps))
+
+    CALL writeStream(slot, filename2, n_sweeps_therm, n_sweeps_stead, &
+    pump(1:n_sweeps), diss(1:n_sweeps), energy(1:n_sweeps), &
+    fluc_pump(1:n_sweeps), fluc_diss(1:n_sweeps), fluc_energy(1:n_sweeps))
+  END SUBROUTINE copyStream2Stream
 
   SUBROUTINE addNewStreamSample2Sum(slot, filename, &
        n_sweeps_therm, n_sweeps_stead, sum_pump, sum_diss, sum_energy)
@@ -341,6 +385,49 @@ CONTAINS
     END DO
     CLOSE(slot)
   END SUBROUTINE readM_z
+
+  SUBROUTINE writeM_z(slot, filename, len_x, len_z, n_sweeps, m_z, fluc_m_z)
+    INTEGER(kind = 4), INTENT(in) :: slot
+    CHARACTER(length = *), INTENT(in) :: filename
+    INTEGER(kind = 4), INTENT(in) :: n_sweeps, len_x, len_z
+    REAL(kind = 8), INTENT(in) :: m_z(1:, 1:)
+    REAL(kind = 8), INTENT(in), OPTIONAL :: fluc_m_z(1:, 1:)
+
+    INTEGER(kind = 4) :: i_sweep, i_dum, z, z_dum
+
+    OPEN(slot, file=filename, status="new")
+    WRITE(slot, '(a)') "# i_sweep, z, ave_m_z, fluc_m_z"
+    DO i_sweep = 1, n_sweeps, 1
+      CALL exportM_z_onfile_2d(1, slot, &
+           i_sweep, len_x, len_z, spin(1:len_x, 1:len_z))
+    END DO
+    CLOSE(slot)
+  END SUBROUTINE writeM_z
+
+  SUBROUTINE copyM_z2M_z(slot, filename1, filename2, &
+    len_x, len_z, n_sweeps_therm, n_sweeps_stead)
+    INTEGER(kind = 4), INTENT(in) :: slot
+    CHARACTER(length = *), INTENT(in) :: filename1, filename2
+    INTEGER(kind = 4), INTENT(in) :: len_x, len_z
+    INTEGER(kind = 4), INTENT(in) :: n_sweeps_therm, n_sweeps_stead
+
+    REAL(kind = 8) :: pump(1:n_sweeps_therm + n_sweeps_stead)
+    REAL(kind = 8) :: diss(1:n_sweeps_therm + n_sweeps_stead)
+    REAL(kind = 8) :: energy(1:n_sweeps_therm + n_sweeps_stead)
+    REAL(kind = 8) :: fluc_pump(1:n_sweeps_therm + n_sweeps_stead)
+    REAL(kind = 8) :: fluc_diss(1:n_sweeps_therm + n_sweeps_stead)
+    REAL(kind = 8) :: fluc_energy(1:n_sweeps_therm + n_sweeps_stead)
+
+    INTEGER(kind = 4) :: n_sweeps
+
+    n_sweeps = n_sweeps_therm + n_sweeps_stead
+
+    CALL readM_z(slot, filename1, len_z, n_sweeps, &
+    m_z(1:len_z, 1:n_sweeps), fluc_m_z(1:len_z, 1:n_sweeps))
+
+    CALL writeM_z(slot, filename2, len_x, len_z, n_sweeps, &
+    m_z(1:len_z, 1:n_sweeps), fluc_m_z(1:len_z, 1:n_sweeps))
+  END SUBROUTINE copyM_z2M_z
 
   SUBROUTINE addNewM_zSample2Sum(slot, filename, &
        len_z, n_sweeps, sum_m_z)
