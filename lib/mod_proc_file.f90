@@ -94,6 +94,7 @@ CONTAINS
     READ(slot, *) len_x, len_y, len_z, J, beta, vel, &
          n_sweeps_therm0, n_sweeps_stead0, id_IC, id_BC, n_samples0, &
          onoff_stream, onoff_m_z
+    CLOSE(slot)
   END SUBROUTINE getListParameters_3d
 
   SUBROUTINE refreshListParameters_2d(slot, filename, &
@@ -114,7 +115,7 @@ CONTAINS
     WRITE(slot, '(a)') "# len_x, len_z, J, beta, vel, &
          n_sweeps_therm, n_sweeps_stead, id_IC, id_BC, n_samples, &
 				 onoff_stream, onoff_m_z"
-    WRITE(slot, '(i4, a, i4, a, f0.4, a, f0.4, a, i4, &
+    WRITE(slot, '(i4, a, i4, a, f0.4, a, f0.4, a, i4, a, &
 		i5, a, i5, a, i2, a, i2, a, i5, a, i2, a, i2)') &
 		len_x, ", ", len_z, ", ", J, ", ", beta, ", ", vel, ", ", &
 		n_sweeps_therm, ", ", n_sweeps_stead, ", ", &
@@ -141,7 +142,7 @@ CONTAINS
     WRITE(slot, '(a)') "# i_sample, len_x, len_y len_z, J, beta, vel, &
          n_sweeps_therm, n_sweeps_stead, id_IC, id_BC, n_samples, &
          onoff_stream, onoff_m_z"
-    WRITE(slot, '(i4, a, i4, a, f0.4, a, f0.4, a, f0.4, a, i4, &
+    WRITE(slot, '(i4, a, i4, a, f0.4, a, f0.4, a, f0.4, a, i4, a, &
 		i5, a, i5, a, i2, a, i2, a, i5)') &
 		len_x, ", ", len_y, ", ", len_z, ", ", J, ", ", beta, ", ", vel, ", ", &
 		n_sweeps_therm, ", ", n_sweeps_stead, ", ", &
@@ -177,13 +178,13 @@ CONTAINS
     INTEGER(kind = 4), INTENT(in) :: stat_sample_e(1:)
     INTEGER(kind = 4), INTENT(in) :: stat_sample_a(1:)
 
-    INTEGER(kind = 4) :: i_sample, i_dum
+    INTEGER(kind = 4) :: i_sample
 
-    OPEN(slot, file=filename, status="old")
+    OPEN(slot, file=filename, status="replace")
     WRITE (slot, '(a)') "# i_sample, stat_sample_e, stat_sample_a"
     DO i_sample = 1, n_samples, 1
        WRITE (slot, '(i5, a, i2, a, i2)') &
-			 i_dum, ", ", stat_sample_e(i_sample), ", ", stat_sample_a(i_sample)
+			 i_sample, ", ", stat_sample_e(i_sample), ", ", stat_sample_a(i_sample)
     END DO
     CLOSE(slot)
   END SUBROUTINE refreshStatSamples
@@ -404,7 +405,7 @@ CONTAINS
     CLOSE(slot)
   END SUBROUTINE writeM_z_2d
 
-  SUBROUTINE copyM_z2M_z(slot, filename1, filename2, &
+  SUBROUTINE copyM_z2M_z_2d(slot, filename1, filename2, &
     len_x, len_z, n_sweeps_therm, n_sweeps_stead)
     INTEGER(kind = 4), INTENT(in) :: slot
     CHARACTER(LEN = *), INTENT(in) :: filename1, filename2
@@ -421,9 +422,9 @@ CONTAINS
     CALL readM_z(slot, filename1, len_z, n_sweeps, &
     m_z(1:len_z, 1:n_sweeps), fluc_m_z(1:len_z, 1:n_sweeps))
 
-    CALL writeM_z(slot, filename2, len_x, len_z, n_sweeps, &
+    CALL writeM_z_2d(slot, filename2, len_x, len_z, n_sweeps, &
     m_z(1:len_z, 1:n_sweeps), fluc_m_z(1:len_z, 1:n_sweeps))
-  END SUBROUTINE copyM_z2M_z
+  END SUBROUTINE copyM_z2M_z_2d
 
   SUBROUTINE addNewM_zSample2Sum(slot, filename, &
        len_z, n_sweeps, sum_m_z)
@@ -479,7 +480,7 @@ CONTAINS
          + fluc_m_z(1:len_z, 1:n_sweeps)
   END SUBROUTINE addOldM_z
 
-  SUBROUTINE importSnapshot_2d(slot, filename, len_x, len_z, spin)
+  SUBROUTINE importSpin_2d(slot, filename, len_x, len_z, spin)
     INTEGER(kind = 4), INTENT(in) :: slot
     CHARACTER(len = *, kind = 1), INTENT(in) :: filename
     INTEGER(kind = 4), INTENT(in) :: len_x, len_z
@@ -495,9 +496,9 @@ CONTAINS
        END DO
     END DO
     CLOSE(slot)
-  END SUBROUTINE importSnapshot_2d
+  END SUBROUTINE importSpin_2d
 
-  SUBROUTINE importSnapshot_3d(slot, filename, len_x, len_y, len_z, spin)
+  SUBROUTINE importSpin_3d(slot, filename, len_x, len_y, len_z, spin)
     INTEGER(kind = 4), INTENT(in) :: slot
     CHARACTER(len = *, kind = 1), INTENT(in) :: filename
     INTEGER(kind = 4), INTENT(in) :: len_x, len_y, len_z
@@ -515,7 +516,7 @@ CONTAINS
        END DO
     END DO
     CLOSE(slot)
-  END SUBROUTINE importSnapshot_3d
+  END SUBROUTINE importSpin_3d
 
   SUBROUTINE exportSpin_2d(slot, filename, len_x, len_z, spin)
     INTEGER(kind = 4), INTENT(in) :: slot
