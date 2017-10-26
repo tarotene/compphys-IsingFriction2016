@@ -559,7 +559,7 @@ PROGRAM main
   !$omp shared(n_samples) &
   !$omp shared(str_x, str_z, str_prob) &
   !$omp private(err_x, err_z, err_prob)
-  DO i_sample = 1, n_samples
+  DO i_sample = 1, n_samples, 1
      CALL destractRN(str_x(i_sample), err_x)
      CALL destractRN(str_z(i_sample), err_x)
      CALL destractRN(str_prob(i_sample), err_prob)
