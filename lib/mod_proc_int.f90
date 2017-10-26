@@ -281,7 +281,7 @@ CONTAINS
     INTEGER(kind = 4) :: x, z
     TYPE(VSL_STREAM_STATE) :: str_spin
 
-    SELECT CASE (id_init)
+    SELECT CASE (id_IC)
     CASE (1)
        spin(1:len_x, 1:len_z) = 1
     CASE (2)
