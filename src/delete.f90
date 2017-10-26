@@ -15,7 +15,7 @@ PROGRAM main
   ! n_samples = 10
   CALL getNumSamples(slot_in_stats1, n_samples)
   ALLOCATE(stat_sample_e(1:n_samples), stat_sample_a(1:n_samples))
-  CALL getStatsSamples(slot_in_stats1, n_samples, stat_sample_e, stat_sample_a)
+  CALL getStatSamples(slot_in_stats1, n_samples, stat_sample_e, stat_sample_a)
 
   OPEN(slot_out_stats, file="list_samples.dat", status="old")
   DO i_sample = 1, n_samples, 1

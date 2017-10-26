@@ -1,7 +1,7 @@
 MODULE mod_rand
   USE MKL_VSL_TYPE
   USE MKL_VSL
-  USE global_variables
+  USE mod_global
 
   IMPLICIT NONE
 CONTAINS

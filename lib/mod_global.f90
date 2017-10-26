@@ -14,6 +14,8 @@ MODULE mod_global
 
   !reduced parameters
   INTEGER(kind = 4), SAVE :: n_sweeps
-  REAL(kind = 8), SAVE :: prob(-1:1, -1:1, -1:1, -1:1, -1:1)
-  REAL(kind = 8), SAVE :: deltaE(-1:1, -1:1, -1:1, -1:1, -1:1)
+  REAL(kind = 8), SAVE :: prob_2d(-1:1, -1:1, -1:1, -1:1, -1:1)
+  REAL(kind = 8), SAVE :: deltaE_2d(-1:1, -1:1, -1:1, -1:1, -1:1)
+  REAL(kind = 8), SAVE :: prob_3d(-1:1, -1:1, -1:1, -1:1, -1:1, -1:1, -1:1)
+  REAL(kind = 8), SAVE :: deltaE_3d(-1:1, -1:1, -1:1, -1:1, -1:1, -1:1, -1:1)
 END MODULE mod_global

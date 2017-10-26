@@ -48,7 +48,7 @@ PROGRAM main
   n_sweeps_stead0(1:n_samples) = 0
   CALL getNumSamples(40, n_samples0)
   ALLOCATE(stat_sample_e(1:n_samples0), stat_sample_a(1:n_samples0))
-  CALL getStatsSamples(40, n_samples0, &
+  CALL getStatSamples(40, n_samples0, &
        stat_sample_e(1:n_samples0), stat_sample_a(1:n_samples0))
   DO i_sample = 1, n_samples0, 1
      IF ( stat_sample_e(i_sample) == 0 ) THEN
