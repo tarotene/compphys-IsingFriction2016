@@ -263,13 +263,15 @@ CONTAINS
     WRITE(slot, '(a)') &
     "# i_sweep, pump, diss, energy, fluc_pump, fluc_diss, fluc_energy"
     DO i_sweep = 1, n_sweeps_therm, 1
-       CALL exportStream_onfile(1, slot, &
-            i_sweep, pump(i_sweep), diss(i_sweep), energy(i_sweep))
+       CALL exportStream_onfile(1, slot, i_sweep, &
+       pump(i_sweep), diss(i_sweep), energy(i_sweep), &
+       fluc_pump(i_sweep), fluc_diss(i_sweep), fluc_energy(i_sweep))
     END DO
     WRITE(slot, '(a)') "# -- Thermalized --"
     DO i_sweep = n_sweeps_therm + 1, n_sweeps_therm + n_sweeps_stead, 1
-      CALL exportStream_onfile(1, slot, &
-           i_sweep, pump(i_sweep), diss(i_sweep), energy(i_sweep))
+      CALL exportStream_onfile(1, slot, i_sweep, &
+      pump(i_sweep), diss(i_sweep), energy(i_sweep), &
+      fluc_pump(i_sweep), fluc_diss(i_sweep), fluc_energy(i_sweep))
     END DO
     WRITE(slot, '(a)') "# -- Steadized --"
     CLOSE(slot)
@@ -624,10 +626,13 @@ CONTAINS
   END SUBROUTINE readthroughM_z_onfile
 
   SUBROUTINE exportStream_onfile(onoff_stream, slot, &
-       i_sweep, pump, diss, energy)
+       i_sweep, &
+       pump, diss, energy, &
+       fluc_pump, fluc_diss, fluc_energy)
     INTEGER(kind = 4), INTENT(in) :: onoff_stream, slot
     INTEGER(kind = 4), INTENT(in) :: i_sweep
     REAL(kind = 8), INTENT(in) :: pump, diss, energy
+    REAL(kind = 8), INTENT(in) :: fluc_pump, fluc_diss, fluc_energy
 
     SELECT CASE (onoff_stream)
     CASE (0)
@@ -636,7 +641,7 @@ CONTAINS
        WRITE(slot, '(  i5, a, f0.4, a, f0.4, a, f0.4, a, &
             f0.4, a, f0.4, a, f0.4)') &
             i_sweep, ", ", pump, ", ", diss, ", ", energy, ", ", &
-            0.0d0, ", ", 0.0d0, ", ", 0.0d0
+            fluc_pump, ", ", fluc_diss, ", ", fluc_energy
     END SELECT
   END SUBROUTINE exportStream_onfile
 

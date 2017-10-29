@@ -1,7 +1,7 @@
 MODULE mod_proc_int
   USE mod_global
   USE mod_rand
-  USE IFPORT
+  USE IFPORT, ONLY: access
   IMPLICIT NONE
 CONTAINS
   SUBROUTINE makeProbArray_2d(beta, deltaE, prob)

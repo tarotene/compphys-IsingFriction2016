@@ -97,6 +97,7 @@ PROGRAM main
         !      "stream.dat", filename_stream, &
         !      n_sweeps_therm, n_sweeps_stead)
         CALL system("cp stream.dat "//filename_stream)
+        ! WRITE(*, *) 1
      END IF
   END DO
 
@@ -109,6 +110,7 @@ PROGRAM main
         !      "m_z.dat", filename_m_z, &
         !      len_x, len_z, n_sweeps_therm, n_sweeps_stead)
         CALL system("cp m_z.dat "//filename_m_z)
+        ! WRITE(*, *) 2
      END IF
   END DO
 
@@ -224,7 +226,7 @@ PROGRAM main
         energy = energy + diss
 
         CALL exportStream_onfile(onoff_stream, slot_stream(i_th), &
-             i_sweep, 0.0d0, diss, energy)
+             i_sweep, 0.0d0, diss, energy, 0.0d0, 0.0d0, 0.0d0)
         CALL exportM_z_onfile_2d(onoff_m_z, slot_m_z(i_th), &
              i_sweep, len_x, len_z, spin)
      END DO
@@ -262,22 +264,22 @@ PROGRAM main
 
      !  import spin
      DO i_sweep = 1, SIGN(1, n_sweeps_therm0 - n_sweeps_therm), 1
-       filename_spin="spin_steadized_s"//si_sample//".dat"
-       CALL importSpin_2d(slot_spin(i_th), filename_spin, &
-            len_x, len_z, spin(1:len_x, 1:len_z))
-       !  calculation total energy
-       CALL calcEnergy_2d(id_BC, len_x, len_z, &
-            spin(1:len_x, 1:len_z), energy)
+        filename_spin="spin_steadized_s"//si_sample//".dat"
+        CALL importSpin_2d(slot_spin(i_th), filename_spin, &
+             len_x, len_z, spin(1:len_x, 1:len_z))
+        !  calculation total energy
+        CALL calcEnergy_2d(id_BC, len_x, len_z, &
+             spin(1:len_x, 1:len_z), energy)
      END DO
 
      !  import vectors of random numbers
      DO i_sweep = 1, SIGN(1, n_sweeps_therm0 - n_sweeps_therm), 1
-       filename_str="str_x_steadized_s"//si_sample//".bin"
-       CALL loadRNstat(str_x(i_sample), filename_str, err_x)
-       filename_str="str_z_steadized_s"//si_sample//".bin"
-       CALL loadRNstat(str_z(i_sample), filename_str, err_z)
-       filename_str="str_prob_steadized_s"//si_sample//".bin"
-       CALL loadRNstat(str_prob(i_sample), filename_str, err_prob)
+        filename_str="str_x_steadized_s"//si_sample//".bin"
+        CALL loadRNstat(str_x(i_sample), filename_str, err_x)
+        filename_str="str_z_steadized_s"//si_sample//".bin"
+        CALL loadRNstat(str_z(i_sample), filename_str, err_z)
+        filename_str="str_prob_steadized_s"//si_sample//".bin"
+        CALL loadRNstat(str_prob(i_sample), filename_str, err_prob)
      END DO
 
      !  calculation
@@ -306,7 +308,7 @@ PROGRAM main
         END DO
 
         CALL exportStream_onfile(onoff_stream, slot_stream(i_th), &
-             i_sweep, pump, diss, energy)
+             i_sweep, pump, diss, energy, 0.0d0, 0.0d0, 0.0d0)
         CALL exportM_z_onfile_2d(onoff_m_z, slot_m_z(i_th), &
              i_sweep, len_x, len_z, spin(1:len_x, 1:len_z))
      END DO
@@ -431,7 +433,7 @@ PROGRAM main
         energy = energy + diss
 
         CALL exportStream_onfile(onoff_stream, slot_stream(i_th), &
-             i_sweep, 0.0d0, diss, energy)
+             i_sweep, 0.0d0, diss, energy, 0.0d0, 0.0d0, 0.0d0)
         CALL exportM_z_onfile_2d(onoff_m_z, slot_m_z(i_th), &
              i_sweep, len_x, len_z, spin(1:len_x, 1:len_z))
      END DO
@@ -478,7 +480,7 @@ PROGRAM main
         END DO
 
         CALL exportStream_onfile(onoff_stream, slot_stream(i_th), &
-             i_sweep, pump, diss, energy)
+             i_sweep, pump, diss, energy, 0.0d0, 0.0d0, 0.0d0)
         CALL exportM_z_onfile_2d(onoff_m_z, slot_m_z(i_th), &
              i_sweep, len_x, len_z, spin(1:len_x, 1:len_z))
      END DO

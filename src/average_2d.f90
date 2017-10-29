@@ -44,8 +44,8 @@ PROGRAM main
   CALL getStatSamples(20, "stat_samples.dat", &
        n_samples, stat_sample_e(1:n_samples), stat_sample_a(1:n_samples))
 
-  n_samples_old = SUM(stat_sample_a(1:n_samples))
-  n_samples_new = n_samples - n_samples_old
+  n_samples_new = SUM(stat_sample_e(1:n_samples))
+  n_samples_old = n_samples - n_samples_new
 
   !adjustment program to machine
   n_ths = 1

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-J=1.0; n_samples=40; n_sweeps_therm=400; n_sweeps_stead=400
+J=1.0; n_samples=60; n_sweeps_therm=400; n_sweeps_stead=500
 onoff_stream=1; onoff_m_z=0
 waste=1000; size_block=50
 

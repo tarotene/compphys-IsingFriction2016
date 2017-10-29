@@ -16,7 +16,7 @@ PROGRAM main
   ALLOCATE(stat_sample_e(1:n_samples), stat_sample_a(1:n_samples))
   CALL getStatSamples(20, "stat_samples.dat", &
        n_samples, stat_sample_e(1:n_samples), stat_sample_a(1:n_samples))
-
+  
   DO i_sample = 1, n_samples, 1
      IF ( stat_sample_e(i_sample) == 1 .AND. stat_sample_a(i_sample) == 1 ) THEN
         WRITE(si_sample, '(i0.4)') i_sample
