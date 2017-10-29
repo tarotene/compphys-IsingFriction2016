@@ -335,17 +335,27 @@ CONTAINS
     REAL(kind = 8) :: en_loc
     INTEGER(kind = 4) :: east, west, south, north
 
+    ! WRITE(*, '(a, i2, a, i2, a, i2, a)') "spin(", x, ", ", z, ") = ", spin(x, z), "."
+
     CALL set_direction_2d(id_BC, len_x, len_z, &
          spin(1:len_x, 1:len_z), x, z, &
          east, west, south, north)
 
+    ! WRITE(*, *) 22.380d0
+    ! WRITE(*, '(a, i2, a, i2, a, i2, a, i2, a)') &
+    ! "ewsn=(", east, ", ", west, ", ", south, ", ", north, ")."
+
     IF (p <= prob_2d(spin(x, z), east, west, south, north)) THEN
        en_loc =  - spin(x, z) * (east + west + south + north)
-       relax = - 2 * en_loc
+       relax = - 2.0d0 * en_loc
        spin(x, z) = - spin(x, z)
+      !  WRITE(*, *) 22.381d0
     ELSE
        relax = 0.0d0
+      !  WRITE(*, *) 22.382d0
     END IF
+
+    ! WRITE(*, *) 22.385d0
   END SUBROUTINE step_singleflip_2d
 
   SUBROUTINE step_singleflip_3d(id_BC, len_x, len_y, len_z, &
@@ -384,10 +394,13 @@ CONTAINS
 
     diss = 0.0d0
     DO i_step = 1, n_steps, 1
+      ! WRITE(*, *) 22.375d0
        CALL step_singleflip_2d(id_BC, len_x, len_z, &
             rn_x(i_step), rn_z(i_step), rn_p(i_step), &
             spin(1:, 1:), relax)
+      ! WRITE(*, *) 22.385d0
        diss = diss + relax
+      ! WRITE(*, *) 22.400d0
     END DO
   END SUBROUTINE sweep_singleflip_2d
 

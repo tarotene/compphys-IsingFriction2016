@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-source /opt/intel/mkl/bin/mklvars.sh intel64 mod ilp64
-
-J=1.0; n_samples=100; n_sweeps_therm=100; n_sweeps_stead=100
+J=1.0; n_samples=40; n_sweeps_therm=400; n_sweeps_stead=400
+onoff_stream=1; onoff_m_z=0
+waste=1000; size_block=50
 
 echo "What to schedule?"
-echo "(2017/10/12: {average, delete, extract, simulate} are available.)"
+echo "(2017/10/28: {average_2d, extract_2d, simulate_2d, plotStream_2d} are available.)"
 read scheduled
 
 cd dat
@@ -20,17 +20,15 @@ for dir in `ls`; do
   id_init=2
   id_bound=1
   source ../../../sh/${scheduled}.sh
-  echo "Done: z-bc = antiparallel"
+  echo "Done: len_x = ${len_x}, len_z = ${len_z}, z-bc = antiparallel"
   cd ../
 
   cd parallel
   id_init=1
   id_bound=2
   source ../../../sh/${scheduled}.sh
-  echo "Done: z-bc = parallel"
+  echo "Done: len_x = ${len_x}, len_z = ${len_z}, z-bc = parallel"
   cd ../
-
-  echo "Done: len_x = ${len_x}, len_z = ${len_z}."
 
   cd ../
 done

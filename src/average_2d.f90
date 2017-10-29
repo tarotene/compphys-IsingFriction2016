@@ -6,31 +6,42 @@ PROGRAM main
 
   IMPLICIT NONE
   ! INTEGER(kind = 4) :: i_sweep, i_sample
-  ! REAL(kind = 8), ALLOCATABLE :: ave_pump(:), ave_diss(:), ave_energy(:)
-  ! REAL(kind = 8), ALLOCATABLE :: ave_pump_old(:), ave_pump_new(:)
-  ! REAL(kind = 8), ALLOCATABLE :: ave_diss_old(:), ave_diss_new(:)
-  ! REAL(kind = 8), ALLOCATABLE :: ave_energy_old(:), ave_energy_new(:)
-  ! REAL(kind = 8), ALLOCATABLE :: fluc_pump(:), fluc_diss(:), fluc_energy(:)
-  ! REAL(kind = 8), ALLOCATABLE :: fluc_pump_old(:), fluc_pump_new(:)
-  ! REAL(kind = 8), ALLOCATABLE :: fluc_diss_old(:), fluc_diss_new(:)
-  ! REAL(kind = 8), ALLOCATABLE :: fluc_energy_old(:), fluc_energy_new(:)
-  ! REAL(kind = 8), ALLOCATABLE :: ave_m_z(:, :), fluc_m_z(:, :)
-  ! REAL(kind = 8), ALLOCATABLE :: ave_m_z_old(:, :), ave_m_z_new(:, :)
-  ! REAL(kind = 8), ALLOCATABLE :: fluc_m_z_old(:, :), fluc_m_z_new(:, :)
-  !
-  ! INTEGER(kind = 4), ALLOCATABLE :: stat_sample_e(:), stat_sample_a(:)
-  ! INTEGER(kind = 4) :: slot
-  ! INTEGER(kind = 4) :: i_dum, z_dum, x, z, n_ths
-  ! INTEGER(kind = 4) :: slot_in_stats1, slot_in_stats2, slot_in_stats3
-  ! INTEGER(kind = 4) :: slot_in_stream1, slot_in_stream2, slot_out_stream
-  ! INTEGER(kind = 4) :: slot_in_m_z1, slot_in_m_z2, slot_out_m_z
-  ! INTEGER(kind = 4) :: slot_out_stats
 
-  CALL getListParameters_2d(slot, "list_parameters.dat", &
+  ! observables
+  REAL(kind = 8), ALLOCATABLE :: ave_pump(:), ave_diss(:), ave_energy(:)
+  REAL(kind = 8), ALLOCATABLE :: ave_pump_old(:), ave_pump_new(:)
+  REAL(kind = 8), ALLOCATABLE :: ave_diss_old(:), ave_diss_new(:)
+  REAL(kind = 8), ALLOCATABLE :: ave_energy_old(:), ave_energy_new(:)
+  REAL(kind = 8), ALLOCATABLE :: fluc_pump(:), fluc_diss(:), fluc_energy(:)
+  REAL(kind = 8), ALLOCATABLE :: fluc_pump_old(:), fluc_pump_new(:)
+  REAL(kind = 8), ALLOCATABLE :: fluc_diss_old(:), fluc_diss_new(:)
+  REAL(kind = 8), ALLOCATABLE :: fluc_energy_old(:), fluc_energy_new(:)
+  REAL(kind = 8), ALLOCATABLE :: ave_m_z(:, :), fluc_m_z(:, :)
+  REAL(kind = 8), ALLOCATABLE :: ave_m_z_old(:, :), ave_m_z_new(:, :)
+  REAL(kind = 8), ALLOCATABLE :: fluc_m_z_old(:, :), fluc_m_z_new(:, :)
+
+  ! loop variables
+  INTEGER(kind = 4) :: z, n_steps, i_sweep, i_sample
+  CHARACTER(len = 4, kind = 1) :: si_sample
+
+  CHARACTER(:), ALLOCATABLE :: &
+       filename_stream, filename_m_z
+
+  ! slot variables
+  INTEGER(kind = 4) :: slot_in_stream1, slot_in_stream2, slot_out_stream
+  INTEGER(kind = 4) :: slot_in_m_z1, slot_in_m_z2, slot_out_m_z
+
+  ! stat variables
+  ! INTEGER(kind = 4) :: exist_list_parameters, exist_stat_samples
+  INTEGER(kind = 4), ALLOCATABLE :: stat_sample_e(:)
+  INTEGER(kind = 4), ALLOCATABLE :: stat_sample_a(:)
+
+  CALL getListParameters_2d(10, "list_parameters.dat", &
        len_x, len_z, J, beta, vel, &
        n_sweeps_therm, n_sweeps_stead, id_IC, id_BC, n_samples, &
        onoff_stream, onoff_m_z)
-  CALL getStatSamples(slot, "stat_samples.dat", &
+  ALLOCATE(stat_sample_e(1:n_samples), stat_sample_a(1:n_samples))
+  CALL getStatSamples(20, "stat_samples.dat", &
        n_samples, stat_sample_e(1:n_samples), stat_sample_a(1:n_samples))
 
   n_samples_old = SUM(stat_sample_a(1:n_samples))
@@ -71,15 +82,19 @@ PROGRAM main
   ave_diss_new(1:n_sweeps) = 0.0d0
   ave_energy_new(1:n_sweeps) = 0.0d0
   !$omp parallel do schedule(static, 1) default(none) &
-  !$omp reduction(+:)
+  !$omp shared(n_samples_old, n_samples_new, n_samples, onoff_stream) &
+  !$omp shared(n_sweeps_therm, n_sweeps_stead, n_sweeps) &
+  !$omp private(slot_in_stream2, si_sample) &
+  !$omp private(filename_stream) &
+  !$omp reduction(+:ave_pump_new, ave_diss_new, ave_energy_new)
   DO i_sample = n_samples_old + 1, n_samples * onoff_stream, 1
-     slot_in_stream1 = 10
-     !$ slot_in_stream1 = 10 + omp_get_thread_num()
+     slot_in_stream2 = 10
+     !$ slot_in_stream2 = 10 + omp_get_thread_num()
 
      WRITE(si_sample, '(i0.4)') i_sample
      filename_stream=TRIM("stream_s"//si_sample//".dat")
 
-     CALL addNewStreamSample2Sum(slot_in_stream1, filename_stream, &
+     CALL addNewStreamSample2Sum(slot_in_stream2, filename_stream, &
           n_sweeps_therm, n_sweeps_stead, &
           ave_pump_new(1:n_sweeps), &
           ave_diss_new(1:n_sweeps), &
@@ -94,7 +109,12 @@ PROGRAM main
   fluc_diss_new(1:n_sweeps) = 0.0d0
   fluc_energy_new(1:n_sweeps) = 0.0d0
   !$omp parallel do schedule(static, 1) default(none) &
-  !$omp reduction(+:)
+  !$omp shared(n_samples_old, n_samples_new, n_samples, onoff_stream) &
+  !$omp shared(n_sweeps_therm, n_sweeps_stead, n_sweeps) &
+  !$omp shared(ave_pump_new, ave_diss_new, ave_energy_new) &
+  !$omp private(slot_in_stream2, si_sample) &
+  !$omp private(filename_stream) &
+  !$omp reduction(+:fluc_pump_new, fluc_diss_new, fluc_energy_new)
   DO i_sample = n_samples_old + 1, n_samples * onoff_stream, 1
      slot_in_stream2 = 20
      !$ slot_in_stream2 = 20 + omp_get_thread_num()
@@ -119,7 +139,18 @@ PROGRAM main
   fluc_energy_new(1:n_sweeps) = fluc_energy_new(1:n_sweeps) / &
        DBLE(n_samples_new)
 
-  !$omp parallel do schedule(static, 1) default(none)
+  !$omp parallel do schedule(static, 1) default(none) &
+  !$omp shared(n_sweeps, onoff_stream) &
+  !$omp shared(n_samples_old, n_samples_new) &
+  !$omp shared(ave_pump, fluc_pump) &
+  !$omp shared(ave_pump_old, fluc_pump_old) &
+  !$omp shared(ave_pump_new, fluc_pump_new) &
+  !$omp shared(ave_diss, fluc_diss) &
+  !$omp shared(ave_diss_old, fluc_diss_old) &
+  !$omp shared(ave_diss_new, fluc_diss_new) &
+  !$omp shared(ave_energy, fluc_energy) &
+  !$omp shared(ave_energy_old, fluc_energy_old) &
+  !$omp shared(ave_energy_new, fluc_energy_new)
   DO i_sweep = 1, n_sweeps * onoff_stream, 1
      CALL synthesizeSets(n_samples_old, n_samples_new, &
           ave_pump_old(i_sweep), fluc_pump_old(i_sweep), &
@@ -162,15 +193,19 @@ PROGRAM main
 
   ave_m_z_new(1:len_z, 1:n_sweeps) = 0.0d0
   !$omp parallel do schedule(static, 1) default(none) &
-  !$omp reduction(+:)
+  !$omp shared(n_samples_old, n_samples_new, n_samples, onoff_m_z) &
+  !$omp shared(n_sweeps_therm, n_sweeps_stead, n_sweeps, len_z) &
+  !$omp private(slot_in_m_z2, si_sample) &
+  !$omp private(filename_m_z) &
+  !$omp reduction(+:ave_m_z_new)
   DO i_sample = n_samples_old + 1, n_samples * onoff_m_z, 1
-     slot_in_m_z1 = 30
-     !$ slot_in_m_z1 = 30 + omp_get_thread_num()
+     slot_in_m_z2 = 30
+     !$ slot_in_m_z2 = 30 + omp_get_thread_num()
 
      WRITE(si_sample, '(i0.4)') i_sample
      filename_m_z=TRIM("m_z_s"//si_sample//".dat")
 
-     CALL addNewM_zSample2Sum(slot, filename_m_z, &
+     CALL addNewM_zSample2Sum(slot_in_m_z2, filename_m_z, &
      len_z, n_sweeps, ave_m_z_new(1:len_z, 1:n_sweeps))
   END DO
   !$omp end parallel do
@@ -179,7 +214,12 @@ PROGRAM main
 
   fluc_m_z_new(1:len_z, 1:n_sweeps) = 0.0d0
   !$omp parallel do default(none) &
-  !$omp reduction(+:)
+  !$omp shared(n_samples_old, n_samples_new, n_samples, onoff_m_z) &
+  !$omp shared(n_sweeps_therm, n_sweeps_stead, n_sweeps, len_z) &
+  !$omp shared(ave_m_z_new) &
+  !$omp private(slot_in_m_z2, si_sample) &
+  !$omp private(filename_m_z) &
+  !$omp reduction(+:fluc_m_z_new)
   DO i_sample = n_samples_old + 1, n_samples * onoff_m_z, 1
      slot_in_m_z2 = 40
      !$ slot_in_m_z2 = 40 + omp_get_thread_num()
@@ -195,7 +235,12 @@ PROGRAM main
   fluc_m_z_new(1:len_z, 1:n_sweeps) = fluc_m_z_new(1:len_z, 1:n_sweeps) / &
   DBLE(n_samples_new)
 
-  !$omp parallel do schedule(static, 1) default(none)
+  !$omp parallel do schedule(static, 1) default(none) &
+  !$omp shared(n_sweeps, onoff_m_z) &
+  !$omp shared(n_samples_old, n_samples_new, len_z) &
+  !$omp shared(ave_m_z, fluc_m_z) &
+  !$omp shared(ave_m_z_old, fluc_m_z_old) &
+  !$omp shared(ave_m_z_new, fluc_m_z_new)
   DO i_sweep = 1, n_sweeps * onoff_m_z, 1
      DO z = 1, len_z, 1
         CALL synthesizeSets(n_samples_old, n_samples_new, &
@@ -207,14 +252,14 @@ PROGRAM main
   !$omp end parallel do
 
   IF ( onoff_m_z == 1 ) THEN
-     CALL writeM_z(slot_out_m_z, "m_z.dat", len_x, len_z, &
-     n_sweeps, m_z(1:len_z, 1:n_sweeps), fluc_m_z(1:len_z, 1:n_sweeps))
+     CALL writeM_z_2d(slot_out_m_z, "m_z.dat", len_x, len_z, &
+     n_sweeps, ave_m_z(1:len_z, 1:n_sweeps), fluc_m_z(1:len_z, 1:n_sweeps))
   END IF
 
   DEALLOCATE(ave_m_z, fluc_m_z)
   DEALLOCATE(ave_m_z_old, ave_m_z_new, fluc_m_z_old, fluc_m_z_new)
 
   stat_sample_a(1:n_samples) = 1
-  CALL refreshStatSamples(slot_out_stats, "stat_samples.dat", &
+  CALL refreshStatSamples(20, "stat_samples.dat", &
        n_samples, stat_sample_e(1:n_samples), stat_sample_a(1:n_samples))
 END PROGRAM main

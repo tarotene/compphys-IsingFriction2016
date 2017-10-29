@@ -11,7 +11,26 @@ PROGRAM main
   ! CHARACTER(:), ALLOCATABLE :: filename
   ! CHARACTER(len = 4) :: si_sample
 
-  READ(*, *) waste, size_block
+  ! loop variables
+  INTEGER(kind = 4) :: i_sweep, i_dum, i_block
+
+  ! observables
+  REAL(kind = 8), ALLOCATABLE :: pump(:), diss(:), energy(:)
+  REAL(kind = 8), ALLOCATABLE :: fluc_pump(:), fluc_diss(:), fluc_energy(:)
+  REAL(kind = 8), ALLOCATABLE :: block_pump(:), block_diss(:), block_energy(:)
+  REAL(kind = 8), ALLOCATABLE :: ave_pump, ave_diss, ave_energy
+  REAL(kind = 8), ALLOCATABLE :: err_pump, err_diss, err_energy
+
+  ! slot variables
+  INTEGER(kind = 4) :: slot
+
+  ! parameters
+  INTEGER(kind = 4) :: waste, size_block
+
+  ! reduced parameters
+  INTEGER(kind = 4) :: num_blocks
+
+  READ(*, *) beta, waste, size_block
 
   CALL getListParameters_2d(slot, "list_parameters.dat", &
        len_x, len_z, J, beta, vel, &

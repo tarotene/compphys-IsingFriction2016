@@ -4,7 +4,7 @@
 
 for beta in `cat list_beta.dat`; do
 	cd "beta${beta}"
-  echo "${len_x} ${len_z}" | ../average
+  ../average_2d
 	echo "Done: beta = ${beta}."
 	cd ../
 done
