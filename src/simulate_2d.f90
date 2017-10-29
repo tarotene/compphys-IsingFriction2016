@@ -93,9 +93,10 @@ PROGRAM main
      IF ( stat_sample_e(i_sample) == 0 ) THEN
         WRITE(si_sample, '(i0.4)') i_sample
         filename_stream="stream_s"//si_sample//".dat"
-        CALL copyStream2Stream(20, &
-             "stream.dat", filename_stream, &
-             n_sweeps_therm, n_sweeps_stead)
+        ! CALL copyStream2Stream(20, &
+        !      "stream.dat", filename_stream, &
+        !      n_sweeps_therm, n_sweeps_stead)
+        CALL system("cp stream.dat "//filename_stream)
      END IF
   END DO
 
@@ -104,9 +105,10 @@ PROGRAM main
      IF ( stat_sample_e(i_sample) == 0 ) THEN
         WRITE(si_sample, '(i0.4)') i_sample
         filename_m_z="m_z_s"//si_sample//".dat"
-        CALL copyM_z2M_z_2d(30, &
-             "m_z.dat", filename_m_z, &
-             len_x, len_z, n_sweeps_therm, n_sweeps_stead)
+        ! CALL copyM_z2M_z_2d(30, &
+        !      "m_z.dat", filename_m_z, &
+        !      len_x, len_z, n_sweeps_therm, n_sweeps_stead)
+        CALL system("cp m_z.dat "//filename_m_z)
      END IF
   END DO
 
