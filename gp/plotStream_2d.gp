@@ -1,5 +1,5 @@
 set key under
-set yrange [-2:2]
+set yrange [-1:1]
 set grid
 
 set term postscript eps color
