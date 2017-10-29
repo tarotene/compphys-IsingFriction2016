@@ -1,7 +1,6 @@
 MODULE mod_proc_file
   USE mod_global
-  USE mod_rand
-  USE IFPORT
+  USE IFPORT, ONLY: access
   IMPLICIT NONE
 CONTAINS
   ! SUBROUTINE getNumSamples(slot, filename, n_samples)
