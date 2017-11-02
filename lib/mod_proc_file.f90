@@ -138,11 +138,11 @@ CONTAINS
     INTEGER(kind = 4), INTENT(in) :: onoff_stream, onoff_m_z
 
     OPEN(slot, file=filename, status="replace")
-    WRITE(slot, '(a)') "# i_sample, len_x, len_y len_z, J, beta, vel, &
+    WRITE(slot, '(a)') "# i_sample, len_x, len_y, len_z, J, beta, vel, &
          n_sweeps_therm, n_sweeps_stead, id_IC, id_BC, n_samples, &
          onoff_stream, onoff_m_z"
-    WRITE(slot, '(i4, a, i4, a, f0.4, a, f0.4, a, f0.4, a, i4, a, &
-		i5, a, i5, a, i2, a, i2, a, i5)') &
+    WRITE(slot, '(i4, a, i4, a, i4, a, f0.4, a, f0.4, a, i4, a, &
+		i5, a, i5, a, i2, a, i2, a, i5, a, i2, a, i2)') &
 		len_x, ", ", len_y, ", ", len_z, ", ", J, ", ", beta, ", ", vel, ", ", &
 		n_sweeps_therm, ", ", n_sweeps_stead, ", ", &
 		id_IC, ", ", id_BC, ", ", n_samples, ", ", &
@@ -405,6 +405,27 @@ CONTAINS
     END DO
     CLOSE(slot)
   END SUBROUTINE writeM_z_2d
+
+	SUBROUTINE writeM_z_3d(slot, filename, len_x, len_y, len_z, n_sweeps, m_z, fluc_m_z)
+    INTEGER(kind = 4), INTENT(in) :: slot
+    CHARACTER(LEN = *), INTENT(in) :: filename
+    INTEGER(kind = 4), INTENT(in) :: len_x, len_y, len_z, n_sweeps
+    REAL(kind = 8), INTENT(in) :: m_z(1:, 1:)
+    REAL(kind = 8), INTENT(in), OPTIONAL :: fluc_m_z(1:, 1:)
+
+    INTEGER(kind = 4) :: i_sweep, i_dum, z, z_dum
+
+    OPEN(slot, file=filename, status="replace")
+    WRITE(slot, '(a)') "# i_sweep, z, ave_m_z, fluc_m_z"
+    DO i_sweep = 1, n_sweeps, 1
+      DO z = 1, len_z, 1
+         WRITE(slot, '(i5, a, i4, a, f0.4, a, f0.4)') &
+         i_sweep, z, m_z(z, i_sweep), fluc_m_z(z, i_sweep)
+      END DO
+      WRITE(slot, '()')
+    END DO
+    CLOSE(slot)
+  END SUBROUTINE writeM_z_3d
 
   SUBROUTINE copyM_z2M_z_2d(slot, filename1, filename2, &
     len_x, len_z, n_sweeps_therm, n_sweeps_stead)

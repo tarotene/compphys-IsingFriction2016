@@ -13,7 +13,7 @@ MODULE mod_global
   INTEGER(kind = 4), SAVE :: n_ths
 
   ! general parameters
-  INTEGER(kind = 4), SAVE :: len_x, len_z, vel
+  INTEGER(kind = 4), SAVE :: len_x, len_y, len_z, vel
   INTEGER(kind = 4), SAVE :: n_samples, n_samples0
   INTEGER(kind = 4), SAVE :: n_samples_old, n_samples_new
   INTEGER(kind = 4), SAVE :: n_sweeps_therm, n_sweeps_stead

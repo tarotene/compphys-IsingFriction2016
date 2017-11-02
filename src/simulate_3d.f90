@@ -39,11 +39,17 @@ PROGRAM main
   INTEGER(kind = 4), ALLOCATABLE :: stat_sample_e(:)
   INTEGER(kind = 4), ALLOCATABLE :: stat_sample_a(:)
 
+  ! WRITE(0, *) "debug: 1"
+
   CALL inputParameters_3d(len_x, len_y, len_z, J, beta, vel, &
        n_sweeps_therm, n_sweeps_stead, id_IC, id_BC, n_samples, &
        onoff_stream, onoff_m_z)
 
+  ! WRITE(0, *) "debug: 2"
+
   exist_list_parameters = access( "./list_parameters.dat", " ")
+
+  ! WRITE(0, *) "debug: 3"
 
   IF ( exist_list_parameters == 0 ) THEN
      CALL getListParameters_3d(10, "list_parameters.dat", &
@@ -56,6 +62,8 @@ PROGRAM main
      n_samples0 = 0
   END IF
 
+  ! WRITE(0, *) "debug: 4"
+
   IF ( n_samples < n_samples0 ) THEN
      n_samples = n_samples0
   END IF
@@ -66,6 +74,8 @@ PROGRAM main
      n_sweeps_stead = n_sweeps_stead0
   END IF
 
+  ! WRITE(0, *) "debug: 5"
+
   !TODO: 対応する基底状態の順にICとBCを揃える
   ! id_IC: 1. all-up, 2. DW, 3. random
   ! id_BC: 1. anti-parallel, 2. parallel, 3. free
@@ -75,6 +85,8 @@ PROGRAM main
   CALL makeDeltaEArray_3d(J, deltaE_3d(-1:1, -1:1, -1:1, -1:1, -1:1, -1:1, -1:1))
   CALL makeProbArray_3d(beta, deltaE_3d(-1:1, -1:1, -1:1, -1:1, -1:1, -1:1, -1:1), &
        prob_3d(-1:1, -1:1, -1:1, -1:1, -1:1, -1:1, -1:1))
+
+  ! WRITE(0, *) "debug: 6"
 
   ! allocation stat array
   ALLOCATE(stat_sample_e(1:n_samples))
@@ -87,6 +99,8 @@ PROGRAM main
           n_samples0, stat_sample_e(1:n_samples0), &
           stat_sample_a(1:n_samples0))
   END IF
+
+  ! WRITE(0, *) "debug: 7"
 
   ! copy averaged stream file to new file
   DO i_sample = 1, n_samples0 * onoff_stream, 1
@@ -101,6 +115,8 @@ PROGRAM main
      END IF
   END DO
 
+  ! WRITE(0, *) "debug: 8"
+
   ! copy averaged m_z file to new file
   DO i_sample = 1, n_samples0 * onoff_m_z, 1
      IF ( stat_sample_e(i_sample) == 0 ) THEN
@@ -113,6 +129,8 @@ PROGRAM main
         ! WRITE(*, *) 2
      END IF
   END DO
+
+  ! WRITE(0, *) "debug: 9"
 
   ! adjustment program to machine
   n_ths = 1
@@ -129,12 +147,16 @@ PROGRAM main
      slot_m_z(i_th) = 20 + i_th + 2 * n_ths
   END DO
 
+  ! WRITE(0, *) "debug: 10"
+
   ! allocation random numbers and their streams
   ALLOCATE(rn_x(0:n_ths - 1, 1:len_x * len_y * len_z))
   ALLOCATE(rn_y(0:n_ths - 1, 1:len_x * len_y * len_z))
   ALLOCATE(rn_z(0:n_ths - 1, 1:len_x * len_y * len_z))
   ALLOCATE(rn_prob(0:n_ths - 1, 1:len_x * len_y * len_z))
-  ALLOCATE(str_x(1:n_samples), str_z(1:n_samples), str_prob(1:n_samples))
+  ALLOCATE(str_x(1:n_samples), str_y(1:n_samples), str_z(1:n_samples), str_prob(1:n_samples))
+
+  ! WRITE(0, *) "debug: 11"
 
   ! import random number streams
   DO i_sample = 1, n_samples0, 1
@@ -149,8 +171,12 @@ PROGRAM main
      CALL loadRNstat(str_prob(i_sample), filename_str, err_prob)
   END DO
 
+  ! WRITE(0, *) "debug: 12"
+
   ! allocation observables
   ALLOCATE(spin(1:len_x, 1:len_y, 1:len_z), m_z(1:len_z))
+
+  ! WRITE(0, *) "debug: 13"
 
   ! overwrite existing samples
   !$omp parallel do schedule(static, 1) default(none) &
@@ -357,6 +383,8 @@ PROGRAM main
   END DO
   !$omp end parallel do
 
+  ! WRITE(0, *) "debug: 14"
+
   ! initialize and save spin
   IF ( n_samples0 == 0 ) THEN
      CALL initializeSpin_3d(id_IC, &
@@ -365,19 +393,26 @@ PROGRAM main
           len_x, len_y, len_z, spin(1:len_x, 1:len_y, 1:len_z))
   END IF
 
+  ! WRITE(0, *) "debug: 15"
+
+  ! Bug is here ↓
   ! initialize and save vectors of random number
   seed_master = 100
   DO i_sample = n_samples0 + 1, n_samples, 1
+    !  WRITE(0, *) "debug: 15.1"
      seed_x = seed_master + i_sample
      seed_y = seed_master + i_sample + n_samples
      seed_z = seed_master + i_sample + 2 * n_samples
      seed_prob = seed_master + i_sample + 3 * n_samples
+    !  WRITE(0, *) "debug: 15.2"
      CALL initializeRN(seed_x, str_x(i_sample), err_x)
      CALL initializeRN(seed_y, str_y(i_sample), err_y)
      CALL initializeRN(seed_z, str_z(i_sample), err_z)
      CALL initializeRN(seed_prob, str_prob(i_sample), err_prob)
+    !  WRITE(0, *) "debug: 15.3"
 
      WRITE(si_sample, '(i0.4)') i_sample
+    !  WRITE(0, *) "debug: 15.4"
 
      filename_str="str_x_initial_s"//si_sample//".bin"
      CALL saveRNstat(str_x(i_sample), filename_str, err_x)
@@ -387,7 +422,11 @@ PROGRAM main
      CALL saveRNstat(str_z(i_sample), filename_str, err_z)
      filename_str="str_prob_initial_s"//si_sample//".bin"
      CALL saveRNstat(str_prob(i_sample), filename_str, err_prob)
+    !  WRITE(0, *) "debug: 15.5"
   END DO
+  ! Bug is here ↑
+
+  ! WRITE(0, *) "debug: 16"
 
   ! generage new samples
   !$omp parallel do schedule(static, 1) default(none) &
@@ -541,6 +580,8 @@ PROGRAM main
   END DO
   !$omp end parallel do
 
+  ! WRITE(0, *) "debug: 17"
+
   ! destruction vectors of random numbers
   !$omp parallel do schedule(dynamic, 1) default(none) &
   !$omp shared(n_samples) &
@@ -554,11 +595,17 @@ PROGRAM main
   END DO
   !$omp end parallel do
 
+  ! WRITE(0, *) "debug: 18"
+
   CALL refreshListParameters_3d(50, "list_parameters.dat", &
        len_x, len_y, len_z, J, beta, vel, &
        n_sweeps_therm, n_sweeps_stead, id_IC, id_BC, n_samples, &
        onoff_stream, onoff_m_z)
 
+  ! WRITE(0, *) "debug: 19"
+
   CALL refreshStatSamples(60, "stat_samples.dat", n_samples, &
        stat_sample_e(1:n_samples), stat_sample_a(1:n_samples))
+
+  ! WRITE(0, *) "debug: 20"
 END PROGRAM main
