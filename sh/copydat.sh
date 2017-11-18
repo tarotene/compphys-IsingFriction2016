@@ -20,19 +20,13 @@ for len_z in `seq -w 4 2 16`; do
     dir1="Lz${len_z}Lx`echo \"scale=0; ${len_z} * 10\" | bc`Ly__Vel10"
     cp dat/${dir1}/antiparallel/"beta${beta}"/{list_samples.dat,list_parameters.dat,stat_samples.dat,stream.dat} dat_transfer/${dir1}/antiparallel/"beta${beta}"/
     cp dat/${dir1}/parallel/"beta${beta}"/{list_samples.dat,list_parameters.dat,stat_samples.dat,stream.dat} dat_transfer/${dir1}/parallel/"beta${beta}"/
-		cp dat/${dir1}/antiparallel/list_beta.dat dat_transfer/${dir1}/antiparallel/list_beta.dat
-		cp dat/${dir1}/parallel/list_beta.dat dat_transfer/${dir1}/parallel/list_beta.dat
 
 		dir2="Lz${len_z}Lx`echo \"scale=0; ${len_z} * 20\" | bc`Ly__Vel10"
 		cp dat/${dir2}/antiparallel/"beta${beta}"/{list_samples.dat,list_parameters.dat,stat_samples.dat,stream.dat} dat_transfer/${dir2}/antiparallel/"beta${beta}"/
     cp dat/${dir2}/parallel/"beta${beta}"/{list_samples.dat,list_parameters.dat,stat_samples.dat,stream.dat} dat_transfer/${dir2}/parallel/"beta${beta}"/
-		cp dat/${dir2}/antiparallel/list_beta.dat dat_transfer/${dir2}/antiparallel/list_beta.dat
-		cp dat/${dir2}/parallel/list_beta.dat dat_transfer/${dir2}/parallel/list_beta.dat
 
   	dir3="Lz${len_z}Lx`echo \"scale=0; ${len_z} * 30\" | bc`Ly__Vel10"
 		cp dat/${dir3}/antiparallel/"beta${beta}"/{list_samples.dat,list_parameters.dat,stat_samples.dat,stream.dat} dat_transfer/${dir3}/antiparallel/"beta${beta}"/
     cp dat/${dir3}/parallel/"beta${beta}"/{list_samples.dat,list_parameters.dat,stat_samples.dat,stream.dat} dat_transfer/${dir3}/parallel/"beta${beta}"/
-		cp dat/${dir3}/antiparallel/list_beta.dat dat_transfer/${dir3}/antiparallel/list_beta.dat
-		cp dat/${dir3}/parallel/list_beta.dat dat_transfer/${dir3}/parallel/list_beta.dat
   done
 done
