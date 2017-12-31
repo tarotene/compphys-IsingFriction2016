@@ -2,7 +2,7 @@
 
 J=1.0; n_samples=50; n_sweeps_therm=200; n_sweeps_stead=200
 onoff_stream=1; onoff_m_z=0
-waste=1000; size_block=500
+waste=2000; size_block=200
 
 echo "What to schedule?"
 echo "(2017/10/28: {average_2d, extract_2d, simulate_2d, plotStream_2d} are available.)"
