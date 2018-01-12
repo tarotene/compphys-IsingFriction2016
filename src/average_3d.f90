@@ -6,7 +6,7 @@ PROGRAM main
 
   IMPLICIT NONE
   ! INTEGER(kind = 4) :: i_sweep, i_sample
-
+  
   ! observables
   REAL(kind = 8), ALLOCATABLE :: ave_pump(:), ave_diss(:), ave_energy(:)
   REAL(kind = 8), ALLOCATABLE :: ave_pump_old(:), ave_pump_new(:)
