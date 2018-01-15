@@ -7,7 +7,7 @@ MODULE mod_global
   IMPLICIT NONE
 
   ! condition parameters
-  INTEGER(kind = 4), SAVE :: id_IC, id_BC, onoff_stream, onoff_m_z
+  INTEGER(kind = 4), SAVE :: id_IC, id_BC
 
   ! omp parameters
   INTEGER(kind = 4), SAVE :: n_ths

@@ -40,16 +40,14 @@ PROGRAM main
   INTEGER(kind = 4), ALLOCATABLE :: stat_sample_a(:)
 
   CALL inputParameters_2d(len_x, len_z, J, beta, vel, &
-       n_sweeps_therm, n_sweeps_stead, id_IC, id_BC, n_samples, &
-       onoff_stream, onoff_m_z)
+       n_sweeps_therm, n_sweeps_stead, id_IC, id_BC, n_samples)
 
   exist_list_parameters = access( "./list_parameters.dat", " ")
 
   IF ( exist_list_parameters == 0 ) THEN
      CALL getListParameters_2d(10, "list_parameters.dat", &
           len_x, len_z, J, beta, vel, &
-          n_sweeps_therm0, n_sweeps_stead0, id_IC, id_BC, n_samples0, &
-          onoff_stream, onoff_m_z)
+          n_sweeps_therm0, n_sweeps_stead0, id_IC, id_BC, n_samples0)
   ELSE
      ! n_sweeps_therm0 = 0
      ! n_sweeps_stead0 = 0
@@ -89,7 +87,7 @@ PROGRAM main
   END IF
 
   ! copy averaged stream file to new file
-  DO i_sample = 1, n_samples0 * onoff_stream, 1
+  DO i_sample = 1, n_samples0, 1
      IF ( stat_sample_e(i_sample) == 0 ) THEN
         WRITE(si_sample, '(i0.4)') i_sample
         filename_stream="stream_s"//si_sample//".dat"
@@ -102,7 +100,7 @@ PROGRAM main
   END DO
 
   ! copy averaged m_z file to new file
-  DO i_sample = 1, n_samples0 * onoff_m_z, 1
+  DO i_sample = 1, n_samples0, 1
      IF ( stat_sample_e(i_sample) == 0 ) THEN
         WRITE(si_sample, '(i0.4)') i_sample
         filename_m_z="m_z_s"//si_sample//".dat"
@@ -149,197 +147,6 @@ PROGRAM main
   ! allocation observables
   ALLOCATE(spin(1:len_x, 1:len_z), m_z(1:len_z))
 
-  ! ! overwrite existing samples
-  ! !$omp parallel do schedule(static, 1) default(none) &
-  ! !$omp shared(n_samples0) &
-  ! !$omp shared(n_sweeps_therm0, n_sweeps_stead0) &
-  ! !$omp shared(n_sweeps_therm, n_sweeps_stead) &
-  ! !$omp shared(id_BC, onoff_stream, onoff_m_z, len_x, len_z, vel) &
-  ! !$omp shared(stat_sample_e, stat_sample_a) &
-  ! !$omp shared(str_x, str_z, str_prob) &
-  ! !$omp shared(rn_x, rn_z, rn_prob) &
-  ! !$omp shared(slot_stream, slot_m_z, slot_spin) &
-  ! !$omp private(err_x, err_z, err_prob) &
-  ! !$omp private(filename_stream, filename_m_z, filename_spin) &
-  ! !$omp private(filename_str) &
-  ! !$omp private(i_th, si_sample, n_steps) &
-  ! !$omp private(spin, pump, diss, energy)
-  ! DO i_sample = 1, n_samples0, 1
-  !    i_th = 0
-  !    !$ i_th = omp_get_thread_num()
-  !
-  !    WRITE(si_sample, '(i0.4)') i_sample
-  !
-  !    !  import energy stream
-  !    filename_stream="stream_s"//si_sample//".dat"
-  !    OPEN(slot_stream(i_th), file=filename_stream, status="old")
-  !    READ(slot_stream(i_th), '()')
-  !    !  read through energy stream
-  !    DO i_sweep = 1, n_sweeps_therm0 * onoff_stream, 1
-  !       READ(slot_stream(i_th), '()')
-  !    END DO
-  !
-  !    !  import magnetization profile
-  !    filename_m_z="m_z_s"//si_sample//".dat"
-  !    OPEN(slot_m_z(i_th), file=filename_m_z, status="old")
-  !    READ(slot_m_z(i_th), '()')
-  !    !  read through m_z
-  !    DO i_sweep = 1, n_sweeps_therm0 * onoff_m_z, 1
-  !       DO z = 1, len_z, 1
-  !          READ(slot_m_z(i_th), '()')
-  !       END DO
-  !       READ(slot_m_z(i_th), '()')
-  !    END DO
-  !
-  !    !  import spin
-  !    filename_spin="spin_thermalized_s"//si_sample//".dat"
-  !    CALL importSpin_2d(slot_spin(i_th), filename_spin, &
-  !         len_x, len_z, spin(1:len_x, 1:len_z))
-  !    !  calculation total energy
-  !    CALL calcEnergy_2d(id_BC, len_x, len_z, &
-  !         spin(1:len_x, 1:len_z), energy)
-  !
-  !    !  import vectors of random numbers
-  !    filename_str="str_x_thermalized_s"//si_sample//".bin"
-  !    CALL loadRNstat(str_x(i_sample), filename_str, err_x)
-  !    filename_str="str_z_thermalized_s"//si_sample//".bin"
-  !    CALL loadRNstat(str_z(i_sample), filename_str, err_z)
-  !    filename_str="str_prob_thermalized_s"//si_sample//".bin"
-  !    CALL loadRNstat(str_prob(i_sample), filename_str, err_prob)
-  !
-  !    !  calculation
-  !    n_steps = len_x * len_z
-  !    DO i_sweep = n_sweeps_therm0 + 1, n_sweeps_therm, 1
-  !       CALL generateRN_int(str_x(i_sample), 1, len_x, n_steps, &
-  !            rn_x(i_th, 1:n_steps), err_x)
-  !       CALL generateRN_int(str_z(i_sample), 1, len_z, n_steps, &
-  !            rn_z(i_th, 1:n_steps), err_z)
-  !       CALL generateRN_real(str_prob(i_sample), 0.0d0, 1.0d0, n_steps, &
-  !            rn_prob(i_th, 1:n_steps), err_prob)
-  !
-  !       CALL sweep_singleflip_2d(id_BC, len_x, len_z, n_steps, &
-  !            rn_x(i_th, 1:n_steps), &
-  !            rn_z(i_th, 1:n_steps), &
-  !            rn_prob(i_th, 1:n_steps), &
-  !            spin(1:len_x, 1:len_z), diss)
-  !
-  !       energy = energy + diss
-  !
-  !       CALL exportStream_onfile(onoff_stream, slot_stream(i_th), &
-  !            i_sweep, 0.0d0, diss, energy, 0.0d0, 0.0d0, 0.0d0)
-  !       CALL exportM_z_onfile_2d(onoff_m_z, slot_m_z(i_th), &
-  !            i_sweep, len_x, len_z, spin)
-  !    END DO
-  !
-  !    !  marker point of thermalization
-  !    IF ( n_sweeps_therm > n_sweeps_therm0 ) THEN
-  !       WRITE(slot_stream(i_th), '(a)') "# -- Thermalized --"
-  !    ELSE
-  !       READ(slot_stream(i_th), '()')
-  !    END IF
-  !
-  !    !  save spin and random number stream
-  !    filename_spin="spin_thermalized_s"//si_sample//".dat"
-  !    CALL exportSpin_2d(slot_spin(i_th), &
-  !         filename_spin, len_x, len_z, spin(1:len_x, 1:len_z))
-  !    filename_str="str_x_thermalized_s"//si_sample//".bin"
-  !    CALL saveRNstat(str_x(i_sample), filename_str, err_x)
-  !    filename_str="str_z_thermalized_s"//si_sample//".bin"
-  !    CALL saveRNstat(str_z(i_sample), filename_str, err_z)
-  !    filename_str="str_prob_thermalized_s"//si_sample//".bin"
-  !    CALL saveRNstat(str_prob(i_sample), filename_str, err_prob)
-  !
-  !    !  read through energy stream
-  !    DO i_sweep = 1, SIGN(n_sweeps_stead0, n_sweeps_therm0 - n_sweeps_therm) * onoff_stream, 1
-  !       READ(slot_stream(i_th), '()')
-  !    END DO
-  !
-  !    !  read through m_z
-  !    DO i_sweep = 1, SIGN(n_sweeps_stead0, n_sweeps_therm0 - n_sweeps_therm) * onoff_m_z, 1
-  !       DO z = 1, len_z, 1
-  !          READ(slot_m_z(i_th), '()')
-  !       END DO
-  !       READ(slot_m_z(i_th), '()')
-  !    END DO
-  !
-  !    !  import spin
-  !    DO i_sweep = 1, SIGN(1, n_sweeps_therm0 - n_sweeps_therm), 1
-  !       filename_spin="spin_steadized_s"//si_sample//".dat"
-  !       CALL importSpin_2d(slot_spin(i_th), filename_spin, &
-  !            len_x, len_z, spin(1:len_x, 1:len_z))
-  !       !  calculation total energy
-  !       CALL calcEnergy_2d(id_BC, len_x, len_z, &
-  !            spin(1:len_x, 1:len_z), energy)
-  !    END DO
-  !
-  !    !  import vectors of random numbers
-  !    DO i_sweep = 1, SIGN(1, n_sweeps_therm0 - n_sweeps_therm), 1
-  !       filename_str="str_x_steadized_s"//si_sample//".bin"
-  !       CALL loadRNstat(str_x(i_sample), filename_str, err_x)
-  !       filename_str="str_z_steadized_s"//si_sample//".bin"
-  !       CALL loadRNstat(str_z(i_sample), filename_str, err_z)
-  !       filename_str="str_prob_steadized_s"//si_sample//".bin"
-  !       CALL loadRNstat(str_prob(i_sample), filename_str, err_prob)
-  !    END DO
-  !
-  !    !  calculation
-  !    n_steps = len_x * len_z / vel
-  !    DO i_sweep = n_sweeps_therm + n_sweeps_stead0 + &
-  !         MAX(-n_sweeps_stead0, (n_sweeps_therm0 - n_sweeps_therm) * n_sweeps_stead0) + 1, &
-  !         n_sweeps_therm + n_sweeps_stead, 1
-  !       DO i_vel = 1, vel, 1
-  !          CALL generateRN_int(str_x(i_sample), 1, len_x, n_steps, &
-  !               rn_x(i_th, 1:n_steps), err_x)
-  !          CALL generateRN_int(str_z(i_sample), 1, len_z, n_steps, &
-  !               rn_z(i_th, 1:n_steps), err_z)
-  !          CALL generateRN_real(str_prob(i_sample), 0.0d0, 1.0d0, n_steps, &
-  !               rn_prob(i_th, 1:n_steps), err_prob)
-  !
-  !          CALL shiftUpperHalf_2d(id_BC, len_x, len_z, &
-  !               spin(1:len_x, 1:len_z), pump)
-  !          energy = energy + pump
-  !
-  !          CALL sweep_singleflip_2d(id_BC, len_x, len_z, n_steps, &
-  !               rn_x(i_th, 1:n_steps), &
-  !               rn_z(i_th, 1:n_steps), &
-  !               rn_prob(i_th, 1:n_steps), &
-  !               spin(1:len_x, 1:len_z), diss)
-  !          energy = energy + diss
-  !       END DO
-  !
-  !       CALL exportStream_onfile(onoff_stream, slot_stream(i_th), &
-  !            i_sweep, pump, diss, energy, 0.0d0, 0.0d0, 0.0d0)
-  !       CALL exportM_z_onfile_2d(onoff_m_z, slot_m_z(i_th), &
-  !            i_sweep, len_x, len_z, spin(1:len_x, 1:len_z))
-  !    END DO
-  !
-  !    !  marker point of thermalization
-  !    IF ( n_sweeps_therm > n_sweeps_therm0 .OR. &
-  !         n_sweeps_stead > n_sweeps_stead0 ) THEN
-  !       WRITE(slot_stream(i_th), '(a)') "# -- Steadized --"
-  !    ELSE
-  !       READ(slot_stream(i_th), '()')
-  !    END IF
-  !
-  !    CLOSE(slot_stream(i_th))
-  !    CLOSE(slot_m_z(i_th))
-  !
-  !    !  save spin and random number stream
-  !    filename_spin="spin_steadized_s"//si_sample//".dat"
-  !    CALL exportSpin_2d(slot_spin(i_th), &
-  !         filename_spin, len_x, len_z, spin(1:len_x, 1:len_z))
-  !    filename_str="str_x_steadized_s"//si_sample//".bin"
-  !    CALL saveRNstat(str_x(i_sample), filename_str, err_x)
-  !    filename_str="str_z_steadized_s"//si_sample//".bin"
-  !    CALL saveRNstat(str_z(i_sample), filename_str, err_z)
-  !    filename_str="str_prob_steadized_s"//si_sample//".bin"
-  !    CALL saveRNstat(str_prob(i_sample), filename_str, err_prob)
-  !
-  !    stat_sample_e(i_sample) = 1
-  !    stat_sample_a(i_sample) = 0
-  ! END DO
-  ! !$omp end parallel do
-
   ! initialize and save spin
   IF ( n_samples0 == 0 ) THEN
      CALL initializeSpin_2d(id_IC, &
@@ -372,7 +179,7 @@ PROGRAM main
   !$omp parallel do schedule(static, 1) default(none) &
   !$omp shared(n_samples0, n_samples) &
   !$omp shared(n_sweeps_therm, n_sweeps_stead) &
-  !$omp shared(id_BC, onoff_stream, onoff_m_z, len_x, len_z, vel) &
+  !$omp shared(id_BC, len_x, len_z, vel) &
   !$omp shared(stat_sample_e, stat_sample_a) &
   !$omp shared(str_x, str_z, str_prob) &
   !$omp shared(rn_x, rn_z, rn_prob) &
@@ -432,9 +239,9 @@ PROGRAM main
 
         energy = energy + diss
 
-        CALL exportStream_onfile(onoff_stream, slot_stream(i_th), &
+        CALL exportStream_onfile(slot_stream(i_th), &
              i_sweep, 0.0d0, diss, energy, 0.0d0, 0.0d0, 0.0d0)
-        CALL exportM_z_onfile_2d(onoff_m_z, slot_m_z(i_th), &
+        CALL exportM_z_onfile_2d(slot_m_z(i_th), &
              i_sweep, len_x, len_z, spin(1:len_x, 1:len_z))
      END DO
 
@@ -479,9 +286,9 @@ PROGRAM main
            energy = energy + diss
         END DO
 
-        CALL exportStream_onfile(onoff_stream, slot_stream(i_th), &
+        CALL exportStream_onfile(slot_stream(i_th), &
              i_sweep, pump, diss, energy, 0.0d0, 0.0d0, 0.0d0)
-        CALL exportM_z_onfile_2d(onoff_m_z, slot_m_z(i_th), &
+        CALL exportM_z_onfile_2d(slot_m_z(i_th), &
              i_sweep, len_x, len_z, spin(1:len_x, 1:len_z))
      END DO
 
@@ -522,8 +329,7 @@ PROGRAM main
 
   CALL refreshListParameters_2d(50, "list_parameters.dat", &
        len_x, len_z, J, beta, vel, &
-       n_sweeps_therm, n_sweeps_stead, id_IC, id_BC, n_samples, &
-       onoff_stream, onoff_m_z)
+       n_sweeps_therm, n_sweeps_stead, id_IC, id_BC, n_samples)
 
   CALL refreshStatSamples(60, "stat_samples.dat", n_samples, &
        stat_sample_e(1:n_samples), stat_sample_a(1:n_samples))

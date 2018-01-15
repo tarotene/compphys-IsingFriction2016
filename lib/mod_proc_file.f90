@@ -21,39 +21,32 @@ CONTAINS
   ! END SUBROUTINE getNumSamples
 
   SUBROUTINE inputParameters_2d(len_x, len_z, J, beta, vel, &
-       n_sweeps_therm, n_sweeps_stead, id_IC, id_BC, n_samples, &
-       onoff_stream, onoff_m_z)
+       n_sweeps_therm, n_sweeps_stead, id_IC, id_BC, n_samples)
     INTEGER(kind = 4), INTENT(out) :: len_x, len_z
     REAL(kind = 8), INTENT(out) :: J, beta
     INTEGER(kind = 4), INTENT(out) :: vel
     INTEGER(kind = 4), INTENT(out) :: n_sweeps_therm, n_sweeps_stead
     INTEGER(kind = 4), INTENT(out) :: id_IC, id_BC
     INTEGER(kind = 4), INTENT(out) :: n_samples
-    INTEGER(kind = 4), INTENT(out) :: onoff_stream, onoff_m_z
 
-    READ(*, *) len_x, len_z, J, beta, vel, n_sweeps_therm, n_sweeps_stead, id_IC, id_BC, n_samples, onoff_stream, onoff_m_z
+    READ(*, *) len_x, len_z, J, beta, vel, n_sweeps_therm, n_sweeps_stead, id_IC, id_BC, n_samples
   END SUBROUTINE inputParameters_2d
 
   SUBROUTINE inputParameters_3d(len_x, len_y, len_z, J, beta, vel, &
-       n_sweeps_therm, n_sweeps_stead, id_IC, id_BC, n_samples, &
-       onoff_stream, onoff_m_z)
+       n_sweeps_therm, n_sweeps_stead, id_IC, id_BC, n_samples)
     INTEGER(kind = 4), INTENT(out) :: len_x, len_y, len_z
     REAL(kind = 8), INTENT(out) :: J, beta
     INTEGER(kind = 4), INTENT(out) :: vel
     INTEGER(kind = 4), INTENT(out) :: n_sweeps_therm, n_sweeps_stead
     INTEGER(kind = 4), INTENT(out) :: id_IC, id_BC
     INTEGER(kind = 4), INTENT(out) :: n_samples
-    INTEGER(kind = 4), INTENT(out) :: onoff_stream, onoff_m_z
 
-    READ(*, *) len_x, len_y, len_z, J, beta, vel, &
-    n_sweeps_therm, n_sweeps_stead, id_IC, id_BC, n_samples, &
-    onoff_stream, onoff_m_z
+    READ(*, *) len_x, len_y, len_z, J, beta, vel, n_sweeps_therm, n_sweeps_stead, id_IC, id_BC, n_samples
   END SUBROUTINE inputParameters_3d
 
   SUBROUTINE getListParameters_2d(slot, filename, &
        len_x, len_z, J, beta, vel, &
-       n_sweeps_therm0, n_sweeps_stead0, id_IC, id_BC, n_samples0, &
-       onoff_stream, onoff_m_z)
+       n_sweeps_therm0, n_sweeps_stead0, id_IC, id_BC, n_samples0)
 
     INTEGER(kind = 4), INTENT(in) :: slot
     CHARACTER(LEN = *), INTENT(in) :: filename
@@ -63,20 +56,17 @@ CONTAINS
     INTEGER(kind = 4), INTENT(out) :: n_sweeps_therm0, n_sweeps_stead0
     INTEGER(kind = 4), INTENT(out) :: id_IC, id_BC
     INTEGER(kind = 4), INTENT(out) :: n_samples0
-    INTEGER(kind = 4), INTENT(out) :: onoff_stream, onoff_m_z
 
     OPEN(slot, file=filename, status="old")
     READ(slot, '()')
     READ(slot, *) len_x, len_z, J, beta, vel, &
-         n_sweeps_therm0, n_sweeps_stead0, id_IC, id_BC, n_samples0, &
-         onoff_stream, onoff_m_z
+         n_sweeps_therm0, n_sweeps_stead0, id_IC, id_BC, n_samples0
     CLOSE(slot)
   END SUBROUTINE getListParameters_2d
 
   SUBROUTINE getListParameters_3d(slot, filename, &
        len_x, len_y, len_z, J, beta, vel, &
-       n_sweeps_therm0, n_sweeps_stead0, id_IC, id_BC, n_samples0, &
-       onoff_stream, onoff_m_z)
+       n_sweeps_therm0, n_sweeps_stead0, id_IC, id_BC, n_samples0)
 
     INTEGER(kind = 4), INTENT(in) :: slot
     CHARACTER(LEN = *), INTENT(in) :: filename
@@ -86,20 +76,17 @@ CONTAINS
     INTEGER(kind = 4), INTENT(out) :: n_sweeps_therm0, n_sweeps_stead0
     INTEGER(kind = 4), INTENT(out) :: id_IC, id_BC
     INTEGER(kind = 4), INTENT(out) :: n_samples0
-    INTEGER(kind = 4), INTENT(out) :: onoff_stream, onoff_m_z
 
     OPEN(slot, file=filename, status="old")
     READ(slot, '()')
     READ(slot, *) len_x, len_y, len_z, J, beta, vel, &
-         n_sweeps_therm0, n_sweeps_stead0, id_IC, id_BC, n_samples0, &
-         onoff_stream, onoff_m_z
+         n_sweeps_therm0, n_sweeps_stead0, id_IC, id_BC, n_samples0
     CLOSE(slot)
   END SUBROUTINE getListParameters_3d
 
   SUBROUTINE refreshListParameters_2d(slot, filename, &
        len_x, len_z, J, beta, vel, &
-       n_sweeps_therm, n_sweeps_stead, id_IC, id_BC, n_samples, &
-       onoff_stream, onoff_m_z)
+       n_sweeps_therm, n_sweeps_stead, id_IC, id_BC, n_samples)
     INTEGER(kind = 4), INTENT(in) :: slot
     CHARACTER(LEN = *), INTENT(in) :: filename
     INTEGER(kind = 4), INTENT(in) :: len_x, len_z
@@ -108,25 +95,21 @@ CONTAINS
     INTEGER(kind = 4), INTENT(in) :: n_sweeps_therm, n_sweeps_stead
     INTEGER(kind = 4), INTENT(in) :: id_IC, id_BC
     INTEGER(kind = 4), INTENT(in) :: n_samples
-    INTEGER(kind = 4), INTENT(in) :: onoff_stream, onoff_m_z
 
     OPEN(slot, file=filename, status="replace")
     WRITE(slot, '(a)') "# len_x, len_z, J, beta, vel, &
-         n_sweeps_therm, n_sweeps_stead, id_IC, id_BC, n_samples, &
-				 onoff_stream, onoff_m_z"
+         n_sweeps_therm, n_sweeps_stead, id_IC, id_BC, n_samples"
     WRITE(slot, '(i4, a, i4, a, f0.4, a, f0.4, a, i4, a, &
-		i5, a, i5, a, i2, a, i2, a, i5, a, i2, a, i2)') &
+		i5, a, i5, a, i2, a, i2, a, i5)') &
 		len_x, ", ", len_z, ", ", J, ", ", beta, ", ", vel, ", ", &
 		n_sweeps_therm, ", ", n_sweeps_stead, ", ", &
-		id_IC, ", ", id_BC, ", ", n_samples, ", ", &
-		onoff_stream, ", ", onoff_m_z
+		id_IC, ", ", id_BC, ", ", n_samples
     CLOSE(slot)
   END SUBROUTINE refreshListParameters_2d
 
   SUBROUTINE refreshListParameters_3d(slot, filename, &
        len_x, len_y, len_z, J, beta, vel, &
-       n_sweeps_therm, n_sweeps_stead, id_IC, id_BC, n_samples, &
-       onoff_stream, onoff_m_z)
+       n_sweeps_therm, n_sweeps_stead, id_IC, id_BC, n_samples)
     INTEGER(kind = 4), INTENT(in) :: slot
     CHARACTER(LEN = *), INTENT(in) :: filename
     INTEGER(kind = 4), INTENT(in) :: len_x, len_y, len_z
@@ -135,18 +118,15 @@ CONTAINS
     INTEGER(kind = 4), INTENT(in) :: n_sweeps_therm, n_sweeps_stead
     INTEGER(kind = 4), INTENT(in) :: id_IC, id_BC
     INTEGER(kind = 4), INTENT(in) :: n_samples
-    INTEGER(kind = 4), INTENT(in) :: onoff_stream, onoff_m_z
 
     OPEN(slot, file=filename, status="replace")
     WRITE(slot, '(a)') "# i_sample, len_x, len_y, len_z, J, beta, vel, &
-         n_sweeps_therm, n_sweeps_stead, id_IC, id_BC, n_samples, &
-         onoff_stream, onoff_m_z"
+         n_sweeps_therm, n_sweeps_stead, id_IC, id_BC, n_samples"
     WRITE(slot, '(i4, a, i4, a, i4, a, f0.4, a, f0.4, a, i4, a, &
-		i5, a, i5, a, i2, a, i2, a, i5, a, i2, a, i2)') &
+		i5, a, i5, a, i2, a, i2, a, i5)') &
 		len_x, ", ", len_y, ", ", len_z, ", ", J, ", ", beta, ", ", vel, ", ", &
 		n_sweeps_therm, ", ", n_sweeps_stead, ", ", &
-		id_IC, ", ", id_BC, ", ", n_samples, ", ", &
-		onoff_stream, ", ", onoff_m_z
+		id_IC, ", ", id_BC, ", ", n_samples
     CLOSE(slot)
   END SUBROUTINE refreshListParameters_3d
 
@@ -263,13 +243,13 @@ CONTAINS
     WRITE(slot, '(a)') &
     "# i_sweep, pump, diss, energy, fluc_pump, fluc_diss, fluc_energy"
     DO i_sweep = 1, n_sweeps_therm, 1
-       CALL exportStream_onfile(1, slot, i_sweep, &
+       CALL exportStream_onfile(slot, i_sweep, &
        pump(i_sweep), diss(i_sweep), energy(i_sweep), &
        fluc_pump(i_sweep), fluc_diss(i_sweep), fluc_energy(i_sweep))
     END DO
     WRITE(slot, '(a)') "# -- Thermalized --"
     DO i_sweep = n_sweeps_therm + 1, n_sweeps_therm + n_sweeps_stead, 1
-      CALL exportStream_onfile(1, slot, i_sweep, &
+      CALL exportStream_onfile(slot, i_sweep, &
       pump(i_sweep), diss(i_sweep), energy(i_sweep), &
       fluc_pump(i_sweep), fluc_diss(i_sweep), fluc_energy(i_sweep))
     END DO
@@ -582,103 +562,69 @@ CONTAINS
     CLOSE(slot)
   END SUBROUTINE exportSpin_3d
 
-  SUBROUTINE exportM_z_onfile_2d(onoff_m_z, slot, &
-       i_sweep, len_x, len_z, spin)
-    INTEGER(kind = 4), INTENT(in) :: onoff_m_z, slot
-    INTEGER(kind = 4), INTENT(in) :: i_sweep, len_x, len_z, &
-    spin(1:, 1:)
+  SUBROUTINE exportM_z_onfile_2d(slot, i_sweep, len_x, len_z, spin)
+    INTEGER(kind = 4), INTENT(in) :: slot
+    INTEGER(kind = 4), INTENT(in) :: i_sweep, len_x, len_z, spin(1:, 1:)
 
     INTEGER(kind = 4) :: z
     REAL(kind = 8) :: m_z(1:len_z)
 
-    SELECT CASE (onoff_m_z)
-    CASE (0)
-       RETURN
-    CASE (1)
-       DO z = 1, len_z, 1
-          m_z(z) = DBLE(SUM(spin(1:len_x, z))) / DBLE(len_x)
-          WRITE(slot, '( i5, a, i5, a, f0.4, a, f0.4)') &
-               i_sweep, ", ", z, ", ", m_z(z), ", ", 0.0d0
-       END DO
-       WRITE(slot, '()')
-    END SELECT
+    DO z = 1, len_z, 1
+       m_z(z) = DBLE(SUM(spin(1:len_x, z))) / DBLE(len_x)
+       WRITE(slot, '( i5, a, i5, a, f0.4, a, f0.4)') &
+            i_sweep, ", ", z, ", ", m_z(z), ", ", 0.0d0
+    END DO
+    WRITE(slot, '()')
   END SUBROUTINE exportM_z_onfile_2d
 
-  SUBROUTINE exportM_z_onfile_3d(onoff_m_z, slot, &
-       i_sweep, len_x, len_y, len_z, spin)
-    INTEGER(kind = 4), INTENT(in) :: onoff_m_z, slot
-    INTEGER(kind = 4), INTENT(in) :: i_sweep, len_x, len_y, len_z, &
-    spin(1:, 1:, 1:)
+  SUBROUTINE exportM_z_onfile_3d(slot, i_sweep, len_x, len_y, len_z, spin)
+    INTEGER(kind = 4), INTENT(in) :: slot
+    INTEGER(kind = 4), INTENT(in) :: i_sweep, len_x, len_y, len_z, spin(1:, 1:, 1:)
 
     INTEGER(kind = 4) :: z
     REAL(kind = 8) :: m_z(1:len_z)
 
-    SELECT CASE (onoff_m_z)
-    CASE (0)
-       RETURN
-    CASE (1)
-       DO z = 1, len_z, 1
-          m_z(z) = DBLE(SUM(spin(1:len_x, 1:len_y, z))) / DBLE(len_x * len_y)
-          WRITE(slot, '( i5, a, i5, a, f0.4, a, f0.4)') &
-               i_sweep, ", ", z, ", ", m_z(z), ", ", 0.0d0
-       END DO
-       WRITE(slot, '()')
-    END SELECT
+    DO z = 1, len_z, 1
+       m_z(z) = DBLE(SUM(spin(1:len_x, 1:len_y, z))) / DBLE(len_x * len_y)
+       WRITE(slot, '( i5, a, i5, a, f0.4, a, f0.4)') &
+            i_sweep, ", ", z, ", ", m_z(z), ", ", 0.0d0
+    END DO
+    WRITE(slot, '()')
   END SUBROUTINE exportM_z_onfile_3d
 
-  SUBROUTINE readthroughM_z_onfile(onoff_m_z, slot, &
-       start_sweep, end_sweep, len_z)
-    INTEGER(kind = 4), INTENT(in) :: onoff_m_z, slot
+  SUBROUTINE readthroughM_z_onfile(slot, start_sweep, end_sweep, len_z)
+    INTEGER(kind = 4), INTENT(in) :: slot
     INTEGER(kind = 4), INTENT(in) :: start_sweep, end_sweep, len_z
 
     INTEGER(kind = 4) :: i_sweep, z
 
-    SELECT CASE (onoff_m_z)
-    CASE (0)
-       RETURN
-    CASE (1)
-       DO i_sweep = start_sweep, end_sweep, 1
-          DO z = 1, len_z, 1
-             READ(slot, '()')
-          END DO
+    DO i_sweep = start_sweep, end_sweep, 1
+       DO z = 1, len_z, 1
           READ(slot, '()')
        END DO
-    END SELECT
+       READ(slot, '()')
+    END DO
   END SUBROUTINE readthroughM_z_onfile
 
-  SUBROUTINE exportStream_onfile(onoff_stream, slot, &
-       i_sweep, &
-       pump, diss, energy, &
-       fluc_pump, fluc_diss, fluc_energy)
-    INTEGER(kind = 4), INTENT(in) :: onoff_stream, slot
+  SUBROUTINE exportStream_onfile(slot, i_sweep, pump, diss, energy, fluc_pump, fluc_diss, fluc_energy)
+    INTEGER(kind = 4), INTENT(in) :: slot
     INTEGER(kind = 4), INTENT(in) :: i_sweep
     REAL(kind = 8), INTENT(in) :: pump, diss, energy
     REAL(kind = 8), INTENT(in) :: fluc_pump, fluc_diss, fluc_energy
 
-    SELECT CASE (onoff_stream)
-    CASE (0)
-       RETURN
-    CASE (1)
-       WRITE(slot, '(  i5, a, f0.4, a, f0.4, a, f0.4, a, &
-            f0.4, a, f0.4, a, f0.4)') &
-            i_sweep, ", ", pump, ", ", diss, ", ", energy, ", ", &
-            fluc_pump, ", ", fluc_diss, ", ", fluc_energy
-    END SELECT
+    WRITE(slot, '(  i5, a, f0.4, a, f0.4, a, f0.4, a, &
+         f0.4, a, f0.4, a, f0.4)') &
+         i_sweep, ", ", pump, ", ", diss, ", ", energy, ", ", &
+         fluc_pump, ", ", fluc_diss, ", ", fluc_energy
   END SUBROUTINE exportStream_onfile
 
-  SUBROUTINE readthroughStream_onfile(onoff_stream, slot, &
-       start_sweep, end_sweep, pump, diss, energy)
-    INTEGER(kind = 4), INTENT(in) :: onoff_stream, slot
+  SUBROUTINE readthroughStream_onfile(slot, start_sweep, end_sweep, pump, diss, energy)
+    INTEGER(kind = 4), INTENT(in) :: slot
     INTEGER(kind = 4), INTENT(in) :: start_sweep, end_sweep
     REAL(kind = 8), INTENT(in) :: pump, diss, energy
 
     INTEGER(kind = 4) :: i_sweep
 
-    SELECT CASE (onoff_stream)
-    CASE (0)
-       RETURN
-    CASE (1)
-       READ(slot, '()')
-    END SELECT
+    READ(slot, '()')
   END SUBROUTINE readthroughStream_onfile
 END MODULE mod_proc_file

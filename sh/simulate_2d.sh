@@ -13,7 +13,7 @@ done
 for beta in `cat ../../../list_beta.dat`; do
 	cd "beta${beta}"
 	touch "list_samples.dat"
-  echo "${len_x} ${len_z} ${J} ${beta} ${vel} ${n_sweeps_therm} ${n_sweeps_stead} ${id_init} ${id_bound} ${n_samples} ${onoff_stream} ${onoff_m_z}" | ../simulate_2d
+  echo "${len_x} ${len_z} ${J} ${beta} ${vel} ${n_sweeps_therm} ${n_sweeps_stead} ${id_init} ${id_bound} ${n_samples}" | ../simulate_2d
 	echo "Done: beta = ${beta}."
 	cd ../
 done
