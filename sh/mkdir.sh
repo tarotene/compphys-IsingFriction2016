@@ -56,9 +56,9 @@ for len_z in $(seq -f %03g 4 2 6); do
   dir4="Lz${len_z}Lx${len_x4}Ly__Vel10"
   dir5="Lz${len_z}Lx${len_x5}Ly__Vel10"
 
-  mkdir -p dat/{${dir3},${dir4},${dir5}}/{antiparallel,parallel}
+  mkdir -p dat/{${dir3},${dir4},${dir5}}/{01-antiparallel,02-parallel,03-free}
 
   for beta in $(cat list_beta.dat); do
-    mkdir dat/{${dir3},${dir4},${dir5}}/{antiparallel,parallel}/"beta${beta}"
+    mkdir dat/{${dir3},${dir4},${dir5}}/{01-antiparallel,02-parallel,03-free}/"beta${beta}"
   done
 done

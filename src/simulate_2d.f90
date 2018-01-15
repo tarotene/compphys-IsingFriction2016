@@ -65,8 +65,8 @@ PROGRAM main
   ! END IF
 
   !TODO: 対応する基底状態の順にICとBCを揃える
-  ! id_IC: 1. all-up, 2. DW, 3. random
-  ! id_BC: 1. anti-parallel, 2. parallel, 3. free
+  ! id_IC: 1. Domain-wall, 2. Magnetized, 3. Random
+  ! id_BC: 1. Anti-parallel, 2. Parallel, 3. Free
   ! n_sweeps = n_sweeps_therm + n_sweeps_stead
 
   ! setting array of flip energies and their probabilities

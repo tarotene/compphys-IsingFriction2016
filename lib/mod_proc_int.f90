@@ -283,10 +283,10 @@ CONTAINS
 
     SELECT CASE (id_IC)
     CASE (1)
-       spin(1:len_x, 1:len_z) = 1
-    CASE (2)
        spin(1:len_x, 1:len_z / 2) = 1
        spin(1:len_x, len_z / 2 + 1:len_z) = -1
+    CASE (2)
+       spin(1:len_x, 1:len_z) = 1
     CASE (3)
        CALL system_CLOCK(seed_spin)
        CALL initializeRN(seed_spin, str_spin, err_spin)
@@ -308,10 +308,10 @@ CONTAINS
 
     SELECT CASE (id_IC)
     CASE (1)
-       spin(1:len_x, 1:len_y, 1:len_z) = 1
+      spin(1:len_x, 1:len_y, 1:len_z / 2) = 1
+      spin(1:len_x, 1:len_y, len_z / 2 + 1:len_z) = -1
     CASE (2)
-       spin(1:len_x, 1:len_y, 1:len_z / 2) = 1
-       spin(1:len_x, 1:len_y, len_z / 2 + 1:len_z) = -1
+      spin(1:len_x, 1:len_y, 1:len_z) = 1
     CASE (3)
        CALL system_CLOCK(seed_spin)
        CALL initializeRN(seed_spin, str_spin, err_spin)
@@ -349,10 +349,10 @@ CONTAINS
        en_loc =  - spin(x, z) * (east + west + south + north)
        relax = - 2.0d0 * en_loc
        spin(x, z) = - spin(x, z)
-      !  WRITE(*, *) 22.381d0
+       !  WRITE(*, *) 22.381d0
     ELSE
        relax = 0.0d0
-      !  WRITE(*, *) 22.382d0
+       !  WRITE(*, *) 22.382d0
     END IF
 
     ! WRITE(*, *) 22.385d0
@@ -394,13 +394,13 @@ CONTAINS
 
     diss = 0.0d0
     DO i_step = 1, n_steps, 1
-      ! WRITE(*, *) 22.375d0
+       ! WRITE(*, *) 22.375d0
        CALL step_singleflip_2d(id_BC, len_x, len_z, &
             rn_x(i_step), rn_z(i_step), rn_p(i_step), &
             spin(1:, 1:), relax)
-      ! WRITE(*, *) 22.385d0
+       ! WRITE(*, *) 22.385d0
        diss = diss + relax
-      ! WRITE(*, *) 22.400d0
+       ! WRITE(*, *) 22.400d0
     END DO
   END SUBROUTINE sweep_singleflip_2d
 

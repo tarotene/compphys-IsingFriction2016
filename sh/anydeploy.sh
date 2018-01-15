@@ -6,7 +6,8 @@ read deployee
 
 cd dat
 for dir in `ls`; do
-  cp -f ../bin/${deployee} ${dir}/antiparallel
-  cp -f ../bin/${deployee} ${dir}/parallel
+  cp -f ../bin/${deployee} ${dir}/01-antiparallel
+  cp -f ../bin/${deployee} ${dir}/02-parallel
+  cp -f ../bin/${deployee} ${dir}/03-free
 done
 cd ../

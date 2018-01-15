@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-J=1.0; n_samples=15; n_sweeps_therm=200; n_sweeps_stead=200
-onoff_stream=1; onoff_m_z=0
+J=1.0; n_samples=3; n_sweeps_therm=200; n_sweeps_stead=200
 waste=2000; size_block=200
 
 echo "What to schedule?"
@@ -17,18 +16,25 @@ for dir in `ls`; do
   len_y=`pwd | sed -e "s/^.*Ly\(.*\)_Vel.*$/\1/"`
   vel=`pwd | sed -e "s/^.*_Vel\(.*\).*$/\1/"`
 
-  cd antiparallel
-  id_init=2
+  cd 01-antiparallel
   id_bound=1
+  id_init=1
   source ../../../sh/${scheduled}.sh
   echo "Done: len_z = ${len_z}, len_x = ${len_x}, len_y = ${len_y}, z-bc = antiparallel"
   cd ../
 
-  cd parallel
-  id_init=1
+  cd 02-parallel
   id_bound=2
+  id_init=2
   source ../../../sh/${scheduled}.sh
   echo "Done: len_z = ${len_z}, len_x = ${len_x}, len_y = ${len_y}, z-bc = parallel"
+  cd ../
+
+  cd 03-free
+  id_bound=3
+  id_init=2
+  source ../../../sh/${scheduled}.sh
+  echo "Done: len_z = ${len_z}, len_x = ${len_x}, len_y = ${len_y}, z-bc = free"
   cd ../
 
   cd ../
