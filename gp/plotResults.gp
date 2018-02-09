@@ -1,25 +1,27 @@
-set terminal postscript eps enhanced color #standaloneを追加
-set key outside center bottom horizontal Right
-set key box
+set terminal postscript eps enhanced color
 
-set border 3
-set xtics 1 nomirror
+set xtics 1
 set mxtics 10
-set ytics nomirror
-
 set grid xtics
 set grid ytics
+set xtics font ",24"   # 目盛りのフォントの変更
+set ytics font ",24"   # 目盛りのフォントの変更
+set xlabel font ",26" # xlabelのフォントの変更
+set ylabel font ",26" # ylabelのフォントの変更
+
+set key box outside below center
 set key width -4
-set key height 0.2
-set xtics font "Times-Roman,20"   # 目盛りのフォントの変更
-set ytics font "Times-Roman,20"   # 目盛りのフォントの変更
-set xlabel font "Times-Roman,24" # xlabelのフォントの変更
-set ylabel font "Times-Roman,24" # ylabelのフォントの変更
-set key font "Times-Roman,24"    # 凡例のフォントの変更
+set key font ",22"    # 凡例のフォントの変更
+set xlabel offset 0,-2
+set ylabel offset -2,0
+set bmargin 12
+set lmargin 17
+set key vertical maxrows 3
+set key spacing 1.2
 
 # Lz=4
 se yr [0:0.006]
-se xl "{/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J}"
+se xl "Temperature ({/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J})"
 se yl "{/Times-Italic f}_{/Times-Roman b}(4, {/Times-Italic T})"
 se ou "FricDensP_Lz004.eps"
 pl \
@@ -40,7 +42,7 @@ pl \
 "dat/Lz004Lx0200Ly__Vel10/parallel/res_diss_T.dat" u 1:(-$2) w lp lw 4 tit  "Parallel, {/Times-Italic L}_{/Times-Italic x}=200"
 
 se yr [-2:0]
-se xl "{/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J}"
+se xl "Temperature ({/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J})"
 se yl "{/Symbol-Oblique e}_{/Times-Roman b}(4, {/Times-Italic T})"
 se ou "EnDens_Lz004.eps"
 pl \
@@ -53,7 +55,7 @@ pl \
 
 # Lz=6
 se yr [0:0.006]
-se xl "{/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J}"
+se xl "Temperature ({/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J})"
 se yl "{/Times-Italic f}_{/Times-Roman b}(6, {/Times-Italic T})"
 se ou "FricDensP_Lz006.eps"
 pl \
@@ -74,7 +76,7 @@ pl \
 "dat/Lz006Lx0300Ly__Vel10/parallel/res_diss_T.dat" u 1:(-$2) w lp lw 4 tit  "Parallel, {/Times-Italic L}_{/Times-Italic x}=300"
 
 se yr [-2:0]
-se xl "{/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J}"
+se xl "Temperature ({/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J})"
 se yl "{/Times-Italic f}_{/Times-Roman b}(6, {/Times-Italic T})"
 se ou "EnDens_Lz006.eps"
 pl \
@@ -91,7 +93,7 @@ pl \
 
 # Lz=8
 se yr [0:0.006]
-se xl "{/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J}"
+se xl "Temperature ({/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J})"
 se yl "{/Times-Italic f}_{/Times-Roman b}(8, {/Times-Italic T})"
 se ou "FricDensP_Lz008.eps"
 pl \
@@ -112,7 +114,7 @@ pl \
 "dat/Lz008Lx0400Ly__Vel10/parallel/res_diss_T.dat" u 1:(-$2) w lp lw 4 tit  "Parallel, {/Times-Italic L}_{/Times-Italic x}=400"
 
 se yr [-2:0]
-se xl "{/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J}"
+se xl "Temperature ({/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J})"
 se yl "{/Symbol-Oblique e}_{/Times-Roman b}(8, {/Times-Italic T})"
 se ou "EnDens_Lz008.eps"
 pl \
@@ -129,7 +131,7 @@ pl \
 
 # Lz=10
 se yr [0:0.006]
-se xl "{/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J}"
+se xl "Temperature ({/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J})"
 se yl "{/Times-Italic f}_{/Times-Roman b}(10, {/Times-Italic T})"
 se ou "FricDensP_Lz010.eps"
 pl \
@@ -150,7 +152,7 @@ pl \
 "dat/Lz010Lx0500Ly__Vel10/parallel/res_diss_T.dat" u 1:(-$2) w lp lw 4 tit  "Parallel, {/Times-Italic L}_{/Times-Italic x}=500"
 
 se yr [-2:0]
-se xl "{/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J}"
+se xl "Temperature ({/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J})"
 se yl "{/Symbol-Oblique e}_{/Times-Roman b}(10, {/Times-Italic T})"
 se ou "EnDens_Lz010.eps"
 pl \
@@ -168,7 +170,7 @@ pl \
 
 # Lz=12
 se yr [0:0.006]
-se xl "{/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J}"
+se xl "Temperature ({/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J})"
 se yl "{/Times-Italic f}_{/Times-Roman b}(12, {/Times-Italic T})"
 se ou "FricDensP_Lz012.eps"
 pl \
@@ -180,7 +182,7 @@ pl \
 "dat/Lz012Lx0600Ly__Vel10/parallel/res_pump_T.dat" u 1:2 w lp lw 4 tit  "Parallel, {/Times-Italic L}_{/Times-Italic x}=600"
 
 se yr [-2:0]
-se xl "{/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J}"
+se xl "Temperature ({/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J})"
 se yl "{/Symbol-Oblique e}_{/Times-Roman b}(12, {/Times-Italic T})"
 se ou "EnDens_Lz012.eps"
 pl \
@@ -197,7 +199,7 @@ pl \
 
 # Lz=14
 se yr [0:0.006]
-se xl "{/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J}"
+se xl "Temperature ({/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J})"
 se yl "{/Times-Italic f}_{/Times-Roman b}(14, {/Times-Italic T})"
 se ou "FricDensP_Lz014.eps"
 pl \
@@ -209,7 +211,7 @@ pl \
 "dat/Lz014Lx0700Ly__Vel10/parallel/res_pump_T.dat" u 1:2 w lp lw 4 tit  "Parallel, {/Times-Italic L}_{/Times-Italic x}=700"
 
 se yr [-2:0]
-se xl "{/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J}"
+se xl "Temperature ({/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J})"
 se yl "{/Symbol-Oblique e}_{/Times-Roman b}(14, {/Times-Italic T})"
 se ou "EnDens_Lz014.eps"
 pl \
@@ -226,7 +228,7 @@ pl \
 
 # Lz=16
 se yr [0:0.006]
-se xl "{/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J}"
+se xl "Temperature ({/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J})"
 se yl "{/Times-Italic f}_{/Times-Roman b}(16, {/Times-Italic T})"
 se ou "FricDensP_Lz016.eps"
 pl \
@@ -238,7 +240,7 @@ pl \
 "dat/Lz016Lx0800Ly__Vel10/parallel/res_pump_T.dat" u 1:2 w lp lw 4 tit  "Parallel, {/Times-Italic L}_{/Times-Italic x}=800"
 
 se yr [-2.0:0.0]
-se xl "{/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J}"
+se xl "Temperature ({/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J})"
 se yl "{/Symbol-Oblique e}_{/Times-Roman b}(16, {/Times-Italic T})"
 se ou "EnDens_Lz016.eps"
 pl \
@@ -251,7 +253,7 @@ pl \
 
 # Lz=32
 se yr [0:0.006]
-se xl "{/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J}"
+se xl "Temperature ({/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J})"
 se yl "{/Times-Italic f}_{/Times-Roman b}(32, {/Times-Italic T})"
 se ou "FricDensP_Lz032.eps"
 pl \
@@ -263,7 +265,7 @@ pl \
 "dat/Lz032Lx1600Ly__Vel10/parallel/res_pump_T.dat" u 1:2 w lp lw 4 tit  "Parallel, {/Times-Italic L}_{/Times-Italic x}=1600"
 
 se yr [-2.0:0.0]
-se xl "{/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J}"
+se xl "Temperature ({/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J})"
 se yl "{/Symbol-Oblique e}_{/Times-Roman b}(32, {/Times-Italic T})"
 se ou "EnDens_Lz032.eps"
 pl \
@@ -276,7 +278,7 @@ pl \
 
 # Lz=64
 se yr [0:0.006]
-se xl "{/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J}"
+se xl "Temperature ({/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J})"
 se yl "{/Times-Italic f}_{/Times-Roman b}(64, {/Times-Italic T})"
 se ou "FricDensP_Lz064.eps"
 pl \
@@ -288,7 +290,7 @@ pl \
 "dat/Lz064Lx3200Ly__Vel10/parallel/res_pump_T.dat" u 1:2 w lp lw 4 tit  "Parallel, {/Times-Italic L}_{/Times-Italic x}=3200"
 
 se yr [-2.0:0.0]
-se xl "{/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J}"
+se xl "Temperature ({/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J})"
 se yl "{/Symbol-Oblique e}_{/Times-Roman b}(64, {/Times-Italic T})"
 se ou "EnDens_Lz064.eps"
 pl \
@@ -303,9 +305,17 @@ pl \
 # pl file1 u (1/$1):(($2-$8)/denom3):(($3+$9)/(480*10)) w er notit, \
 # file1 u (1/$1):(($2-$8)/denom3) w l tit "Delta F, {/Times-Italic L}_{/Times-Italic x}=480"
 #
+set key box outside below center
 set key width 0
+set key font ",24"    # 凡例のフォントの変更
+set xlabel offset 0,-1
+set ylabel offset -2,0
+set bmargin 10
+set lmargin 17
+set key vertical maxrows 2
+set key spacing 1.2
 
-se xl "{/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J}"
+se xl "Temperature ({/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J})"
 se yl "{/Times-Italic f}({/Times-Italic L_z}, {/Times-Italic T})"
 se yr [0.000:0.006]
 se ou "FricDensP_Allsize_AP.eps"
@@ -321,7 +331,7 @@ pl \
 "dat/Lz064Lx3200Ly__Vel10/antiparallel/res_pump_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=64"
 
 
-se xl "{/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J}"
+se xl "Temperature ({/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J})"
 se yl "{/Times-Italic f}({/Times-Italic L_z}, {/Times-Italic T})"
 se yr [0.000:0.006]
 se ou "FricDensP_Allsize_AP_.eps"
@@ -332,7 +342,7 @@ pl \
 "dat/Lz032Lx1600Ly__Vel10/antiparallel/res_pump_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=32", \
 "dat/Lz064Lx3200Ly__Vel10/antiparallel/res_pump_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=64"
 
-se xl "{/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J}"
+se xl "Temperature ({/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J})"
 se yl "{/Times-Italic f}({/Times-Italic L_z}, {/Times-Italic T})"
 se yr [0.000:0.006]
 se ou "FricDensP_Allsize_P.eps"
@@ -348,7 +358,7 @@ pl \
 "dat/Lz064Lx3200Ly__Vel10/parallel/res_pump_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=64"
 
 
-se xl "{/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J}"
+se xl "Temperature ({/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J})"
 se yl "{/Times-Italic f}({/Times-Italic L_z}, {/Times-Italic T})"
 se yr [0.000:0.006]
 se ou "FricDensP_Allsize_P_.eps"
@@ -359,7 +369,7 @@ pl \
 "dat/Lz032Lx1600Ly__Vel10/parallel/res_pump_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=32", \
 "dat/Lz064Lx3200Ly__Vel10/parallel/res_pump_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=64"
 
-se xl "{/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J}"
+se xl "Temperature ({/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J})"
 se yl "{/Symbol-Oblique D}{/Times-Italic f}({/Times-Italic L_z}, {/Times-Italic T})"
 se yr [0.000:0.006]
 se ou "SubFricDensP_Allsize_.eps"
@@ -370,7 +380,7 @@ pl \
 "< paste dat/Lz032Lx1600Ly__Vel10/antiparallel/res_pump_T.dat dat/Lz032Lx1600Ly__Vel10/parallel/res_pump_T.dat" using 1:($2-$4) w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=32", \
 "< paste dat/Lz064Lx3200Ly__Vel10/antiparallel/res_pump_T.dat dat/Lz064Lx3200Ly__Vel10/parallel/res_pump_T.dat" using 1:($2-$4) w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=64", \
 
-se xl "{/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J}"
+se xl "Temperature ({/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J})"
 se yl "{/Symbol-Oblique e}_{/Times-Roman b}({/Times-Italic L_z}, {/Times-Italic T})"
 se ou "EnDens_Allsize_AP.eps"
 se yr [-2.0:0.0]
@@ -386,7 +396,7 @@ pl \
 "dat/Lz064Lx3200Ly__Vel10/antiparallel/res_energy_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=64"
 
 
-se xl "{/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J}"
+se xl "Temperature ({/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J})"
 se yl "{/Symbol-Oblique e}_{/Times-Roman b}({/Times-Italic L_z}, {/Times-Italic T})"
 se ou "EnDens_Allsize_AP_.eps"
 se yr [-2.0:0.0]
@@ -398,7 +408,7 @@ pl \
 "dat/Lz064Lx3200Ly__Vel10/antiparallel/res_energy_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=64"
 
 
-se xl "{/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J}"
+se xl "Temperature ({/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J})"
 se yl "{/Symbol-Oblique e}_{/Times-Roman b}({/Times-Italic L_z}, {/Times-Italic T})"
 se ou "EnDens_Allsize_P.eps"
 se yr [-2.0:0.0]
@@ -414,7 +424,7 @@ pl \
 "dat/Lz064Lx3200Ly__Vel10/parallel/res_energy_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=64"
 
 
-se xl "{/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J}"
+se xl "Temperature ({/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J})"
 se yl "{/Symbol-Oblique e}_{/Times-Roman b}({/Times-Italic L_z}, {/Times-Italic T})"
 se ou "EnDens_Allsize_P_.eps"
 se yr [-2.0:0.0]
@@ -426,7 +436,7 @@ pl \
 "dat/Lz064Lx3200Ly__Vel10/parallel/res_energy_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=64"
 
 
-se xl "{/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J}"
+se xl "Temperature ({/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J})"
 se yl "{/Times-Italic c}_{/Times-Roman b}({/Times-Italic L_z}, {/Times-Italic T})"
 se ou "dEnDens_Allsize_AP.eps"
 se yr [-0.002:2.0]
@@ -442,7 +452,7 @@ pl \
 "dat/Lz064Lx3200Ly__Vel10/antiparallel/res_denergy_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=64"
 
 
-se xl "{/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J}"
+se xl "Temperature ({/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J})"
 se yl "{/Times-Italic c}_{/Times-Roman b}({/Times-Italic L_z}, {/Times-Italic T})"
 se ou "dEnDens_Allsize_AP_.eps"
 se yr [-0.002:2.0]
@@ -454,7 +464,7 @@ pl \
 "dat/Lz064Lx3200Ly__Vel10/antiparallel/res_denergy_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=64"
 
 
-se xl "{/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J}"
+se xl "Temperature ({/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J})"
 se yl "{/Times-Italic c}_{/Times-Roman b}({/Times-Italic L_z}, {/Times-Italic T})"
 se ou "dEnDens_Allsize_P.eps"
 se yr [-0.002:2.0]
@@ -470,7 +480,7 @@ pl \
 "dat/Lz064Lx3200Ly__Vel10/parallel/res_denergy_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=64"
 
 
-se xl "{/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J}"
+se xl "Temperature ({/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J})"
 se yl "{/Times-Italic c}_{/Times-Roman b}({/Times-Italic L_z}, {/Times-Italic T})"
 se ou "dEnDens_Allsize_P_.eps"
 se yr [-0.002:2.0]
@@ -484,8 +494,10 @@ pl \
 se yr [-0.002:0.04]
 set ytics 0.01
 
-se xl "{/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J}"
-se yl "{/Times-Italic df}/{/Times-Italic dT}({/Times-Italic L_z}, {/Times-Italic T})"
+se xr [0.0:5.0]
+
+se xl "Temperature ({/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J})"
+se yl "Temperature Derivative ({/Times-Italic df}/{/Times-Italic dT})"
 se ou "dFricDensP_Allsize_AP.eps"
 pl \
 "dat/Lz004Lx0200Ly__Vel10/antiparallel/res_dPump_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=4", \
@@ -499,8 +511,8 @@ pl \
 "dat/Lz064Lx3200Ly__Vel10/antiparallel/res_dPump_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=64"
 
 
-se xl "{/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J}"
-se yl "{/Times-Italic df}/{/Times-Italic dT}({/Times-Italic L_z}, {/Times-Italic T})"
+se xl "Temperature ({/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J})"
+se yl "Temperature Derivative ({/Times-Italic df}/{/Times-Italic dT})"
 se ou "dFricDensP_Allsize_AP_.eps"
 pl \
 "dat/Lz004Lx0200Ly__Vel10/antiparallel/res_dPump_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=4", \
@@ -510,8 +522,8 @@ pl \
 "dat/Lz064Lx3200Ly__Vel10/antiparallel/res_dPump_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=64"
 
 
-se xl "{/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J}"
-se yl "{/Times-Italic df}/{/Times-Italic dT}({/Times-Italic L_z}, {/Times-Italic T})"
+se xl "Temperature ({/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J})"
+se yl "Temperature Derivative ({/Times-Italic df}/{/Times-Italic dT})"
 se ou "dFricDensP_Allsize_P.eps"
 pl \
 "dat/Lz004Lx0200Ly__Vel10/parallel/res_dPump_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=4", \
@@ -524,9 +536,8 @@ pl \
 "dat/Lz032Lx1600Ly__Vel10/parallel/res_dPump_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=32", \
 "dat/Lz064Lx3200Ly__Vel10/parallel/res_dPump_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=64"
 
-
-se xl "{/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J}"
-se yl "{/Times-Italic df}/{/Times-Italic dT}({/Times-Italic L_z}, {/Times-Italic T})"
+se xl "Temperature ({/Times-Italic k}_{/Times-Roman B} {/Times-Italic T/J})"
+se yl "Temperature Derivative ({/Times-Italic df}/{/Times-Italic dT})"
 se ou "dFricDensP_Allsize_P_.eps"
 pl \
 "dat/Lz004Lx0200Ly__Vel10/parallel/res_dPump_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=4", \

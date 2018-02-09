@@ -1,0 +1,550 @@
+
+
+*******************************************************************************
+Tue Jan 30 16:14:18 2018
+
+
+FIT:    data read from "dat/Lz004Lx0040Ly__Vel10/antiparallel/beta.200/stream.dat" u 1:2
+        format = x:z
+        x range restricted to [5001.00 : 10000.0]
+        #datapoints = 5000
+        residuals are weighted equally (unit weight)
+
+function used for fitting: f(x)
+	f(x)=A+B*exp(-x/T)
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   A             B             T            
+   0 4.8047526264e+03   0.00e+00  5.77e-01    1.000000e+00   1.000000e+00   1.000000e+00
+BREAK: Singular matrix in Invert_RtR
+
+*******************************************************************************
+Tue Jan 30 16:15:03 2018
+
+
+FIT:    data read from "dat/Lz004Lx0040Ly__Vel10/antiparallel/beta.200/stream.dat" u 1:4
+        format = x:z
+        x range restricted to [5001.00 : 10000.0]
+        #datapoints = 5000
+        residuals are weighted equally (unit weight)
+
+function used for fitting: f(x)
+	f(x)=A+B*exp(-x/T)
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   A             B             T            
+   0 7.8152630263e+06   0.00e+00  1.11e+00    1.922595e+00   1.000000e+00   1.001000e+00
+BREAK: Singular matrix in Invert_RtR
+
+*******************************************************************************
+Tue Jan 30 16:15:21 2018
+
+
+FIT:    data read from "dat/Lz004Lx0040Ly__Vel10/antiparallel/beta.200/stream.dat" u 1:4
+        format = x:z
+        x range restricted to [5001.00 : 10000.0]
+        #datapoints = 5000
+        residuals are weighted equally (unit weight)
+
+function used for fitting: f(x)
+	f(x)=A+B*exp(-x/T)
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   A             B             T            
+   0 5.3172943631e+03   0.00e+00  2.17e+01   -3.759941e+01   1.000000e-01   1.002001e+00
+BREAK: Singular matrix in Invert_RtR
+
+*******************************************************************************
+Tue Jan 30 16:16:12 2018
+
+
+FIT:    data read from "dat/Lz064Lx3200Ly__Vel10/antiparallel/beta.400/stream.dat" u 1:4
+        format = x:z
+        x range restricted to [5001.00 : 10000.0]
+        #datapoints = 5000
+        residuals are weighted equally (unit weight)
+
+function used for fitting: f(x)
+	f(x)=A+B*exp(-x/T)
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   A             B             T            
+   0 2.5784601604e+14   0.00e+00  2.17e+01   -3.759941e+01   1.000000e-01   1.003003e+00
+BREAK: Singular matrix in Invert_RtR
+
+*******************************************************************************
+Tue Jan 30 16:20:09 2018
+
+
+FIT:    data read from "dat/Lz064Lx3200Ly__Vel10/antiparallel/beta.400/stream.dat" u 1:4
+        format = x:z
+        x range restricted to [5001.00 : 10000.0]
+        #datapoints = 5000
+        residuals are weighted equally (unit weight)
+
+function used for fitting: f(x)
+	f(x)=A+B*exp(-x/T)
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   A             B             T            
+   0 2.5792800016e+14   0.00e+00  8.66e-01   -1.500000e+00   5.000000e-02   5.000000e+01
+BREAK: Singular matrix in Invert_RtR
+
+*******************************************************************************
+Tue Jan 30 16:21:51 2018
+
+
+FIT:    data read from 'dat/Lz064Lx3200Ly__Vel10/antiparallel/beta.400/stream.dat' u 1:4
+        format = x:z
+        x range restricted to [5001.00 : 10000.0]
+        #datapoints = 5000
+        residuals are weighted equally (unit weight)
+
+function used for fitting: f(x)
+	f(x)=A+B*exp(-x/T)
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   A             B             T            
+   0 1.2565920018e+08   0.00e+00  1.31e+05   -2.271261e+05   5.000000e-02   5.005000e+01
+BREAK: Singular matrix in Invert_RtR
+
+*******************************************************************************
+Tue Jan 30 16:22:32 2018
+
+
+FIT:    data read from 'dat/Lz064Lx3200Ly__Vel10/antiparallel/beta.400/stream.dat' u 1:4
+        format = x:z
+        x range restricted to [5001.00 : 10000.0]
+        #datapoints = 5000
+        residuals are weighted equally (unit weight)
+
+function used for fitting: f(x)
+	f(x)=A+B*exp(-x/T)
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   A             B             T            
+   0 2.5793367831e+14   0.00e+00  5.77e-01    1.000000e+00   1.000000e+00   1.000000e+00
+BREAK: Singular matrix in Invert_RtR
+
+*******************************************************************************
+Tue Jan 30 16:23:10 2018
+
+
+FIT:    data read from 'dat/Lz064Lx3200Ly__Vel10/antiparallel/beta.400/stream.dat' u 1:4
+        format = x:z
+        x range restricted to [5001.00 : 10000.0]
+        #datapoints = 5000
+        residuals are weighted equally (unit weight)
+
+function used for fitting: f(x)
+	f(x)=A+B*exp(-x/T)
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   A             B             T            
+   0 2.5781785650e+14   0.00e+00  2.89e+01   -5.000000e+01   1.000000e+01   5.000000e+01
+BREAK: Singular matrix in Invert_RtR
+
+*******************************************************************************
+Tue Jan 30 16:28:28 2018
+
+
+FIT:    data read from 'dat/Lz064Lx3200Ly__Vel10/antiparallel/beta.450/stream.dat' u 1:4
+        format = x:z
+        x range restricted to [5001.00 : 10000.0]
+        #datapoints = 5000
+        residuals are weighted equally (unit weight)
+
+function used for fitting: f(x)
+	f(x)=A+B*exp(-x/T)
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   A             B             T            
+   0 2.8704781945e+13   0.00e+00  1.31e+05   -2.271261e+05   1.000000e+01   5.005000e+01
+BREAK: Singular matrix in Invert_RtR
+
+*******************************************************************************
+Tue Jan 30 16:29:56 2018
+
+
+FIT:    data read from 'dat/Lz064Lx3200Ly__Vel10/antiparallel/beta.450/stream.dat' u 1:4
+        format = x:z
+        x range restricted to [5001.00 : 10000.0]
+        #datapoints = 5000
+        residuals are weighted equally (unit weight)
+
+function used for fitting: f(x)
+	f(x)=A+B*exp(-x/T)
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   A             B             T            
+   0 4.5853103254e+14   0.00e+00  2.89e+01   -5.000000e+01   1.000000e+01   1.000000e+01
+BREAK: Singular matrix in Invert_RtR
+
+*******************************************************************************
+Tue Jan 30 16:30:49 2018
+
+
+FIT:    data read from 'dat/Lz064Lx3200Ly__Vel10/antiparallel/beta.450/stream.dat' using 1:4
+        format = x:z
+        x range restricted to [5001.00 : 10000.0]
+        #datapoints = 5000
+        residuals are weighted equally (unit weight)
+
+function used for fitting: f(x)
+	f(x)=A+B*exp(-x/T)
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   A             B             T            
+   0 1.5006837870e+10   0.00e+00  1.75e+05   -3.028754e+05   1.000000e+01   1.001000e+01
+BREAK: Singular matrix in Invert_RtR
+
+*******************************************************************************
+Tue Jan 30 16:30:51 2018
+
+
+FIT:    data read from 'dat/Lz064Lx3200Ly__Vel10/antiparallel/beta.450/stream.dat' using 1:4
+        format = x:z
+        x range restricted to [5001.00 : 10000.0]
+        #datapoints = 5000
+        residuals are weighted equally (unit weight)
+
+function used for fitting: f(x)
+	f(x)=A+B*exp(-x/T)
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   A             B             T            
+   0 1.5006837870e+10   0.00e+00  1.75e+05   -3.028754e+05   1.000000e+01   1.002001e+01
+BREAK: Singular matrix in Invert_RtR
+
+*******************************************************************************
+Tue Jan 30 16:30:52 2018
+
+
+FIT:    data read from 'dat/Lz064Lx3200Ly__Vel10/antiparallel/beta.450/stream.dat' using 1:4
+        format = x:z
+        x range restricted to [5001.00 : 10000.0]
+        #datapoints = 5000
+        residuals are weighted equally (unit weight)
+
+function used for fitting: f(x)
+	f(x)=A+B*exp(-x/T)
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   A             B             T            
+   0 1.5006837870e+10   0.00e+00  1.75e+05   -3.028754e+05   1.000000e+01   1.003003e+01
+BREAK: Singular matrix in Invert_RtR
+
+*******************************************************************************
+Tue Jan 30 16:30:52 2018
+
+
+FIT:    data read from 'dat/Lz064Lx3200Ly__Vel10/antiparallel/beta.450/stream.dat' using 1:4
+        format = x:z
+        x range restricted to [5001.00 : 10000.0]
+        #datapoints = 5000
+        residuals are weighted equally (unit weight)
+
+function used for fitting: f(x)
+	f(x)=A+B*exp(-x/T)
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   A             B             T            
+   0 1.5006837870e+10   0.00e+00  1.75e+05   -3.028754e+05   1.000000e+01   1.004006e+01
+BREAK: Singular matrix in Invert_RtR
+
+*******************************************************************************
+Tue Jan 30 16:30:53 2018
+
+
+FIT:    data read from 'dat/Lz064Lx3200Ly__Vel10/antiparallel/beta.450/stream.dat' using 1:4
+        format = x:z
+        x range restricted to [5001.00 : 10000.0]
+        #datapoints = 5000
+        residuals are weighted equally (unit weight)
+
+function used for fitting: f(x)
+	f(x)=A+B*exp(-x/T)
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   A             B             T            
+   0 1.5006837870e+10   0.00e+00  1.75e+05   -3.028754e+05   1.000000e+01   1.005010e+01
+BREAK: Singular matrix in Invert_RtR
+
+*******************************************************************************
+Tue Jan 30 16:30:53 2018
+
+
+FIT:    data read from 'dat/Lz064Lx3200Ly__Vel10/antiparallel/beta.450/stream.dat' using 1:4
+        format = x:z
+        x range restricted to [5001.00 : 10000.0]
+        #datapoints = 5000
+        residuals are weighted equally (unit weight)
+
+function used for fitting: f(x)
+	f(x)=A+B*exp(-x/T)
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   A             B             T            
+   0 1.5006837870e+10   0.00e+00  1.75e+05   -3.028754e+05   1.000000e+01   1.006015e+01
+BREAK: Singular matrix in Invert_RtR
+
+*******************************************************************************
+Tue Jan 30 16:38:31 2018
+
+
+FIT:    data read from 'dat/Lz064Lx3200Ly__Vel10/antiparallel/beta.450/stream.dat' using 1:4
+        format = x:z
+        x range restricted to [5001.00 : 10000.0]
+        #datapoints = 5000
+        residuals are weighted equally (unit weight)
+
+function used for fitting: f(x)
+	f(x)=a+b*exp(-x/tau)
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   a             b             tau          
+   0 2.3104764546e+10   0.00e+00  1.76e+05   -3.041480e+05   7.986000e+03   1.000000e+02
+BREAK: Singular matrix in Invert_RtR
+
+*******************************************************************************
+Tue Jan 30 16:39:56 2018
+
+
+FIT:    data read from 'dat/Lz064Lx3200Ly__Vel10/antiparallel/beta.450/stream.dat' using 1:4
+        format = x:z
+        x range restricted to [5001.00 : 10000.0]
+        #datapoints = 5000
+        residuals are weighted equally (unit weight)
+
+function used for fitting: f(x)
+	f(x)=a+b*exp(-(x+5000)/tau)
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   a             b             tau          
+   0 1.5006837870e+10   0.00e+00  1.75e+05   -3.028754e+05   7.986000e+03   1.001000e+02
+BREAK: Singular matrix in Invert_RtR
+
+*******************************************************************************
+Tue Jan 30 16:40:36 2018
+
+
+FIT:    data read from 'dat/Lz064Lx3200Ly__Vel10/antiparallel/beta.450/stream.dat' using 1:4
+        format = x:z
+        x range restricted to [5001.00 : 10000.0]
+        #datapoints = 5000
+        residuals are weighted equally (unit weight)
+
+function used for fitting: f(x)
+	f(x)=a+b*exp(-(x-5000)/tau)
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   a             b             tau          
+   0 8.9331111328e+09   0.00e+00  1.75e+05   -3.028754e+05   7.986000e+03   1.002001e+02
+   9 6.3897964608e+08  -9.97e-01  1.75e-04   -3.036754e+05   8.793216e+03   4.554209e+02
+
+After 9 iterations the fit converged.
+final sum of squares of residuals : 6.3898e+08
+rel. change during last iteration : -9.97458e-06
+
+degrees of freedom    (FIT_NDF)                        : 4997
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 357.593
+variance of residuals (reduced chisquare) = WSSR/ndf   : 127873
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+a               = -303675          +/- 6.343        (0.002089%)
+b               = 8793.22          +/- 33.58        (0.3819%)
+tau             = 455.421          +/- 2.787        (0.6121%)
+
+correlation matrix of the fit parameters:
+                a      b      tau    
+a               1.000 
+b               0.001  1.000 
+tau            -0.472 -0.624  1.000 
+
+
+*******************************************************************************
+Tue Jan 30 16:44:03 2018
+
+
+FIT:    data read from 'dat/Lz064Lx3200Ly__Vel10/antiparallel/beta.200/stream.dat' using 1:4
+        format = x:z
+        x range restricted to [5001.00 : 10000.0]
+        #datapoints = 5000
+        residuals are weighted equally (unit weight)
+
+function used for fitting: f(x)
+	f(x)=a+b*exp(-(x-5000)/tau)
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   a             b             tau          
+   0 7.4067980605e+08   0.00e+00  4.95e+04   -8.574100e+04   7.150000e+02   1.000000e+02
+   6 5.3145512964e+07  -4.25e-01  4.95e+00   -8.536276e+04   1.449455e+01   1.765875e+02
+
+After 6 iterations the fit converged.
+final sum of squares of residuals : 5.31455e+07
+rel. change during last iteration : -4.24641e-06
+
+degrees of freedom    (FIT_NDF)                        : 4997
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 103.128
+variance of residuals (reduced chisquare) = WSSR/ndf   : 10635.5
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+a               = -85362.8         +/- 1.574        (0.001844%)
+b               = 14.4946          +/- 15.61        (107.7%)
+tau             = 176.587          +/- 279          (158%)
+
+correlation matrix of the fit parameters:
+                a      b      tau    
+a               1.000 
+b               0.001  1.000 
+tau            -0.276 -0.682  1.000 
+
+
+*******************************************************************************
+Fri Feb  2 20:17:16 2018
+
+
+FIT:    data read from "dat/Lz004Lx0040Ly__Vel10/antiparallel/beta.200/stream.dat" using 1:4
+        format = x:z
+        x range restricted to [5001.00 : 10000.0]
+        #datapoints = 5000
+        residuals are weighted equally (unit weight)
+
+function used for fitting: f(x)
+	f(x)=min_y+(max_y-min_y)*exp(-(x-5000)/tau)
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   min_y         max_y         tau          
+   0 7.4548907141e+06   0.00e+00  5.77e-01    1.000000e+00   1.000000e+00   1.000000e+00
+
+Current data point
+=========================
+#               = 566 out of 5000
+x               = -37.5988       
+z               = -38.7333       
+
+Current set of parameters
+=========================
+min_y           = -37.5988       
+max_y           = -26.0298       
+tau             = -0.796327      
+
+BREAK: Function evaluation yields NaN ("not a number")
+
+*******************************************************************************
+Fri Feb  2 20:18:41 2018
+
+
+FIT:    data read from "dat/Lz004Lx0040Ly__Vel10/antiparallel/beta.200/stream.dat" using 1:4
+        format = x:z
+        x range restricted to [5001.00 : 10000.0]
+        #datapoints = 5000
+        residuals are weighted equally (unit weight)
+
+function used for fitting: f(x)
+	f(x)=min_y+(max_y-min_y)*exp(-(x-5000)/tau)
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   min_y         max_y         tau          
+   0 7.1554756016e+04   0.00e+00  2.36e+01   -4.130830e+01  -3.365830e+01   1.000000e+02
+   6 5.3106382367e+03  -6.55e-01  2.36e-03   -3.758440e+01  -3.779142e+01   3.589357e+02
+
+After 6 iterations the fit converged.
+final sum of squares of residuals : 5310.64
+rel. change during last iteration : -6.55358e-06
+
+degrees of freedom    (FIT_NDF)                        : 4997
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 1.03091
+variance of residuals (reduced chisquare) = WSSR/ndf   : 1.06277
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+min_y           = -37.5844         +/- 0.01727      (0.04595%)
+max_y           = -37.7914         +/- 0.1105       (0.2923%)
+tau             = 358.936          +/- 292.9        (81.61%)
+
+correlation matrix of the fit parameters:
+                min_y  max_y  tau    
+min_y           1.000 
+max_y           0.157  1.000 
+tau             0.410  0.702  1.000 
+
+
+*******************************************************************************
+Fri Feb  2 20:28:35 2018
+
+
+FIT:    data read from "dat/Lz004Lx0040Ly__Vel10/antiparallel/beta.200/stream.dat" using 1:4
+        format = x:z
+        x range restricted to [5001.00 : 10000.0]
+        #datapoints = 5000
+        residuals are weighted equally (unit weight)
+
+function used for fitting: f(x)
+	f(x)=min_y+(max_y-min_y)*exp(-(x-5000)/tau)
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   min_y         max_y         tau          
+   0 5.3106382367e+03   0.00e+00  2.09e+01   -3.758440e+01  -3.779142e+01   3.589357e+02
+   1 5.3106377259e+03  -9.62e-03  2.09e+00   -3.758447e+01  -3.779284e+01   3.590418e+02
+
+After 1 iterations the fit converged.
+final sum of squares of residuals : 5310.64
+rel. change during last iteration : -9.61971e-08
+
+degrees of freedom    (FIT_NDF)                        : 4997
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 1.03091
+variance of residuals (reduced chisquare) = WSSR/ndf   : 1.06277
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+min_y           = -37.5845         +/- 0.01727      (0.04595%)
+max_y           = -37.7928         +/- 0.1105       (0.2923%)
+tau             = 359.042          +/- 291.1        (81.07%)
+
+correlation matrix of the fit parameters:
+                min_y  max_y  tau    
+min_y           1.000 
+max_y           0.157  1.000 
+tau             0.410  0.702  1.000 
+
+
+*******************************************************************************
+Fri Feb  2 20:32:33 2018
+
+
+FIT:    data read from "dat/Lz012Lx0120Ly__Vel10/antiparallel/beta.400/stream.dat" u 1:4
+        format = x:z
+        x range restricted to [5001.00 : 10000.0]
+        #datapoints = 5000
+        residuals are weighted equally (unit weight)
+
+function used for fitting: f(x)
+	f(x)=min_y+(max_y-min_y)*exp(-(x-5000)/tau)
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   min_y         max_y         tau          
+   0 4.5924046582e+06   0.00e+00  9.02e+02   -1.578942e+03  -1.535467e+03   1.000000e+02
+   2 7.3289605894e+04  -6.58e-01  9.02e+00   -1.548316e+03  -1.547785e+03   9.990774e+01
+
+After 2 iterations the fit converged.
+final sum of squares of residuals : 73289.6
+rel. change during last iteration : -6.58465e-06
+
+degrees of freedom    (FIT_NDF)                        : 4997
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 3.82972
+variance of residuals (reduced chisquare) = WSSR/ndf   : 14.6667
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+min_y           = -1548.32         +/- 0.05647      (0.003647%)
+max_y           = -1547.78         +/- 0.776        (0.05013%)
+tau             = 99.9077          +/- 209          (209.2%)
+
+correlation matrix of the fit parameters:
+                min_y  max_y  tau    
+min_y           1.000 
+max_y           0.074  1.000 
+tau            -0.204 -0.709  1.000 

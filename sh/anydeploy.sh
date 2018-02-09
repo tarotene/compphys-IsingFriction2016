@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 echo "What to deploy?"
-echo "(2017/10/28: {average_2d, extract_2d, simulate_2d, plotStream_2d} are available.)"
+echo "(2018/02/02: {average_2d, extract_2d, simulate_2d, plotStream_2d} are available.)"
 read deployee
 
 cd dat
