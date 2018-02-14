@@ -10,7 +10,7 @@ PROGRAM main
 
   ! observables
   INTEGER(kind = 4), ALLOCATABLE :: spin(:, :)
-  REAL(kind = 8), ALLOCATABLE :: m_z(:)
+  ! REAL(kind = 8), ALLOCATABLE :: m_z(:)
   REAL(kind = 8) :: pump, diss, energy
 
   ! simulation variables
@@ -24,12 +24,10 @@ PROGRAM main
   INTEGER(kind = 4) :: z, n_steps, i_step, i_vel, i_sweep, i_sample
   CHARACTER(len = 4, kind = 1) :: si_sample
 
-  CHARACTER(:), ALLOCATABLE :: &
-       filename_stream, filename_m_z, filename_spin
-  CHARACTER(len = 40, kind = 1) :: filename_str
+  CHARACTER(:), ALLOCATABLE :: filename_spin
 
   ! slot variables
-  INTEGER(kind = 4), ALLOCATABLE :: slot_stream(:), slot_spin(:), slot_m_z(:)
+  INTEGER(kind = 4), ALLOCATABLE :: slot_spin(:)
 
   ! omp variables
   INTEGER(kind = 4) :: i_th, err_x, err_z, err_prob
@@ -100,31 +98,31 @@ PROGRAM main
   END DO
 
   ! copy averaged m_z file to new file
-  DO i_sample = 1, n_samples0, 1
-     IF ( stat_sample_e(i_sample) == 0 ) THEN
-        WRITE(si_sample, '(i0.4)') i_sample
-        filename_m_z="m_z_s"//si_sample//".dat"
-        ! CALL copyM_z2M_z_2d(30, &
-        !      "m_z.dat", filename_m_z, &
-        !      len_x, len_z, n_sweeps_therm, n_sweeps_stead)
-        CALL system("cp m_z.dat "//filename_m_z)
-        ! WRITE(*, *) 2
-     END IF
-  END DO
+  ! DO i_sample = 1, n_samples0, 1
+  !    IF ( stat_sample_e(i_sample) == 0 ) THEN
+  !       WRITE(si_sample, '(i0.4)') i_sample
+  !       filename_m_z="m_z_s"//si_sample//".dat"
+  !       ! CALL copyM_z2M_z_2d(30, &
+  !       !      "m_z.dat", filename_m_z, &
+  !       !      len_x, len_z, n_sweeps_therm, n_sweeps_stead)
+  !       CALL system("cp m_z.dat "//filename_m_z)
+  !       ! WRITE(*, *) 2
+  !    END IF
+  ! END DO
 
   ! adjustment program to machine
   n_ths = 1
   !$  n_ths = omp_get_max_threads()
   !$  CALL omp_set_num_threads(n_ths)
   !allocation slots
-  ALLOCATE(slot_stream(0:n_ths - 1))
-  ALLOCATE(slot_m_z(0:n_ths - 1))
+  ! ALLOCATE(slot_stream(0:n_ths - 1))
+  ! ALLOCATE(slot_m_z(0:n_ths - 1))
   ALLOCATE(slot_spin(0:n_ths - 1))
   !setting slots
   DO i_th = 0, n_ths - 1
-     slot_stream(i_th) = 20 + i_th
+     ! slot_stream(i_th) = 20 + i_th
      slot_spin(i_th) = 20 + i_th + n_ths
-     slot_m_z(i_th) = 20 + i_th + 2 * n_ths
+     ! slot_m_z(i_th) = 20 + i_th + 2 * n_ths
   END DO
 
   ! allocation random numbers and their streams
@@ -134,18 +132,18 @@ PROGRAM main
   ALLOCATE(str_x(1:n_samples), str_z(1:n_samples), str_prob(1:n_samples))
 
   ! import random number streams
-  DO i_sample = 1, n_samples0, 1
-     WRITE(si_sample, '(i0.4)') i_sample
-     filename_str="str_x_initial_s"//si_sample//".bin"
-     CALL loadRNstat(str_x(i_sample), filename_str, err_x)
-     filename_str="str_z_initial_s"//si_sample//".bin"
-     CALL loadRNstat(str_z(i_sample), filename_str, err_z)
-     filename_str="str_prob_initial_s"//si_sample//".bin"
-     CALL loadRNstat(str_prob(i_sample), filename_str, err_prob)
-  END DO
+  ! DO i_sample = 1, n_samples0, 1
+  !    WRITE(si_sample, '(i0.4)') i_sample
+  !    filename_str="str_x_initial_s"//si_sample//".bin"
+  !    CALL loadRNstat(str_x(i_sample), filename_str, err_x)
+  !    filename_str="str_z_initial_s"//si_sample//".bin"
+  !    CALL loadRNstat(str_z(i_sample), filename_str, err_z)
+  !    filename_str="str_prob_initial_s"//si_sample//".bin"
+  !    CALL loadRNstat(str_prob(i_sample), filename_str, err_prob)
+  ! END DO
 
   ! allocation observables
-  ALLOCATE(spin(1:len_x, 1:len_z), m_z(1:len_z))
+  ALLOCATE(spin(1:len_x, 1:len_z))
 
   ! initialize and save spin
   IF ( n_samples0 == 0 ) THEN
