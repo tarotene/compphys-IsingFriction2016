@@ -381,26 +381,23 @@ CONTAINS
     END IF
   END SUBROUTINE step_singleflip_3d
 
-  SUBROUTINE sweep_singleflip_2d(id_BC, len_x, len_z, n_steps, &
-       rn_x, rn_z, rn_p, spin, diss)
-    INTEGER(kind = 4), INTENT(in) :: id_BC, len_x, len_z, n_steps
+  SUBROUTINE sweep_singleflip_2d(slot, i_sweep, i_vel, id_BC, len_x, len_z, n_steps, &
+       rn_x, rn_z, rn_p, spin, energy)
+    INTEGER(kind = 4), INTENT(in) :: slot, i_sweep, id_BC, len_x, len_z, n_steps
     INTEGER(kind = 4), INTENT(in) :: rn_x(1:), rn_z(1:)
     REAL(kind = 8), INTENT(in) :: rn_p(1:)
     INTEGER(kind = 4), INTENT(inout) :: spin(1:, 1:)
-    REAL(kind = 8), INTENT(out) :: diss
+    REAL(kind = 8), INTENT(inout) :: energy
 
     INTEGER(kind = 4) :: i_step
     REAL(kind = 8) :: relax
 
-    diss = 0.0d0
     DO i_step = 1, n_steps, 1
-       ! WRITE(*, *) 22.375d0
        CALL step_singleflip_2d(id_BC, len_x, len_z, &
             rn_x(i_step), rn_z(i_step), rn_p(i_step), &
             spin(1:, 1:), relax)
-       ! WRITE(*, *) 22.385d0
-       diss = diss + relax
-       ! WRITE(*, *) 22.400d0
+       energy = energy + relax
+       WRITE(slot, '(i5, a, i5, a, i5, a, f0.4)') i_sweep, ", ", i_vel, ", ", i_step, ", ", energy
     END DO
   END SUBROUTINE sweep_singleflip_2d
 
@@ -424,10 +421,10 @@ CONTAINS
     END DO
   END SUBROUTINE sweep_singleflip_3d
 
-  SUBROUTINE shiftUpperHalf_2d(id_BC, len_x, len_z, spin, pump)
-    INTEGER(kind = 4), INTENT(in) :: id_BC, len_x, len_z
+  SUBROUTINE shiftUpperHalf_2d(slot, i_sweep, i_vel, id_BC, len_x, len_z, spin, energy)
+    INTEGER(kind = 4), INTENT(in) :: slot, i_sweep, i_vel, id_BC, len_x, len_z
     INTEGER(kind = 4), INTENT(inout) :: spin(1:, 1:)
-    REAL(kind = 8), INTENT(out) :: pump
+    REAL(kind = 8), INTENT(inout) :: energy
 
     REAL(kind = 8) :: prev, next
 
@@ -437,7 +434,8 @@ CONTAINS
          = CSHIFT(spin(1:len_x, 1:len_z / 2), shift=1, dim=1)
     CALL calcSlipplaneEnergy_2d(id_BC, len_x, len_z, &
          spin(1:, 1:), next)
-    pump = next - prev
+    energy = energy - prev + next
+    WRITE(slot, '(i5, a, i5, a, i5, a, f0.4)') i_sweep, ", ", i_vel, ", ", 0, ", ", energy
   END SUBROUTINE shiftUpperHalf_2d
 
   SUBROUTINE shiftUpperHalf_3d(id_BC, len_x, len_y, len_z, spin, pump)

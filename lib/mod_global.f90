@@ -1,29 +1,32 @@
-INCLUDE 'mkl_vsl.f90'
+  INCLUDE 'mkl_vsl.f90'
 
-MODULE mod_global
-  USE MKL_VSL_TYPE
-  USE MKL_VSL
+  MODULE mod_global
+    USE MKL_VSL_TYPE
+    USE MKL_VSL
 
-  IMPLICIT NONE
+    IMPLICIT NONE
 
-  ! condition parameters
-  INTEGER(kind = 4), SAVE :: id_IC, id_BC
+    ! internal paramters
+    INTEGER(kind = 4), PARAMETER :: i8b = selected_int_KIND(18)  ! eight-byte integer
 
-  ! omp parameters
-  INTEGER(kind = 4), SAVE :: n_ths
+    ! condition parameters
+    INTEGER(kind = 4), SAVE :: id_IC, id_BC
 
-  ! general parameters
-  INTEGER(kind = 4), SAVE :: len_x, len_y, len_z, vel
-  INTEGER(kind = 4), SAVE :: n_samples, n_samples0
-  INTEGER(kind = 4), SAVE :: n_samples_old, n_samples_new
-  INTEGER(kind = 4), SAVE :: n_sweeps_therm, n_sweeps_stead
-  INTEGER(kind = 4), SAVE :: n_sweeps_therm0, n_sweeps_stead0
-  REAL(kind = 8), SAVE :: J, beta
+    ! omp parameters
+    INTEGER(kind = 4), SAVE :: n_ths
 
-  !reduced parameters
-  INTEGER(kind = 4), SAVE :: n_sweeps
-  REAL(kind = 8), SAVE :: prob_2d(-1:1, -1:1, -1:1, -1:1, -1:1)
-  REAL(kind = 8), SAVE :: deltaE_2d(-1:1, -1:1, -1:1, -1:1, -1:1)
-  REAL(kind = 8), SAVE :: prob_3d(-1:1, -1:1, -1:1, -1:1, -1:1, -1:1, -1:1)
-  REAL(kind = 8), SAVE :: deltaE_3d(-1:1, -1:1, -1:1, -1:1, -1:1, -1:1, -1:1)
-END MODULE mod_global
+    ! general parameters
+    INTEGER(kind = 4), SAVE :: len_x, len_y, len_z, vel
+    INTEGER(kind = 4), SAVE :: n_samples, n_samples0
+    INTEGER(kind = 4), SAVE :: n_samples_old, n_samples_new
+    INTEGER(kind = 4), SAVE :: n_sweeps_therm, n_sweeps_stead
+    INTEGER(kind = 4), SAVE :: n_sweeps_therm0, n_sweeps_stead0
+    REAL(kind = 8), SAVE :: beta
+
+    !reduced parameters
+    INTEGER(kind = 4), SAVE :: n_sweeps
+    REAL(kind = 8), SAVE :: prob_2d(-1:1, -1:1, -1:1, -1:1, -1:1)
+    REAL(kind = 8), SAVE :: deltaE_2d(-1:1, -1:1, -1:1, -1:1, -1:1)
+    REAL(kind = 8), SAVE :: prob_3d(-1:1, -1:1, -1:1, -1:1, -1:1, -1:1, -1:1)
+    REAL(kind = 8), SAVE :: deltaE_3d(-1:1, -1:1, -1:1, -1:1, -1:1, -1:1, -1:1)
+  END MODULE mod_global

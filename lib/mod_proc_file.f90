@@ -20,16 +20,16 @@ CONTAINS
   !   CLOSE(slot)
   ! END SUBROUTINE getNumSamples
 
-  SUBROUTINE inputParameters_2d(len_x, len_z, J, beta, vel, &
+  SUBROUTINE inputParameters_2d(len_x, len_z, beta, vel, &
        n_sweeps_therm, n_sweeps_stead, id_IC, id_BC, n_samples)
     INTEGER(kind = 4), INTENT(out) :: len_x, len_z
-    REAL(kind = 8), INTENT(out) :: J, beta
+    REAL(kind = 8), INTENT(out) :: beta
     INTEGER(kind = 4), INTENT(out) :: vel
     INTEGER(kind = 4), INTENT(out) :: n_sweeps_therm, n_sweeps_stead
     INTEGER(kind = 4), INTENT(out) :: id_IC, id_BC
     INTEGER(kind = 4), INTENT(out) :: n_samples
 
-    READ(*, *) len_x, len_z, J, beta, vel, n_sweeps_therm, n_sweeps_stead, id_IC, id_BC, n_samples
+    READ(*, *) len_x, len_z, beta, vel, n_sweeps_therm, n_sweeps_stead, id_IC, id_BC, n_samples
   END SUBROUTINE inputParameters_2d
 
   SUBROUTINE inputParameters_3d(len_x, len_y, len_z, J, beta, vel, &
@@ -605,18 +605,6 @@ CONTAINS
        READ(slot, '()')
     END DO
   END SUBROUTINE readthroughM_z_onfile
-
-  SUBROUTINE exportStream_onfile(slot, i_sweep, pump, diss, energy, fluc_pump, fluc_diss, fluc_energy)
-    INTEGER(kind = 4), INTENT(in) :: slot
-    INTEGER(kind = 4), INTENT(in) :: i_sweep
-    REAL(kind = 8), INTENT(in) :: pump, diss, energy
-    REAL(kind = 8), INTENT(in) :: fluc_pump, fluc_diss, fluc_energy
-
-    WRITE(slot, '(  i5, a, f0.4, a, f0.4, a, f0.4, a, &
-         f0.4, a, f0.4, a, f0.4)') &
-         i_sweep, ", ", pump, ", ", diss, ", ", energy, ", ", &
-         fluc_pump, ", ", fluc_diss, ", ", fluc_energy
-  END SUBROUTINE exportStream_onfile
 
   SUBROUTINE readthroughStream_onfile(slot, start_sweep, end_sweep, pump, diss, energy)
     INTEGER(kind = 4), INTENT(in) :: slot
