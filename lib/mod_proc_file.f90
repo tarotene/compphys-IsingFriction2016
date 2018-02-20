@@ -490,7 +490,7 @@ CONTAINS
 
     INTEGER(kind = 4) :: x, z, dum_x, dum_z
 
-    OPEN(slot, file=filename, status="old")
+    OPEN(slot, file=filename, access="stream", status="old")
     DO z = 1, len_z, 1
        READ(slot, '()')
        DO x = 1, len_x, 1
@@ -508,7 +508,7 @@ CONTAINS
 
     INTEGER(kind = 4) :: x, y, z, dum_x, dum_y, dum_z
 
-    OPEN(slot, file=filename, status="old")
+    OPEN(slot, file=filename, access="stream", status="old")
     DO z = 1, len_z, 1
        DO y = 1, len_y, 1
           READ(slot, '()')
@@ -528,12 +528,13 @@ CONTAINS
 
     INTEGER(kind = 4) :: x, z
 
-    OPEN(slot, file=filename, status="replace")
-    WRITE(slot, '(a)') "# x, z, spin"
+    OPEN(slot, file=filename, access="stream", status="replace")
+    ! WRITE(slot, '(a)') "#    x,    z, spin"
     DO z = 1, len_z, 1
        DO x = 1, len_x, 1
-          WRITE(slot, '(i4, a, i4, a, i4)') &
-               x, ", ", z, ", ", spin(x, z)
+          ! WRITE(slot, '(i4, a, i4, a, i4)') &
+          !      x, ", ", z, ", ", spin(x, z)
+          WRITE(slot) x, z, spin(x, z)
        END DO
        WRITE(slot, '()')
     END DO
@@ -548,13 +549,14 @@ CONTAINS
 
     INTEGER(kind = 4) :: x, y, z
 
-    OPEN(slot, file=filename, status="replace")
-    WRITE(slot, '(a)') "# x, z, spin"
+    OPEN(slot, file=filename, access="stream", status="replace")
+    ! WRITE(slot, '(a)') "#    x,    z, spin"
     DO z = 1, len_z, 1
        DO y = 1, len_y, 1
           DO x = 1, len_x, 1
-             WRITE(slot, '(i4, a, i4, a, i4, a, i4)') &
-                  x, ", ", y, ", ", z, ", ", spin(x, y, z)
+             ! WRITE(slot, '(i4, a, i4, a, i4, a, i4)') &
+             !      x, ", ", y, ", ", z, ", ", spin(x, y, z)
+             WRITE(slot) x, y, z, spin(x, y, z)
           END DO
           WRITE(slot, '()')
        END DO

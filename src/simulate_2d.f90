@@ -74,7 +74,7 @@ PROGRAM main
   IF ( n_samples0 == 0 ) THEN
      CALL initializeSpin_2d(id_IC, &
           len_x, len_z, spin(1:len_x, 1:len_z))
-     CALL exportSpin_2d(slot_spin(0), "spin_initial.dat", &
+     CALL exportSpin_2d(slot_spin(0), "spin_initial.bin", &
           len_x, len_z, spin(1:len_x, 1:len_z))
   END IF
 
@@ -108,12 +108,12 @@ PROGRAM main
      WRITE(si_sample, '(i0.4)') i_sample
 
      !  open energy stream
-     filename_energy="energy_s"//si_sample//"_step.dat"
-     OPEN(slot_energy(i_th), file=filename_energy, status="new")
-     WRITE(slot_energy(i_th), '(a)') "# i_sweep, i_vel, i_step, energy"
+     filename_energy="energy_s"//si_sample//"_step.bin"
+     OPEN(slot_energy(i_th), file=filename_energy, access="stream", status="new")
+     ! WRITE(slot_energy(i_th), '(a)') "# i_sweep, i_vel, i_step, energy"
 
      !  import spin
-     filename_spin="spin_initial.dat"
+     filename_spin="spin_initial.bin"
      CALL importSpin_2d(slot_spin(i_th), filename_spin, &
           len_x, len_z, spin(1:len_x, 1:len_z))
      !  calculation of total energy
@@ -138,7 +138,7 @@ PROGRAM main
              rn_prob(i_th, 1:n_steps), &
              spin(1:len_x, 1:len_z), energy)
 
-        filename_spin="spin_t"//si_sweep//"s"//si_sample//".dat"
+        filename_spin="spin_t"//si_sweep//"s"//si_sample//".bin"
         CALL exportSpin_2d(slot_spin(i_th), &
              filename_spin, len_x, len_z, spin(1:len_x, 1:len_z))
      END DO
@@ -165,7 +165,7 @@ PROGRAM main
                 spin(1:len_x, 1:len_z), energy)
         END DO
 
-        filename_spin="spin_t"//si_sweep//"s"//si_sample//".dat"
+        filename_spin="spin_t"//si_sweep//"s"//si_sample//".bin"
         CALL exportSpin_2d(slot_spin(i_th), &
              filename_spin, len_x, len_z, spin(1:len_x, 1:len_z))
      END DO

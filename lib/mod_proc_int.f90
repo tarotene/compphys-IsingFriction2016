@@ -222,7 +222,7 @@ CONTAINS
 
     INTEGER(kind = 4) :: x, y, z, east, west, south, north, up, down
 
-    energy = 0.0d0
+    energy = 0
     DO x = 1, len_x
        DO y = 1, len_y
           DO z = 1, len_z
@@ -232,7 +232,7 @@ CONTAINS
           END DO
        END DO
     END DO
-    energy = 0.5d0 * energy
+    energy = energy / 2
   END SUBROUTINE calcEnergy_3d
 
   SUBROUTINE calcSlipplaneEnergy_2d(id_BC, len_x, len_z, spin, energy)
@@ -242,7 +242,7 @@ CONTAINS
 
     INTEGER(kind = 4) :: x, east, west, south, north
 
-    energy = 0.0d0
+    energy = 0
     DO x = 1, len_x, 1
        CALL set_direction_2d(id_BC, len_x, len_z, &
             spin(1:len_x, 1:len_z), &
@@ -258,7 +258,7 @@ CONTAINS
 
     INTEGER(kind = 4) :: x, y, east, west, south, north, up, down
 
-    energy = 0.0d0
+    energy = 0
     DO x = 1, len_x, 1
        DO y = 1, len_y, 1
           CALL set_direction_3d(id_BC, len_x, len_y, len_z, &
@@ -393,7 +393,8 @@ CONTAINS
             rn_x(i_step), rn_z(i_step), rn_p(i_step), &
             spin(1:, 1:), relax)
        energy = energy + relax
-       WRITE(slot, '(i9, a, i5, a, i6, a, i6)') i_sweep, ", ", i_vel, ", ", i_step, ", ", energy
+       ! WRITE(slot, '(i9, a, i5, a, i6, a, i6)') i_sweep, ", ", i_vel, ", ", i_step, ", ", energy
+       WRITE(slot) i_sweep, i_vel, i_step, energy
     END DO
   END SUBROUTINE sweep_singleflip_2d
 
@@ -422,16 +423,14 @@ CONTAINS
     INTEGER(kind = 4), INTENT(inout) :: spin(1:, 1:)
     INTEGER(kind = 4), INTENT(inout) :: energy
 
-    REAL(kind = 8) :: prev, next
+    INTEGER(kind = 4) :: prev, next
 
-    CALL calcSlipplaneEnergy_2d(id_BC, len_x, len_z, &
-         spin(1:, 1:), prev)
-    spin(1:len_x, 1:len_z / 2) &
-         = CSHIFT(spin(1:len_x, 1:len_z / 2), shift=1, dim=1)
-    CALL calcSlipplaneEnergy_2d(id_BC, len_x, len_z, &
-         spin(1:, 1:), next)
+    CALL calcSlipplaneEnergy_2d(id_BC, len_x, len_z, spin(1:, 1:), prev)
+    spin(1:len_x, 1:len_z / 2) = CSHIFT(spin(1:len_x, 1:len_z / 2), 1, 1)
+    CALL calcSlipplaneEnergy_2d(id_BC, len_x, len_z, spin(1:, 1:), next)
     energy = energy - prev + next
-    WRITE(slot, '(i9, a, i5, a, i6, a, i6)') i_sweep, ", ", i_vel, ", ", 0, ", ", energy
+    ! WRITE(slot, '(i9, a, i5, a, i6, a, i6)') i_sweep, ", ", i_vel, ", ", 0, ", ", energy
+    WRITE(slot) i_sweep, i_vel, 0, energy
   END SUBROUTINE shiftUpperHalf_2d
 
   SUBROUTINE shiftUpperHalf_3d(id_BC, len_x, len_y, len_z, spin, pump)
@@ -439,14 +438,11 @@ CONTAINS
     INTEGER(kind = 4), INTENT(inout) :: spin(1:, 1:, 1:)
     REAL(kind = 8), INTENT(out) :: pump
 
-    REAL(kind = 8) :: prev, next
+    INTEGER(kind = 4) :: prev, next
 
-    CALL calcSlipplaneEnergy_3d(id_BC, len_x, len_y, len_z, &
-         spin(1:, 1:, 1:), prev)
-    spin(1:len_x, 1:len_y, 1:len_z / 2) &
-         = CSHIFT(spin(1:len_x, 1:len_y, 1:len_z / 2), shift=1, dim=1)
-    CALL calcSlipplaneEnergy_3d(id_BC, len_x, len_y, len_z, &
-         spin(1:, 1:, 1:), next)
+    CALL calcSlipplaneEnergy_3d(id_BC, len_x, len_y, len_z, spin(1:, 1:, 1:), prev)
+    spin(1:len_x, 1:len_y, 1:len_z / 2) = CSHIFT(spin(1:len_x, 1:len_y, 1:len_z / 2), 1, 1)
+    CALL calcSlipplaneEnergy_3d(id_BC, len_x, len_y, len_z, spin(1:, 1:, 1:), next)
     pump = next - prev
   END SUBROUTINE shiftUpperHalf_3d
 
