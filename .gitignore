@@ -1,5 +1,7 @@
 *.dat
 *.eps
 *.key
+*.mod
+obj/
 dat*/
 test/

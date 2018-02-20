@@ -227,61 +227,61 @@ CONTAINS
     CLOSE(slot)
   END SUBROUTINE readStream
 
-  SUBROUTINE writeStream(slot, filename, n_sweeps_therm, n_sweeps_stead, &
-    pump, diss, energy, fluc_pump, fluc_diss, fluc_energy)
-    INTEGER(kind = 4), INTENT(in) :: slot
-    CHARACTER(LEN = *), INTENT(in) :: filename
-    INTEGER(kind = 4), INTENT(in) :: n_sweeps_therm, n_sweeps_stead
-    REAL(kind = 8), INTENT(in) :: pump(1:), diss(1:), energy(1:)
-    REAL(kind = 8), INTENT(in) :: fluc_pump(1:)
-    REAL(kind = 8), INTENT(in) :: fluc_diss(1:)
-    REAL(kind = 8), INTENT(in) :: fluc_energy(1:)
+  ! SUBROUTINE writeStream(slot, filename, n_sweeps_therm, n_sweeps_stead, &
+  !   pump, diss, energy, fluc_pump, fluc_diss, fluc_energy)
+  !   INTEGER(kind = 4), INTENT(in) :: slot
+  !   CHARACTER(LEN = *), INTENT(in) :: filename
+  !   INTEGER(kind = 4), INTENT(in) :: n_sweeps_therm, n_sweeps_stead
+  !   REAL(kind = 8), INTENT(in) :: pump(1:), diss(1:), energy(1:)
+  !   REAL(kind = 8), INTENT(in) :: fluc_pump(1:)
+  !   REAL(kind = 8), INTENT(in) :: fluc_diss(1:)
+  !   REAL(kind = 8), INTENT(in) :: fluc_energy(1:)
+  !
+  !   INTEGER(kind = 4) :: i_sweep, i_dum
+  !
+  !   OPEN(slot, file=filename, status="replace")
+  !   WRITE(slot, '(a)') &
+  !   "# i_sweep, pump, diss, energy, fluc_pump, fluc_diss, fluc_energy"
+  !   DO i_sweep = 1, n_sweeps_therm, 1
+  !      CALL exportStream_onfile(slot, i_sweep, &
+  !      pump(i_sweep), diss(i_sweep), energy(i_sweep), &
+  !      fluc_pump(i_sweep), fluc_diss(i_sweep), fluc_energy(i_sweep))
+  !   END DO
+  !   WRITE(slot, '(a)') "# -- Thermalized --"
+  !   DO i_sweep = n_sweeps_therm + 1, n_sweeps_therm + n_sweeps_stead, 1
+  !     CALL exportStream_onfile(slot, i_sweep, &
+  !     pump(i_sweep), diss(i_sweep), energy(i_sweep), &
+  !     fluc_pump(i_sweep), fluc_diss(i_sweep), fluc_energy(i_sweep))
+  !   END DO
+  !   WRITE(slot, '(a)') "# -- Steadized --"
+  !   CLOSE(slot)
+  ! END SUBROUTINE writeStream
 
-    INTEGER(kind = 4) :: i_sweep, i_dum
-
-    OPEN(slot, file=filename, status="replace")
-    WRITE(slot, '(a)') &
-    "# i_sweep, pump, diss, energy, fluc_pump, fluc_diss, fluc_energy"
-    DO i_sweep = 1, n_sweeps_therm, 1
-       CALL exportStream_onfile(slot, i_sweep, &
-       pump(i_sweep), diss(i_sweep), energy(i_sweep), &
-       fluc_pump(i_sweep), fluc_diss(i_sweep), fluc_energy(i_sweep))
-    END DO
-    WRITE(slot, '(a)') "# -- Thermalized --"
-    DO i_sweep = n_sweeps_therm + 1, n_sweeps_therm + n_sweeps_stead, 1
-      CALL exportStream_onfile(slot, i_sweep, &
-      pump(i_sweep), diss(i_sweep), energy(i_sweep), &
-      fluc_pump(i_sweep), fluc_diss(i_sweep), fluc_energy(i_sweep))
-    END DO
-    WRITE(slot, '(a)') "# -- Steadized --"
-    CLOSE(slot)
-  END SUBROUTINE writeStream
-
-  SUBROUTINE copyStream2Stream(slot, filename1, filename2, &
-    n_sweeps_therm, n_sweeps_stead)
-    INTEGER(kind = 4), INTENT(in) :: slot
-    CHARACTER(LEN = *), INTENT(in) :: filename1, filename2
-    INTEGER(kind = 4), INTENT(in) :: n_sweeps_therm, n_sweeps_stead
-
-    REAL(kind = 8) :: pump(1:n_sweeps_therm + n_sweeps_stead)
-    REAL(kind = 8) :: diss(1:n_sweeps_therm + n_sweeps_stead)
-    REAL(kind = 8) :: energy(1:n_sweeps_therm + n_sweeps_stead)
-    REAL(kind = 8) :: fluc_pump(1:n_sweeps_therm + n_sweeps_stead)
-    REAL(kind = 8) :: fluc_diss(1:n_sweeps_therm + n_sweeps_stead)
-    REAL(kind = 8) :: fluc_energy(1:n_sweeps_therm + n_sweeps_stead)
-
-    INTEGER(kind = 4) :: n_sweeps
-
-    n_sweeps = n_sweeps_therm + n_sweeps_stead
-
-    CALL readStream(slot, filename1, n_sweeps_therm, n_sweeps_stead, &
-    pump(1:n_sweeps), diss(1:n_sweeps), energy(1:n_sweeps), &
-    fluc_pump(1:n_sweeps), fluc_diss(1:n_sweeps), fluc_energy(1:n_sweeps))
-
-    CALL writeStream(slot, filename2, n_sweeps_therm, n_sweeps_stead, &
-    pump(1:n_sweeps), diss(1:n_sweeps), energy(1:n_sweeps), &
-    fluc_pump(1:n_sweeps), fluc_diss(1:n_sweeps), fluc_energy(1:n_sweeps))
-  END SUBROUTINE copyStream2Stream
+  ! SUBROUTINE copyStream2Stream(slot, filename1, filename2, &
+  !   n_sweeps_therm, n_sweeps_stead)
+  !   INTEGER(kind = 4), INTENT(in) :: slot
+  !   CHARACTER(LEN = *), INTENT(in) :: filename1, filename2
+  !   INTEGER(kind = 4), INTENT(in) :: n_sweeps_therm, n_sweeps_stead
+  !
+  !   REAL(kind = 8) :: pump(1:n_sweeps_therm + n_sweeps_stead)
+  !   REAL(kind = 8) :: diss(1:n_sweeps_therm + n_sweeps_stead)
+  !   REAL(kind = 8) :: energy(1:n_sweeps_therm + n_sweeps_stead)
+  !   REAL(kind = 8) :: fluc_pump(1:n_sweeps_therm + n_sweeps_stead)
+  !   REAL(kind = 8) :: fluc_diss(1:n_sweeps_therm + n_sweeps_stead)
+  !   REAL(kind = 8) :: fluc_energy(1:n_sweeps_therm + n_sweeps_stead)
+  !
+  !   INTEGER(kind = 4) :: n_sweeps
+  !
+  !   n_sweeps = n_sweeps_therm + n_sweeps_stead
+  !
+  !   CALL readStream(slot, filename1, n_sweeps_therm, n_sweeps_stead, &
+  !   pump(1:n_sweeps), diss(1:n_sweeps), energy(1:n_sweeps), &
+  !   fluc_pump(1:n_sweeps), fluc_diss(1:n_sweeps), fluc_energy(1:n_sweeps))
+  !
+  !   CALL writeStream(slot, filename2, n_sweeps_therm, n_sweeps_stead, &
+  !   pump(1:n_sweeps), diss(1:n_sweeps), energy(1:n_sweeps), &
+  !   fluc_pump(1:n_sweeps), fluc_diss(1:n_sweeps), fluc_energy(1:n_sweeps))
+  ! END SUBROUTINE copyStream2Stream
 
   SUBROUTINE addNewStreamSample2Sum(slot, filename, &
        n_sweeps_therm, n_sweeps_stead, sum_pump, sum_diss, sum_energy)
@@ -532,7 +532,7 @@ CONTAINS
     WRITE(slot, '(a)') "# x, z, spin"
     DO z = 1, len_z, 1
        DO x = 1, len_x, 1
-          WRITE(slot, '(i0.4, a, i0.4, a, i0.4)') &
+          WRITE(slot, '(i4, a, i4, a, i4)') &
                x, ", ", z, ", ", spin(x, z)
        END DO
        WRITE(slot, '()')

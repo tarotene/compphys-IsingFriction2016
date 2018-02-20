@@ -10,7 +10,7 @@ PROGRAM main
 
   ! observables
   INTEGER(kind = 4), ALLOCATABLE :: spin(:, :)
-  REAL(kind = 8) :: energy
+  INTEGER(kind = 4) :: energy
 
   ! simulation variables
   INTEGER(kind = 4) :: seed_master
@@ -21,12 +21,12 @@ PROGRAM main
 
   ! loop variables
   INTEGER(kind = 4) :: z, n_steps, i_step, i_vel, i_sweep, i_sample
-  CHARACTER(len = 4, kind = 1) :: si_sample
+  CHARACTER(len = 4, kind = 1) :: si_sweep, si_sample
 
   CHARACTER(:), ALLOCATABLE :: filename_spin, filename_energy
 
   ! slot variables
-  INTEGER(kind = 4), ALLOCATABLE :: slot_spin(:)
+  INTEGER(kind = 4), ALLOCATABLE :: slot_spin(:), slot_energy(:)
 
   ! omp variables
   INTEGER(kind = 4) :: i_th, err_x, err_z, err_prob
@@ -96,10 +96,10 @@ PROGRAM main
   !$omp shared(id_BC, len_x, len_z, vel) &
   !$omp shared(str_x, str_z, str_prob) &
   !$omp shared(rn_x, rn_z, rn_prob) &
-  !$omp shared(slot_spin) &
+  !$omp shared(slot_spin, slot_energy) &
   !$omp private(err_x, err_z, err_prob) &
   !$omp private(filename_spin, filename_energy) &
-  !$omp private(i_th, si_sample, i_step, n_steps) &
+  !$omp private(i_th, si_sample, si_sweep, i_step, n_steps) &
   !$omp private(spin, energy)
   DO i_sample = n_samples0 + 1, n_samples, 1
      i_th = 0
@@ -123,6 +123,8 @@ PROGRAM main
      !  thermalization
      n_steps = len_x * len_z
      DO i_sweep = 1, n_sweeps_therm, 1
+        WRITE(si_sweep, '(i0.4)') i_sweep
+
         CALL generateRN_int(str_x(i_sample), 1, len_x, n_steps, &
              rn_x(i_th, 1:n_steps), err_x)
         CALL generateRN_int(str_z(i_sample), 1, len_z, n_steps, &
@@ -136,15 +138,15 @@ PROGRAM main
              rn_prob(i_th, 1:n_steps), &
              spin(1:len_x, 1:len_z), energy)
 
-        filename_spin="spin_t"//i_sweep//"s"//si_sample//".dat"
+        filename_spin="spin_t"//si_sweep//"s"//si_sample//".dat"
         CALL exportSpin_2d(slot_spin(i_th), &
              filename_spin, len_x, len_z, spin(1:len_x, 1:len_z))
      END DO
 
      !  steadization
      n_steps = len_x * len_z / vel
-     DO i_sweep = n_sweeps_therm + 1, &
-          n_sweeps_therm + n_sweeps_stead, 1
+     DO i_sweep = n_sweeps_therm + 1, n_sweeps_therm + n_sweeps_stead, 1
+       WRITE(si_sweep, '(i0.4)') i_sweep
 
         DO i_vel = 1, vel, 1
            CALL generateRN_int(str_x(i_sample), 1, len_x, n_steps, &
@@ -163,7 +165,7 @@ PROGRAM main
                 spin(1:len_x, 1:len_z), energy)
         END DO
 
-        filename_spin="spin_t"//i_sweep//"s"//si_sample//".dat"
+        filename_spin="spin_t"//si_sweep//"s"//si_sample//".dat"
         CALL exportSpin_2d(slot_spin(i_th), &
              filename_spin, len_x, len_z, spin(1:len_x, 1:len_z))
      END DO

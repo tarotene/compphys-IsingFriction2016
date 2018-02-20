@@ -31,8 +31,7 @@ CONTAINS
   END SUBROUTINE makeProbArray_3d
 
   !TODO: function手続きを用いて書き直すべき
-  SUBROUTINE makeDeltaEArray_2d(J, deltaE)
-    REAL(kind = 8), INTENT(in) :: J
+  SUBROUTINE makeDeltaEArray_2d(deltaE)
     REAL(kind = 8), INTENT(out) :: deltaE(-1:, -1:, -1:, -1:, -1:)
 
     INTEGER(kind = 4) :: center, east, west, south, north
@@ -43,7 +42,7 @@ CONTAINS
              DO south = -1, 1, 1
                 DO north = -1, 1, 1
                    deltaE(center, east, west, south, north) &
-                        = 2.0d0 * J * DBLE(center * (east + west + south + north))
+                        = 2.0d0 * DBLE(center * (east + west + south + north))
                 END DO
              END DO
           END DO
@@ -201,7 +200,7 @@ CONTAINS
   SUBROUTINE calcEnergy_2d(id_BC, len_x, len_z, spin, energy)
     INTEGER(kind = 4), INTENT(in) :: id_BC, len_x, len_z
     INTEGER(kind = 4), INTENT(in) :: spin(1:, 1:)
-    REAL(kind = 8), INTENT(out) :: energy
+    INTEGER(kind = 4), INTENT(out) :: energy
 
     INTEGER(kind = 4) :: x, z, east, west, south, north
 
@@ -210,7 +209,7 @@ CONTAINS
        DO z = 1, len_z
           CALL set_direction_2d(id_BC, len_x, len_z, spin, x, z, &
                east, west, south, north)
-          energy = energy - J * DBLE(spin(x,z) * (east + west + south + north))
+          energy = energy - DBLE(spin(x,z) * (east + west + south + north))
        END DO
     END DO
     energy = 0.5d0 * energy
@@ -219,7 +218,7 @@ CONTAINS
   SUBROUTINE calcEnergy_3d(id_BC, len_x, len_y, len_z, spin, energy)
     INTEGER(kind = 4), INTENT(in) :: id_BC, len_x, len_y, len_z
     INTEGER(kind = 4), INTENT(in) :: spin(1:, 1:, 1:)
-    REAL(kind = 8), INTENT(out) :: energy
+    INTEGER(kind = 4), INTENT(out) :: energy
 
     INTEGER(kind = 4) :: x, y, z, east, west, south, north, up, down
 
@@ -229,8 +228,7 @@ CONTAINS
           DO z = 1, len_z
              CALL set_direction_3d(id_BC, len_x, len_y, len_z, spin, x, y, z, &
                   east, west, south, north, up, down)
-             energy = energy &
-                  - J * DBLE(spin(x,y,z) * (east + west + south + north + up + down))
+             energy = energy - DBLE(spin(x,y,z) * (east + west + south + north + up + down))
           END DO
        END DO
     END DO
@@ -240,7 +238,7 @@ CONTAINS
   SUBROUTINE calcSlipplaneEnergy_2d(id_BC, len_x, len_z, spin, energy)
     INTEGER(kind = 4), INTENT(in) :: id_BC, len_x, len_z
     INTEGER(kind = 4), INTENT(in) :: spin(1:, 1:)
-    REAL(kind = 8), INTENT(out) :: energy
+    INTEGER(kind = 4), INTENT(out) :: energy
 
     INTEGER(kind = 4) :: x, east, west, south, north
 
@@ -249,15 +247,14 @@ CONTAINS
        CALL set_direction_2d(id_BC, len_x, len_z, &
             spin(1:len_x, 1:len_z), &
             x, len_z / 2, east, west, south, north)
-       energy = energy &
-            - J * DBLE(spin(x, len_z / 2) * (east + west + south + north))
+       energy = energy - DBLE(spin(x, len_z / 2) * (east + west + south + north))
     END DO
   END SUBROUTINE calcSlipplaneEnergy_2d
 
   SUBROUTINE calcSlipplaneEnergy_3d(id_BC, len_x, len_y, len_z, spin, energy)
     INTEGER(kind = 4), INTENT(in) :: id_BC, len_x, len_y, len_z
     INTEGER(kind = 4), INTENT(in) :: spin(1:, 1:, 1:)
-    REAL(kind = 8), INTENT(out) :: energy
+    INTEGER(kind = 4), INTENT(out) :: energy
 
     INTEGER(kind = 4) :: x, y, east, west, south, north, up, down
 
@@ -267,8 +264,7 @@ CONTAINS
           CALL set_direction_3d(id_BC, len_x, len_y, len_z, &
                spin(1:len_x, 1:len_y, 1:len_z), &
                x, y, len_z / 2, east, west, south, north, up, down)
-          energy = energy &
-               - J * DBLE(spin(x, y, len_z / 2) * (east + west + south + north + up + down))
+          energy = energy - DBLE(spin(x, y, len_z / 2) * (east + west + south + north + up + down))
        END DO
     END DO
   END SUBROUTINE calcSlipplaneEnergy_3d
@@ -383,11 +379,11 @@ CONTAINS
 
   SUBROUTINE sweep_singleflip_2d(slot, i_sweep, i_vel, id_BC, len_x, len_z, n_steps, &
        rn_x, rn_z, rn_p, spin, energy)
-    INTEGER(kind = 4), INTENT(in) :: slot, i_sweep, id_BC, len_x, len_z, n_steps
+    INTEGER(kind = 4), INTENT(in) :: slot, i_sweep, i_vel, id_BC, len_x, len_z, n_steps
     INTEGER(kind = 4), INTENT(in) :: rn_x(1:), rn_z(1:)
     REAL(kind = 8), INTENT(in) :: rn_p(1:)
     INTEGER(kind = 4), INTENT(inout) :: spin(1:, 1:)
-    REAL(kind = 8), INTENT(inout) :: energy
+    INTEGER(kind = 4), INTENT(inout) :: energy
 
     INTEGER(kind = 4) :: i_step
     REAL(kind = 8) :: relax
@@ -397,7 +393,7 @@ CONTAINS
             rn_x(i_step), rn_z(i_step), rn_p(i_step), &
             spin(1:, 1:), relax)
        energy = energy + relax
-       WRITE(slot, '(i5, a, i5, a, i5, a, f0.4)') i_sweep, ", ", i_vel, ", ", i_step, ", ", energy
+       WRITE(slot, '(i9, a, i5, a, i6, a, i6)') i_sweep, ", ", i_vel, ", ", i_step, ", ", energy
     END DO
   END SUBROUTINE sweep_singleflip_2d
 
@@ -424,7 +420,7 @@ CONTAINS
   SUBROUTINE shiftUpperHalf_2d(slot, i_sweep, i_vel, id_BC, len_x, len_z, spin, energy)
     INTEGER(kind = 4), INTENT(in) :: slot, i_sweep, i_vel, id_BC, len_x, len_z
     INTEGER(kind = 4), INTENT(inout) :: spin(1:, 1:)
-    REAL(kind = 8), INTENT(inout) :: energy
+    INTEGER(kind = 4), INTENT(inout) :: energy
 
     REAL(kind = 8) :: prev, next
 
@@ -435,7 +431,7 @@ CONTAINS
     CALL calcSlipplaneEnergy_2d(id_BC, len_x, len_z, &
          spin(1:, 1:), next)
     energy = energy - prev + next
-    WRITE(slot, '(i5, a, i5, a, i5, a, f0.4)') i_sweep, ", ", i_vel, ", ", 0, ", ", energy
+    WRITE(slot, '(i9, a, i5, a, i6, a, i6)') i_sweep, ", ", i_vel, ", ", 0, ", ", energy
   END SUBROUTINE shiftUpperHalf_2d
 
   SUBROUTINE shiftUpperHalf_3d(id_BC, len_x, len_y, len_z, spin, pump)
