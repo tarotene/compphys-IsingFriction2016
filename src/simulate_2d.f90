@@ -1,8 +1,6 @@
 PROGRAM main
   !$  USE omp_lib
   USE mod_global
-  USE MKL_VSL_TYPE
-  USE MKL_VSL
   USE mod_proc
   USE IFPORT, ONLY: access
 
