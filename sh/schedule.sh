@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-len_s=4; len_t=32
+n_s=2; len_t=8
 
-read scheduled
+read target
 
 TIME_A=`date +%s`
 
@@ -17,17 +17,17 @@ for dir in `ls`; do
 
   cd 01-antiparallel
   id_BC=1; id_IC=1
-  source ../../../sh/${scheduled}.sh
+  source ../../../sh/${target}.sh
   cd ../
 
   cd 02-parallel
   id_BC=2; id_IC=2
-  source ../../../sh/${scheduled}.sh
+  source ../../../sh/${target}.sh
   cd ../
 
   cd 03-free
   id_BC=3; id_IC=3
-  source ../../../sh/${scheduled}.sh
+  source ../../../sh/${target}.sh
   cd ../
 
   cd ../
