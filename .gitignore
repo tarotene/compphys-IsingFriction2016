@@ -1,3 +1,4 @@
+bin/
 *.dat
 dat/
 *.eps
@@ -5,6 +6,8 @@ eps/
 *.key
 key/
 *.mod
+mod/
+pdf/
 obj/
 dat*/
 test/
