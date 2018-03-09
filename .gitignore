@@ -1,6 +1,9 @@
 *.dat
+dat/
 *.eps
+eps/
 *.key
+key/
 *.mod
 obj/
 dat*/
