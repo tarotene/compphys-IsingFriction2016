@@ -1,5 +1,10 @@
-*.dat
-*.eps
-*.key
+bin/
 dat*/
-test/
+eps*/
+key*/
+mod*/
+obj*/
+test*/
+zip*/
+
+*.dat
