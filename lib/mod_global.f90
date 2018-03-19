@@ -1,29 +1,17 @@
-INCLUDE 'mkl_vsl.f90'
-
 MODULE mod_global
-  USE MKL_VSL_TYPE
-  USE MKL_VSL
-
   IMPLICIT NONE
 
-  ! condition parameters
-  INTEGER(kind = 4), SAVE :: id_IC, id_BC
+  ! internal paramters
+  INTEGER(4), PARAMETER :: i8b = selected_int_KIND(18)  ! eight-byte integer
 
-  ! omp parameters
-  INTEGER(kind = 4), SAVE :: n_ths
+  ! condition parameters
+  INTEGER(4), SAVE :: id_IC, id_BC
 
   ! general parameters
-  INTEGER(kind = 4), SAVE :: len_x, len_y, len_z, vel
-  INTEGER(kind = 4), SAVE :: n_samples, n_samples0
-  INTEGER(kind = 4), SAVE :: n_samples_old, n_samples_new
-  INTEGER(kind = 4), SAVE :: n_sweeps_therm, n_sweeps_stead
-  INTEGER(kind = 4), SAVE :: n_sweeps_therm0, n_sweeps_stead0
-  REAL(kind = 8), SAVE :: J, beta
+  INTEGER(4), SAVE :: l_x, l_y, l_z, vel, n_s, n_s0, l_t, n_st, l_th, l_b
+  REAL(8), SAVE :: beta
 
   !reduced parameters
-  INTEGER(kind = 4), SAVE :: n_sweeps
-  REAL(kind = 8), SAVE :: prob_2d(-1:1, -1:1, -1:1, -1:1, -1:1)
-  REAL(kind = 8), SAVE :: deltaE_2d(-1:1, -1:1, -1:1, -1:1, -1:1)
-  REAL(kind = 8), SAVE :: prob_3d(-1:1, -1:1, -1:1, -1:1, -1:1, -1:1, -1:1)
-  REAL(kind = 8), SAVE :: deltaE_3d(-1:1, -1:1, -1:1, -1:1, -1:1, -1:1, -1:1)
+  REAL(8), SAVE :: p_2d(-1:1, -1:1, -1:1, -1:1, -1:1)
+  REAL(8), SAVE :: p_3d(-1:1, -1:1, -1:1, -1:1, -1:1, -1:1, -1:1)
 END MODULE mod_global
