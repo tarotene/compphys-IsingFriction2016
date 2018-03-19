@@ -1,0 +1,12 @@
+bin/
+dat*/
+eps*/
+key*/
+mod*/
+obj*/
+test*/
+zip*/
+*.mod
+*.dat
+/sh/*
+!/sh/_*.sh
