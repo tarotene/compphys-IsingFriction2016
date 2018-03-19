@@ -10,8 +10,6 @@ l_b=4000
 
 read target
 
-TIME_A=`date +%s`
-
 cd dat
 for dir in `ls`; do
   cd ${dir}
@@ -39,8 +37,3 @@ for dir in `ls`; do
   cd ../
 done
 cd ../
-
-TIME_B=`date +%s`
-PT=`expr ${TIME_B} - ${TIME_A}`
-H=`expr ${PT} / 3600`; PT=`expr ${PT} % 3600`; M=`expr ${PT} / 60`; S=`expr ${PT} % 60`
-echo "${H}:${M}:${S}"
