@@ -3,8 +3,8 @@ dat*/
 eps*/
 key*/
 mod*/
-obj*/
+obj/*.o
 test*/
 zip*/
-
+*.mod
 *.dat
