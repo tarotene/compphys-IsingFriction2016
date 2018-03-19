@@ -489,11 +489,7 @@ se yl "{/Times-Italic df}/{/Times-Italic dT}({/Times-Italic L_z}, {/Times-Italic
 se ou "dFricDensP_Allsize_AP.eps"
 pl \
 "dat/Lz004Lx0200Ly__Vel10/antiparallel/res_dPump_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=4", \
-"dat/Lz006Lx0300Ly__Vel10/antiparallel/res_dPump_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=6", \
 "dat/Lz008Lx0400Ly__Vel10/antiparallel/res_dPump_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=8", \
-"dat/Lz010Lx0500Ly__Vel10/antiparallel/res_dPump_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=10", \
-"dat/Lz012Lx0600Ly__Vel10/antiparallel/res_dPump_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=12", \
-"dat/Lz014Lx0700Ly__Vel10/antiparallel/res_dPump_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=14", \
 "dat/Lz016Lx0800Ly__Vel10/antiparallel/res_dPump_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=16", \
 "dat/Lz032Lx1600Ly__Vel10/antiparallel/res_dPump_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=32", \
 "dat/Lz064Lx3200Ly__Vel10/antiparallel/res_dPump_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=64"
@@ -515,11 +511,7 @@ se yl "{/Times-Italic df}/{/Times-Italic dT}({/Times-Italic L_z}, {/Times-Italic
 se ou "dFricDensP_Allsize_P.eps"
 pl \
 "dat/Lz004Lx0200Ly__Vel10/parallel/res_dPump_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=4", \
-"dat/Lz006Lx0300Ly__Vel10/parallel/res_dPump_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=6", \
 "dat/Lz008Lx0400Ly__Vel10/parallel/res_dPump_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=8", \
-"dat/Lz010Lx0500Ly__Vel10/parallel/res_dPump_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=10", \
-"dat/Lz012Lx0600Ly__Vel10/parallel/res_dPump_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=12", \
-"dat/Lz014Lx0700Ly__Vel10/parallel/res_dPump_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=14", \
 "dat/Lz016Lx0800Ly__Vel10/parallel/res_dPump_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=16", \
 "dat/Lz032Lx1600Ly__Vel10/parallel/res_dPump_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=32", \
 "dat/Lz064Lx3200Ly__Vel10/parallel/res_dPump_T.dat" u 1:2 w lp lw 4 tit "{/Times-Italic L}_{/Times-Italic z}=64"
