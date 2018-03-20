@@ -11,6 +11,7 @@ do for [s in set_s] {
   outfile4 = "ac_me_s".s."_beta".beta.".eps"
 
   set xrange [0:10000]
+  set yrange [0:1]
   set grid
 
   set output outfile1
