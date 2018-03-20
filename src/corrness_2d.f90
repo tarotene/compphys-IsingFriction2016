@@ -22,7 +22,6 @@ PROGRAM main
   ALLOCATE(eb_sq(1:n_s, 1:l_t), ee_sq(1:n_s, 1:l_t), mb_sq(1:n_s, 1:l_t), me_sq(1:n_s, 1:l_t))
   ALLOCATE(ac_eb(1:n_s, 1:l_t / 2), ac_ee(1:n_s, 1:l_t / 2), ac_amb(1:n_s, 1:l_t / 2), ac_ame(1:n_s, 1:l_t / 2))
 
-  loc = 1
   DO s = 1, n_s, 1
      sl_eb = 20 + s + 2 * n_s; sl_mb = 20 + s + 3 * n_s
      sl_ee = 20 + s + 4 * n_s; sl_me = 20 + s + 5 * n_s
@@ -32,8 +31,9 @@ PROGRAM main
      OPEN(sl_ee, file="ee_sweep/en_edge_s"//ss//"_sweep.bin", access="stream", status="old", buffered="YES")
      OPEN(sl_mb, file="mb_sweep/m_bulk_s"//ss//"_sweep.bin", access="stream", status="old", buffered="YES")
      OPEN(sl_me, file="me_sweep/m_edge_s"//ss//"_sweep.bin", access="stream", status="old", buffered="YES")
-
-     DO t = 1, l_t, 1
+     
+     loc = 1
+     DO t = 1,   l_t, 1
         READ(sl_eb, pos=loc) eb(s, t); READ(sl_mb, pos=loc) mb(s, t)
         READ(sl_ee, pos=loc) ee(s, t); READ(sl_me, pos=loc) me(s, t)
         loc = loc + 4
