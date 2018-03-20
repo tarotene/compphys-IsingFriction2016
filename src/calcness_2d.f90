@@ -11,7 +11,7 @@ PROGRAM main
   REAL(8), ALLOCATABLE :: avg_eb(:), avg_ee(:), avg_amb(:), avg_ame(:), avg_p(:)
   REAL(8), ALLOCATABLE :: err_eb(:), err_ee(:), err_amb(:), err_ame(:), err_p(:)
 
-  REAL(8), ALLOCATABLE :: int_eb(:), int_ee(:), int_mb(:), int_me(:), int_p(:)
+  REAL(8), ALLOCATABLE :: int_eb(:), int_ee(:), int_amb(:), int_ame(:), int_p(:)
   REAL(8), ALLOCATABLE :: err_int_eb(:), err_int_ee(:), err_int_amb(:), err_int_ame(:), err_int_p(:)
 
   INTEGER(4), ALLOCATABLE :: eb_sq(:, :), ee_sq(:, :), amb_sq(:, :), ame_sq(:, :), amb_fp(:, :), ame_fp(:, :)
@@ -20,6 +20,9 @@ PROGRAM main
 
   REAL(8), ALLOCATABLE :: cb(:), ce(:), chib(:), chie(:), ub(:), ue(:)
   REAL(8), ALLOCATABLE :: err_cb(:), err_ce(:), err_chib(:), err_chie(:), err_ub(:), err_ue(:)
+
+  REAL(8), ALLOCATABLE :: mat_obs(:, :, :), avg(:), err(:)
+  
   INTEGER(4) :: t, s, loc, t_
   CHARACTER(4) :: ss
 
@@ -28,6 +31,9 @@ PROGRAM main
   ALLOCATE(eb(1:l_t, 1:n_s), ee(1:l_t, 1:n_s), mb(1:l_t, 1:n_s), me(1:l_t, 1:n_s), p(1:l_t, 1:n_s))
   ALLOCATE(avg_eb(1:n_s), avg_ee(1:n_s), avg_amb(1:n_s), avg_ame(1:n_s), avg_p(1:n_s))
   ALLOCATE(err_eb(1:n_s), err_ee(1:n_s), err_amb(1:n_s), err_ame(1:n_s), err_p(1:n_s))
+
+  ALLOCATE(int_eb(1:n_s), int_ee(1:n_s), int_amb(1:n_s), int_ame(1:n_s), int_p(1:n_s))
+  ALLOCATE(err_int_eb(1:n_s), err_int_ee(1:n_s), err_int_amb(1:n_s), err_int_ame(1:n_s), err_int_p(1:n_s))
 
   ALLOCATE(eb_sq(1:l_t, 1:n_s), ee_sq(1:l_t, 1:n_s), amb_sq(1:l_t, 1:n_s), ame_sq(1:l_t, 1:n_s), amb_fp(1:l_t, 1:n_s), ame_fp(1:l_t, 1:n_s))
   ALLOCATE(avg_eb_sq(1:n_s), avg_ee(1:n_s), avg_amb(1:n_s), avg_ame(1:n_s), avg_amb_fp(1:n_s), avg_ame_fp(1:n_s))
@@ -66,8 +72,8 @@ PROGRAM main
   ee_sq(1:l_t, 1:n_s)  = ee(1:l_t, 1:n_s) ** 2
   amb_sq(1:l_t, 1:n_s) = ABS(mb(1:l_t, 1:n_s)) ** 2
   ame_sq(1:l_t, 1:n_s) = ABS(me(1:l_t, 1:n_s)) ** 2
-  amb_fp(1:l_t, 1:n_s) = amb_sq(1:l_t, 1:n_s)) ** 2
-  ame_fp(1:l_t, 1:n_s) = ame_sq(1:l_t, 1:n_s)) ** 2
+  amb_fp(1:l_t, 1:n_s) = amb_sq(1:l_t, 1:n_s) ** 2
+  ame_fp(1:l_t, 1:n_s) = ame_sq(1:l_t, 1:n_s) ** 2
 
   ALLOCATE(mat_obs(1:l_t, 1:n_s, 1:11), avg(1:11), err(1:11))
   mat_obs(1:l_t, 1:n_s, 1)  = DBLE(eb(1:l_t, 1:n_s))
@@ -76,8 +82,8 @@ PROGRAM main
   mat_obs(1:l_t, 1:n_s, 4)  = DBLE(ee_sq(1:l_t, 1:n_s))
   mat_obs(1:l_t, 1:n_s, 5)  = DBLE(ABS(mb(1:l_t, 1:n_s)))
   mat_obs(1:l_t, 1:n_s, 6)  = DBLE(ABS(me(1:l_t, 1:n_s)))
-  mat_obs(1:l_t, 1:n_s, 7)  = DBLE(amb_sq(1:l_t, 1:n_s)))
-  mat_obs(1:l_t, 1:n_s, 8)  = DBLE(ame_sq(1:l_t, 1:n_s)))
+  mat_obs(1:l_t, 1:n_s, 7)  = DBLE(amb_sq(1:l_t, 1:n_s))
+  mat_obs(1:l_t, 1:n_s, 8)  = DBLE(ame_sq(1:l_t, 1:n_s))
   mat_obs(1:l_t, 1:n_s, 9)  = DBLE(amb_fp(1:l_t, 1:n_s))
   mat_obs(1:l_t, 1:n_s, 10) = DBLE(ame_fp(1:l_t, 1:n_s))
   mat_obs(1:l_t, 1:n_s, 11) = DBLE(p(1:l_t, 1:n_s))
@@ -97,16 +103,15 @@ PROGRAM main
   END DO
   DEALLOCATE(mat_obs, avg, err)
 
-  ! int_eb(:), int_ee(:), int_mb(:), int_me(:), int_p(:)
   DO CONCURRENT (s = 1:n_s:1)
      int_eb(s)  = avg_eb(s) / DBLE(l_x * l_z)
-     int_ee(s)  = avg_ee / DBLE(l_x)
+     int_ee(s)  = avg_ee(s) / DBLE(l_x)
      int_amb(s) = avg_amb(s) / DBLE(l_x * l_z)
      int_ame(s) = avg_ame(s) / DBLE(2 * l_x)
      int_p(s)   = avg_p(s) / DBLE(l_x)
 
      err_int_eb(s)  = err_eb(s) / DBLE(l_x * l_z)
-     err_int_ee(s)  = err_ee / DBLE(l_x)
+     err_int_ee(s)  = err_ee(s) / DBLE(l_x)
      err_int_amb(s) = err_amb(s) / DBLE(l_x * l_z)
      err_int_ame(s) = err_ame(s) / DBLE(2 * l_x)
      err_int_p(s)   = err_p(s) / DBLE(l_x)
@@ -120,9 +125,6 @@ PROGRAM main
      int_p(s), ", ", err_int_p(s)
   END DO
   CLOSE(10)
-
-  ALLOCATE(cb(1:n_s), ce(1:n_s), chib(1:n_s), chie(1:n_s), ub(1:n_s), ue(1:n_s))
-  ALLOCATE(err_cb(1:n_s), err_ce(1:n_s), err_chib(1:n_s), err_chie(1:n_s), err_ub(1:n_s), err_ue(1:n_s))
 
   DO CONCURRENT (s = 1:n_s:1)
      cb(s)    = (beta ** 2) * (avg_eb_sq(s) - avg_eb(s) ** 2) / DBLE(l_x * l_z)
