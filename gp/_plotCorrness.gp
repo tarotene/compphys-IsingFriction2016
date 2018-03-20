@@ -1,6 +1,5 @@
 set terminal postscript eps color
 
-hl_t = l_t / 2
 do for [s in set_s] {
   infile1 = "beta".beta."/ac_en_bulk_s".s.".bin"
   infile2 = "beta".beta."/ac_en_edge_s".s.".bin"
@@ -11,15 +10,15 @@ do for [s in set_s] {
   outfile3 = "ac_mb_s".s."_beta".beta.".eps"
   outfile4 = "ac_me_s".s."_beta".beta.".eps"
 
-  set xrange [0:2000]
+  set xrange [0:10000]
   set grid
 
   set output outfile1
-  plot  infile1 binary array=2000 format="%float" smooth unique notitle
+  plot  infile1 binary array=10000 format="%float" smooth unique notitle
   set output outfile2
-  plot  infile2 binary array=2000 format="%float" smooth unique notitle
+  plot  infile2 binary array=10000 format="%float" smooth unique notitle
   set output outfile3
-  plot  infile3 binary array=2000 format="%float" smooth unique notitle
+  plot  infile3 binary array=10000 format="%float" smooth unique notitle
   set output outfile4
-  plot  infile4 binary array=2000 format="%float" smooth unique notitle
+  plot  infile4 binary array=10000 format="%float" smooth unique notitle
 }
