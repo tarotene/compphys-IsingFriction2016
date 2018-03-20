@@ -375,4 +375,31 @@
          END IF
       END DO
     END SUBROUTINE countSamples
+
+    subroutine calcStatsStream(l_th, l_b, n_srs, mat_srs, avg, err)
+      integer(4), intent(in) ::  l_th, l_b, n_srs
+      real(8), intent(in) :: mat_srs(1:, 1:)
+      real(8), intent(out) :: avg(1:), err(1:)
+
+      integer(4) :: b, n_b, lb_t, rb_t
+      real(8), allocatable :: b_srs(:, :)，var_sq(:)
+
+      n_b = (l_t - l_th) / l_b
+      allocate(b_srs(1:n_b, 1:n_srs), avg_sq(1:n_b, 1:n_srs), var_sq(1:n_srs))
+
+      DO CONCURRENT (i_srs = 1:n_srs:1)
+        DO CONCURRENT (b = 1:n_b:1) 
+          lb_t = l_th + 1 + (b - 1) * l_b
+          rb_t = l_th + b * l_b
+
+          b_srs(b, i_srs) = SUM(mat_srs(lb_t:rb_t, i_srs)) / DBLE(l_b)
+        END DO
+      END DO
+      b_sq(1:n_b, 1:n_srs) = b_srs(1:n_b, 1:n_srs) ** 2
+      avg(1:n_srs) = SUM(b_srs(1:n_b, 1:n_srs)) / DBLE(n_b)
+      DO CONCURRENT (i_srs = 1:n_srs:1)
+        var_sq(i_srs) = (SUM(avg_sq(1:n_b, i_srs)) / DBLE(n_b) - avg(i_srs) ** 2) / DBLE(n_b - 1)
+        err(i_srs) = SQRT(var_sq(i_srs) / DBLE(n_b))
+      END DO      
+    end subroutine
   END MODULE mod_proc
