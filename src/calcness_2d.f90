@@ -75,8 +75,6 @@ PROGRAM main
   amb_fp(1:l_t, 1:n_s) = amb_sq(1:l_t, 1:n_s) ** 2
   ame_fp(1:l_t, 1:n_s) = ame_sq(1:l_t, 1:n_s) ** 2
 
-  DEALLOCATE(eb, mb, ee, me)
-
   ALLOCATE(mat_obs(1:l_t, 1:n_s, 1:11), avg(1:11), err(1:11))
   mat_obs(1:l_t, 1:n_s, 1)  = DBLE(eb(1:l_t, 1:n_s))
   mat_obs(1:l_t, 1:n_s, 2)  = DBLE(ee(1:l_t, 1:n_s))
@@ -103,7 +101,7 @@ PROGRAM main
      avg_ame_fp(s)  = avg(10) ; err_ame_fp(s) = err(10)
      avg_p(s)       = avg(11) ; err_p(s)      = err(11)
   END DO
-  DEALLOCATE(mat_obs, avg, err)
+  DEALLOCATE(mat_obs, avg, err, eb, mb, ee, me)
 
   DO CONCURRENT (s = 1:n_s:1)
      int_eb(s)  = avg_eb(s) / DBLE(l_x * l_z)
