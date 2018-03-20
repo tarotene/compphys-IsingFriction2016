@@ -54,7 +54,7 @@ PROGRAM main
      OPEN(sl_ee, file="ee_sweep/en_edge_s"//ss//"_sweep.bin", access="stream", status="old", buffered="YES")
      OPEN(sl_mb, file="mb_sweep/m_bulk_s"//ss//"_sweep.bin",  access="stream", status="old", buffered="YES")
      OPEN(sl_me, file="me_sweep/m_edge_s"//ss//"_sweep.bin",  access="stream", status="old", buffered="YES")
-     OPEN(sl_p,  file="p_sweep/p_s"//ss//"_sweep.bin",        access="stream", status="old", buffered="YES")
+     OPEN(sl_p,  file="p_sweep/pump_s"//ss//"_sweep.bin",        access="stream", status="old", buffered="YES")
 
      loc = 1
      DO t = 1, l_t, 1
