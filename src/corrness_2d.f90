@@ -115,8 +115,8 @@ PROGRAM main
 
      WRITE(0, *) 12
 
-     WRITE(sl_eb) ac_eb(s, 1:l_t); WRITE(sl_mb) ac_amb(s, 1:l_t)
-     WRITE(sl_ee) ac_ee(s, 1:l_t); WRITE(sl_me) ac_ame(s, 1:l_t)
+     WRITE(sl_eb) ac_eb(s, 1:l_t / 2); WRITE(sl_mb) ac_amb(s, 1:l_t / 2)
+     WRITE(sl_ee) ac_ee(s, 1:l_t / 2); WRITE(sl_me) ac_ame(s, 1:l_t / 2)
 
      WRITE(0, *) 13
 
