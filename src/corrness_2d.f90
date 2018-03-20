@@ -22,21 +22,15 @@ PROGRAM main
   ALLOCATE(eb_sq(1:n_s, 1:l_t), ee_sq(1:n_s, 1:l_t), mb_sq(1:n_s, 1:l_t), me_sq(1:n_s, 1:l_t))
   ALLOCATE(ac_eb(1:n_s, 1:l_t / 2), ac_ee(1:n_s, 1:l_t / 2), ac_amb(1:n_s, 1:l_t / 2), ac_ame(1:n_s, 1:l_t / 2))
 
-  WRITE(0, *) 0
-
   DO s = 1, n_s, 1
      sl_eb = 20 + s + 2 * n_s; sl_mb = 20 + s + 3 * n_s
      sl_ee = 20 + s + 4 * n_s; sl_me = 20 + s + 5 * n_s
-
-    !  WRITE(0, *) 1
 
      WRITE(ss, '(i0.4)') s
      OPEN(sl_eb, file="eb_sweep/en_bulk_s"//ss//"_sweep.bin", access="stream", status="old", buffered="YES")
      OPEN(sl_ee, file="ee_sweep/en_edge_s"//ss//"_sweep.bin", access="stream", status="old", buffered="YES")
      OPEN(sl_mb, file="mb_sweep/m_bulk_s"//ss//"_sweep.bin", access="stream", status="old", buffered="YES")
      OPEN(sl_me, file="me_sweep/m_edge_s"//ss//"_sweep.bin", access="stream", status="old", buffered="YES")
-
-    !  WRITE(0, *) 2
      
      loc = 1
      DO t = 1,   l_t, 1
@@ -45,12 +39,8 @@ PROGRAM main
         loc = loc + 4
      END DO
 
-    !  WRITE(0, *) 3
-
      CLOSE(sl_eb); CLOSE(sl_mb); CLOSE(sl_ee); CLOSE(sl_me)
   END DO
-
-  WRITE(0, *) 4
 
   eb_sq(1:n_s, 1:l_t) = eb(1:n_s, 1:l_t) ** 2
   ee_sq(1:n_s, 1:l_t) = ee(1:n_s, 1:l_t) ** 2
@@ -59,23 +49,17 @@ PROGRAM main
   mb_sq(1:n_s, 1:l_t) = amb(1:n_s, 1:l_t) ** 2
   me_sq(1:n_s, 1:l_t) = ame(1:n_s, 1:l_t) ** 2
 
-  WRITE(0, *) 5
-
   ALLOCATE(m_eb(1:n_s), m_ee(1:n_s), m_amb(1:n_s), m_ame(1:n_s))
   ALLOCATE(m_eb_sq(1:n_s), m_ee_sq(1:n_s), m_mb_sq(1:n_s), m_me_sq(1:n_s))
 
   ac_eb(1:n_s, 1:l_t / 2) = 0.0; ac_ee(1:n_s, 1:l_t / 2) = 0.0
   ac_amb(1:n_s, 1:l_t / 2) = 0.0; ac_ame(1:n_s, 1:l_t / 2) = 0.0
 
-  WRITE(0, *) 6
-
   DO CONCURRENT (s = 1:n_s:1)
      m_eb(s) = SUM(eb(s, 1:l_t)) / REAL(l_t)
      m_ee(s) = SUM(ee(s, 1:l_t)) / REAL(l_t)
      m_amb(s) = SUM(amb(s, 1:l_t)) / REAL(l_t)
      m_ame(s) = SUM(ame(s, 1:l_t)) / REAL(l_t)
-
-    !  WRITE(0, *) 7
 
      DO CONCURRENT (t = 1:l_t / 2:1)
         DO t_ = 1, l_t - t, 1
@@ -85,19 +69,15 @@ PROGRAM main
            ac_ame(s, t) = ac_ame(s, t) + (REAL(ame(s, t_)) - m_ame(s)) * (REAL(ame(s, t_ + t)) - m_ame(s))
         END DO
 
-        ! WRITE(0, *) 8
         ac_eb(s, t) = ac_eb(s, t) / REAL(l_t - t); ac_ee(s, t) = ac_ee(s, t) / REAL(l_t - t)
         ac_amb(s, t) = ac_amb(s, t) / REAL(l_t - t); ac_ame(s, t) = ac_ame(s, t) / REAL(l_t - t)
      END DO
 
-    !  WRITE(0, *) 9
      IF (ac_eb(s, 1) >= epsilon(0.0)) ac_eb(s, 1:l_t / 2) = ac_eb(s, 1:l_t / 2) / ac_eb(s, 1)
      IF (ac_ee(s, 1) >= epsilon(0.0)) ac_ee(s, 1:l_t / 2) = ac_ee(s, 1:l_t / 2) / ac_ee(s, 1)
      IF (ac_amb(s, 1) >= epsilon(0.0)) ac_amb(s, 1:l_t / 2) = ac_amb(s, 1:l_t / 2) / ac_amb(s, 1)
      IF (ac_ame(s, 1) >= epsilon(0.0)) ac_ame(s, 1:l_t / 2) = ac_ame(s, 1:l_t / 2) / ac_ame(s, 1)
   END DO
-
-  WRITE(0, *) 10
 
   !TODO: 空間的な相関関数の計算を行う
 
@@ -105,24 +85,16 @@ PROGRAM main
      sl_eb = 20 + s + 2 * n_s; sl_mb = 20 + s + 3 * n_s
      sl_ee = 20 + s + 4 * n_s; sl_me = 20 + s + 5 * n_s
 
-     WRITE(0, *) 11
-
      WRITE(ss, '(i0.4)') s
      OPEN(sl_eb, file="ac_en_bulk_s"//ss//".bin", status="replace", access="stream", buffered="YES")
      OPEN(sl_ee, file="ac_en_edge_s"//ss//".bin", status="replace", access="stream", buffered="YES")
      OPEN(sl_mb, file="ac_m_bulk_s"//ss//".bin", status="replace", access="stream", buffered="YES")
      OPEN(sl_me, file="ac_m_edge_s"//ss//".bin", status="replace", access="stream", buffered="YES")
 
-     WRITE(0, *) 12
-
      WRITE(sl_eb) ac_eb(s, 1:l_t / 2); WRITE(sl_mb) ac_amb(s, 1:l_t / 2)
      WRITE(sl_ee) ac_ee(s, 1:l_t / 2); WRITE(sl_me) ac_ame(s, 1:l_t / 2)
-
-     WRITE(0, *) 13
 
      CLOSE(sl_eb); CLOSE(sl_mb)
      CLOSE(sl_ee); CLOSE(sl_me)
   END DO
-
-  WRITE(0, *) 14
 END PROGRAM main
