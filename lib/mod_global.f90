@@ -8,7 +8,7 @@ MODULE mod_global
   INTEGER(4), SAVE :: id_IC, id_BC
 
   ! general parameters
-  INTEGER(4), SAVE :: l_x, l_y, l_z, vel, n_s, n_s0, l_t, n_st, l_th, l_b
+  INTEGER(4), SAVE :: l_x, l_y, l_z, vel, n_s, n_s0, l_t, n_st, l_th, n_b
   REAL(8), SAVE :: beta
 
   !reduced parameters

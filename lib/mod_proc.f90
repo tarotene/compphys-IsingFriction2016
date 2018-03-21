@@ -395,7 +395,7 @@
 
         integer(4) :: s, l_s
 
-        l_s = (10000-l_th)/n_s
+        l_s = (SIZE(stream) - l_th)/n_s
         DO CONCURRENT(s=1:n_s:1)
            sample(s) = SUM(stream(1 + l_s*(s - 1):l_s*s))/DBLE(l_s)
         END DO
