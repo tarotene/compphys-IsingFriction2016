@@ -1,25 +1,95 @@
-set terminal postscript eps color
+set xrange [0:10000]
+set yrange [-1:1]
+set grid
 
-do for [s in set_s] {
-  infile1 = "beta".beta."/ac_en_bulk_s".s.".bin"
-  infile2 = "beta".beta."/ac_en_edge_s".s.".bin"
-  infile3 = "beta".beta."/ac_en_bulk_s".s.".bin"
-  infile4 = "beta".beta."/ac_en_edge_s".s.".bin"
-  outfile1 = "ac_eb_s".s."_beta".beta.".eps"
-  outfile2 = "ac_ee_s".s."_beta".beta.".eps"
-  outfile3 = "ac_mb_s".s."_beta".beta.".eps"
-  outfile4 = "ac_me_s".s."_beta".beta.".eps"
+set multiplot layout 5,10
+do for [beta in set_beta] {
+  infile = "beta".beta."/ac_en_bulk_s".s.".bin"
+  plot  infile binary array=10000 format="%float" smooth unique title "beta = ".beta
+  }
+unset multiplot
+
+if (exist("TERM") == 0 || TERM eq "Default") \
+  pause -1 "click ON to make PS file"; \
+  TERM = "PS"; \
+  set out outfile1 = "ac_eb_s".s.".eps"; \
+  set term postscript
 
   set xrange [0:10000]
   set yrange [-1:1]
   set grid
 
-  set output outfile1
-  plot  infile1 binary array=10000 format="%float" smooth unique notitle
-  set output outfile2
-  plot  infile2 binary array=10000 format="%float" smooth unique notitle
-  set output outfile3
-  plot  infile3 binary array=10000 format="%float" smooth unique notitle
-  set output outfile4
-  plot  infile4 binary array=10000 format="%float" smooth unique notitle
-}
+  set terminal postscript color enhanced portrait size 7in, 10in; \
+  reread
+  
+  TERM = "Default"
+set outset term pop
+
+set multiplot layout 5,10
+do for [beta in set_beta] {
+  infile = "beta".beta."/ac_en_edge_s".s.".bin"
+  plot  infile binary array=10000 format="%float" smooth unique title "beta = ".beta
+  }
+unset multiplot
+
+if (exist("TERM") == 0 || TERM eq "Default") \
+  pause -1 "click ON to make PS file"; \
+  TERM = "PS"; \
+  set out outfile1 = "ac_ee_s".s.".eps"; \
+  set term postscript
+
+  set xrange [0:10000]
+  set yrange [-1:1]
+  set grid
+
+  set terminal postscript color enhanced portrait size 7in, 10in; \
+  reread
+  
+  TERM = "Default"
+set outset term pop
+
+set multiplot layout 5,10
+do for [beta in set_beta] {
+  infile = "beta".beta."/ac_m_bulk_s".s.".bin"
+  plot  infile binary array=10000 format="%float" smooth unique title "beta = ".beta
+  }
+unset multiplot
+
+if (exist("TERM") == 0 || TERM eq "Default") \
+  pause -1 "click ON to make PS file"; \
+  TERM = "PS"; \
+  set out outfile1 = "ac_mb_s".s.".eps"; \
+  set term postscript
+
+  set xrange [0:10000]
+  set yrange [-1:1]
+  set grid
+
+  set terminal postscript color enhanced portrait size 7in, 10in; \
+  reread
+  
+  TERM = "Default"
+set outset term pop
+
+set multiplot layout 5,10
+do for [beta in set_beta] {
+  infile = "beta".beta."/ac_m_edge_s".s.".bin"
+  plot  infile binary array=10000 format="%float" smooth unique title "beta = ".beta
+  }
+unset multiplot
+
+if (exist("TERM") == 0 || TERM eq "Default") \
+  pause -1 "click ON to make PS file"; \
+  TERM = "PS"; \
+  set out outfile1 = "ac_me_s".s.".eps"; \
+  set term postscript
+
+  set xrange [0:10000]
+  set yrange [-1:1]
+  set grid
+
+  set terminal postscript color enhanced portrait size 7in, 10in; \
+  reread
+  
+  TERM = "Default"
+set outset term pop
