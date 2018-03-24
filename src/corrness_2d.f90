@@ -22,6 +22,9 @@ PROGRAM main
   ALLOCATE(eb_sq(1:n_s, 1:l_t), ee_sq(1:n_s, 1:l_t), mb_sq(1:n_s, 1:l_t), me_sq(1:n_s, 1:l_t))
   ALLOCATE(ac_eb(1:n_s, 1:l_t / 2), ac_ee(1:n_s, 1:l_t / 2), ac_amb(1:n_s, 1:l_t / 2), ac_ame(1:n_s, 1:l_t / 2))
 
+  !$omp parallel do schedule(static, 1) default(none) &
+  !$omp shared(n_s, l_t, eb, mb, ee, me) &
+  !$omp private(sl_eb, sl_mb, sl_ee, sl_me, ss, loc, t)
   DO s = 1, n_s, 1
      sl_eb = 20 + s + 2 * n_s; sl_mb = 20 + s + 3 * n_s
      sl_ee = 20 + s + 4 * n_s; sl_me = 20 + s + 5 * n_s
@@ -33,7 +36,7 @@ PROGRAM main
      OPEN(sl_me, file="me_sweep/m_edge_s"//ss//"_sweep.bin", access="stream", status="old", buffered="YES")
      
      loc = 1
-     DO t = 1,   l_t, 1
+     DO t = 1, l_t, 1
         READ(sl_eb, pos=loc) eb(s, t); READ(sl_mb, pos=loc) mb(s, t)
         READ(sl_ee, pos=loc) ee(s, t); READ(sl_me, pos=loc) me(s, t)
         loc = loc + 4
@@ -41,6 +44,7 @@ PROGRAM main
 
      CLOSE(sl_eb); CLOSE(sl_mb); CLOSE(sl_ee); CLOSE(sl_me)
   END DO
+  !$omp end parallel do
 
   eb_sq(1:n_s, 1:l_t) = eb(1:n_s, 1:l_t) ** 2
   ee_sq(1:n_s, 1:l_t) = ee(1:n_s, 1:l_t) ** 2
@@ -55,6 +59,9 @@ PROGRAM main
   ac_eb(1:n_s, 1:l_t / 2) = 0.0; ac_ee(1:n_s, 1:l_t / 2) = 0.0
   ac_amb(1:n_s, 1:l_t / 2) = 0.0; ac_ame(1:n_s, 1:l_t / 2) = 0.0
 
+  !$omp parallel do schedule(static, 1) default(none) &
+  !$omp shared(n_s, m_eb, m_ee, m_amb, m_ame, eb, ee, amb, ame, ac_eb, ac_ee, ac_amb, ac_ame, l_t) &
+  !$omp private(t_, t)
   DO s = 1, n_s, 1
      m_eb(s) = SUM(eb(s, 1:l_t)) / REAL(l_t)
      m_ee(s) = SUM(ee(s, 1:l_t)) / REAL(l_t)
@@ -78,9 +85,13 @@ PROGRAM main
      IF (ac_amb(s, 1) >= epsilon(0.0)) ac_amb(s, 1:l_t / 2) = ac_amb(s, 1:l_t / 2) / ac_amb(s, 1)
      IF (ac_ame(s, 1) >= epsilon(0.0)) ac_ame(s, 1:l_t / 2) = ac_ame(s, 1:l_t / 2) / ac_ame(s, 1)
   END DO
+  !$omp end parallel do
 
   !TODO: 空間的な相関関数の計算を行う
 
+  !$omp parallel do schedule(static, 1) default(none) &
+  !$omp shared(n_s, ac_eb, ac_amb, ac_ee, ac_ame, l_t) &
+  !$omp private(sl_eb, sl_mb, sl_ee, sl_me, ss)
   DO s = 1, n_s, 1
      sl_eb = 20 + s + 2 * n_s; sl_mb = 20 + s + 3 * n_s
      sl_ee = 20 + s + 4 * n_s; sl_me = 20 + s + 5 * n_s
@@ -97,4 +108,5 @@ PROGRAM main
      CLOSE(sl_eb); CLOSE(sl_mb)
      CLOSE(sl_ee); CLOSE(sl_me)
   END DO
+  !$omp end parallel do
 END PROGRAM main
