@@ -55,7 +55,7 @@ PROGRAM main
   ac_eb(1:n_s, 1:l_t / 2) = 0.0; ac_ee(1:n_s, 1:l_t / 2) = 0.0
   ac_amb(1:n_s, 1:l_t / 2) = 0.0; ac_ame(1:n_s, 1:l_t / 2) = 0.0
 
-  DO CONCURRENT (s = 1:n_s:1)
+  DO s = 1, n_s, 1
      m_eb(s) = SUM(eb(s, 1:l_t)) / REAL(l_t)
      m_ee(s) = SUM(ee(s, 1:l_t)) / REAL(l_t)
      m_amb(s) = SUM(amb(s, 1:l_t)) / REAL(l_t)
