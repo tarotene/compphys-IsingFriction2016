@@ -40,6 +40,9 @@ PROGRAM main
   ALLOCATE(cb(1:n_s), ce(1:n_s), chib(1:n_s), chie(1:n_s), ub(1:n_s), ue(1:n_s))
   ALLOCATE(err_cb(1:n_s), err_ce(1:n_s), err_chib(1:n_s), err_chie(1:n_s), err_ub(1:n_s), err_ue(1:n_s))
 
+  !$omp parallel do schedule(static, 1) default(none) &
+  !$omp shared(n_s, l_t, ex_eb, ex_mb, ex_ee, ex_me, ex_p) &
+  !$omp private(sl_eb, sl_mb, sl_ee, sl_me, sl_p, ss, loc, t)
   DO s = 1, n_s, 1
      sl_eb = 20 + s + 2 * n_s
      sl_mb = 20 + s + 3 * n_s
@@ -66,6 +69,7 @@ PROGRAM main
 
      CLOSE(sl_eb); CLOSE(sl_mb); CLOSE(sl_ee); CLOSE(sl_me); CLOSE(sl_p)
   END DO
+  !$omp end parallel do
 
   eb(1:l_t, 1:n_s) = DBLE(ex_eb(1:l_t, 1:n_s)) / DBLE(l_x * l_z) 
   ee(1:l_t, 1:n_s) = DBLE(ex_ee(1:l_t, 1:n_s)) / DBLE(l_x)
@@ -74,6 +78,10 @@ PROGRAM main
   p(1:l_t, 1:n_s) = DBLE(ex_p(1:l_t, 1:n_s)) / DBLE(l_x)
   DEALLOCATE(ex_eb, ex_mb, ex_ee, ex_me, ex_p)
 
+  !$omp parallel do schedule(static, 1) default(none) &
+  !$omp shared(n_s, l_th, l_t, n_b) &
+  !$omp shared(eb, ee, mb, me, p) &
+  !$omp shared(b_eb, b_ee, b_mb, b_me, b_p)
   DO s = 1, n_s, 1
     CALL convertStreamSamples(l_th, n_b, eb(1:l_t, s), b_eb(1:n_b, s))
     CALL convertStreamSamples(l_th, n_b, ee(1:l_t, s), b_ee(1:n_b, s))
@@ -81,8 +89,15 @@ PROGRAM main
     CALL convertStreamSamples(l_th, n_b, me(1:l_t, s), b_me(1:n_b, s))
     CALL convertStreamSamples(l_th, n_b, p(1:l_t, s), b_p(1:n_b, s))
   END DO
+  !$omp end parallel do
   DEALLOCATE(eb, mb, ee, me, p)
 
+  !$omp parallel do schedule(static, 1) default(none) &
+  !$omp shared(n_s, n_b) &
+  !$omp shared(b_eb, b_ee, b_mb, b_me, b_p) &
+  !$omp shared(avg_eb, avg_ee, avg_mb, avg_me, avg_p) &
+  !$omp shared(var_eb, var_ee, var_mb, var_me, var_p) &
+  !$omp shared(err_eb, err_ee, err_mb, err_me, err_p)
   DO s = 1, n_s, 1
     CALL calcAvgVar(n_b, b_eb(1:n_b, s), avg_eb(s), var_eb(s))
     CALL calcAvgVar(n_b, b_ee(1:n_b, s), avg_ee(s), var_ee(s))
@@ -96,6 +111,7 @@ PROGRAM main
     err_me(s) = SQRT(var_me(s)) / SQRT(DBLE(n_b))
     err_p(s) = SQRT(var_p(s)) / SQRT(DBLE(n_b))
   END DO
+  !$omp end parallel do
   
   OPEN(10, file="physquan1.dat", status="replace")
   DO s = 1, n_s, 1
@@ -113,6 +129,13 @@ PROGRAM main
   fp_b_mb(1:n_b, 1:n_s) = sq_b_mb(1:n_b, 1:n_s) ** 2
   fp_b_me(1:n_b, 1:n_s) = sq_b_me(1:n_b, 1:n_s) ** 2
 
+  !$omp parallel do schedule(static, 1) default(none) &
+  !$omp shared(n_s, n_b, beta, l_x, l_z) &
+  !$omp shared(cb, ce, chib, chie, ub, ue) &
+  !$omp shared(err_cb, err_ce, err_chib, err_chie, err_ub, err_ue) &
+  !$omp shared(sq_b_eb, sq_b_ee, sq_b_mb, sq_b_me, fp_b_mb, fp_b_me) &
+  !$omp shared(err_eb, err_ee, err_mb, err_me, err_p) &
+  !$omp shared(avg_eb, avg_ee, avg_mb, avg_me)
   DO s = 1, n_s, 1
     cb(s) = (beta ** 2) * (SUM(sq_b_eb(1:n_b, s)) / DBLE(n_b) - avg_eb(s) ** 2) * DBLE(l_x * l_z)
     ce(s) = (beta ** 2) * (SUM(sq_b_ee(1:n_b, s)) / DBLE(n_b) - avg_ee(s) ** 2) * DBLE(l_x)
@@ -129,6 +152,7 @@ PROGRAM main
     err_ub(s)    = 4 * (err_mb(s) / avg_mb(s)) ** 2
     err_ub(s)    = 4 * (err_me(s) / avg_me(s)) ** 2
   END DO
+  !$omp end parallel do
 
   OPEN(20, file="physquan2.dat", status="replace")
   DO s = 1, n_s, 1
