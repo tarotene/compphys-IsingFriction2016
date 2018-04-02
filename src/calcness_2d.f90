@@ -115,8 +115,8 @@ PROGRAM main
   
   OPEN(10, file="physquan1.dat", status="replace")
   DO s = 1, n_s, 1
-     WRITE(10, '(f0.4, a, f0.8, a, f0.8, a, f0.8, a, f0.8, a, f0.8, a, f0.8, a, f0.8, a, f0.8, a, f0.8, a, f0.8)') &
-     beta, ", ", avg_eb(s), ", ", err_eb(s), ", ", avg_ee(s), ", ", err_ee(s), ", ", &
+     WRITE(10, '(i4, a, f0.4, a, i4, a, f0.8, a, f0.8, a, f0.8, a, f0.8, a, f0.8, a, f0.8, a, f0.8, a, f0.8, a, f0.8, a, f0.8)') &
+     l_z, ", ", beta, ", ", vel, ", ", avg_eb(s), ", ", err_eb(s), ", ", avg_ee(s), ", ", err_ee(s), ", ", &
      avg_mb(s), ", ", err_mb(s), ", ", avg_me(s), ", ", err_me(s), ", ", &
      avg_p(s), ", ", err_p(s)
   END DO
@@ -156,8 +156,8 @@ PROGRAM main
 
   OPEN(20, file="physquan2.dat", status="replace")
   DO s = 1, n_s, 1
-     WRITE(20, '(f0.4, a, f0.8, a, f0.8, a, f0.8, a, f0.8, a, f0.8, a, f0.8, a, f0.8, a, f0.8, a, f0.8, a, f0.8, a, f0.8, a, f0.8)') &
-     beta, ", ", cb(s), ", ", err_cb(s), ", ", ce(s), ", ", err_ce(s), ", ", &
+     WRITE(20, '(i4, a, f0.4, a, i4, a, f0.8, a, f0.8, a, f0.8, a, f0.8, a, f0.8, a, f0.8, a, f0.8, a, f0.8, a, f0.8, a, f0.8, a, f0.8, a, f0.8)') &
+     l_z, ", ", beta, ", ", vel, ", ", cb(s), ", ", err_cb(s), ", ", ce(s), ", ", err_ce(s), ", ", &
      chib(s), ", ", err_chib(s), ", ", chie(s), ", ", err_chie(s), ", ", &
      ub(s), ", ", err_ub(s), ", ", ue(s), ", ", err_ue(s)
   END DO
