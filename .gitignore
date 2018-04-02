@@ -8,5 +8,6 @@ test*/
 zip*/
 *.mod
 *.dat
+*.log
 /sh/*
 !/sh/_*.sh
