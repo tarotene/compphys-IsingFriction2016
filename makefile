@@ -2,10 +2,18 @@ bin/Ising_2d: obj/Ising_2d.o obj/mod_proc.o obj/mod_global.o
 	ifort obj/Ising_2d.o obj/mod_proc.o obj/mod_global.o -o bin/Ising_2d -mkl -parallel -fopenmp -fast
 obj/Ising_2d.o: src/Ising_2d.f90 obj/mod_proc.o obj/mod_global.o
 	ifort -c -ipo src/Ising_2d.f90 -o obj/Ising_2d.o -mkl -parallel -fopenmp -fast
+bin/Ising_3d: obj/Ising_3d.o obj/mod_proc.o obj/mod_global.o
+	ifort obj/Ising_3d.o obj/mod_proc.o obj/mod_global.o -o bin/Ising_3d -mkl -parallel -fopenmp -fast
+obj/Ising_3d.o: src/Ising_3d.f90 obj/mod_proc.o obj/mod_global.o
+	ifort -c -ipo src/Ising_3d.f90 -o obj/Ising_3d.o -mkl -parallel -fopenmp -fast
 bin/Ising_2d_eq: obj/Ising_2d_eq.o obj/mod_proc.o obj/mod_global.o
 	ifort obj/Ising_2d_eq.o obj/mod_proc.o obj/mod_global.o -o bin/Ising_2d_eq -mkl -parallel -fopenmp -fast
 obj/Ising_2d_eq.o: src/Ising_2d_eq.f90 obj/mod_proc.o obj/mod_global.o
 	ifort -c -ipo src/Ising_2d_eq.f90 -o obj/Ising_2d_eq.o -mkl -parallel -fopenmp -fast
+bin/Ising_3d_eq: obj/Ising_3d_eq.o obj/mod_proc.o obj/mod_global.o
+	ifort obj/Ising_3d_eq.o obj/mod_proc.o obj/mod_global.o -o bin/Ising_3d_eq -mkl -parallel -fopenmp -fast
+obj/Ising_3d_eq.o: src/Ising_3d_eq.f90 obj/mod_proc.o obj/mod_global.o
+	ifort -c -ipo src/Ising_3d_eq.f90 -o obj/Ising_3d_eq.o -mkl -parallel -fopenmp -fast
 bin/calc_2d: obj/calc_2d.o obj/mod_proc.o obj/mod_global.o
 	ifort obj/calc_2d.o obj/mod_proc.o obj/mod_global.o -o bin/calc_2d -mkl -parallel -fopenmp -fast
 obj/calc_2d.o: src/calc_2d.f90 obj/mod_proc.o obj/mod_global.o
