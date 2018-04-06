@@ -8,21 +8,37 @@
      IMPLICIT NONE
   CONTAINS
      !TODO: 関数化
-     SUBROUTINE paramsSimness_2d(l_x, l_z, beta, vel, l_t, id_IC, id_BC, n_s)
+     SUBROUTINE inputParams_2d(l_x, l_z, beta, vel, l_t, id_IC, id_BC, n_s)
         INTEGER(4), INTENT(out) :: l_x, l_z
         REAL(8), INTENT(out) :: beta
         INTEGER(4), INTENT(out) :: vel, l_t, id_IC, id_BC, n_s
 
         READ (*, *) l_x, l_z, beta, vel, l_t, id_IC, id_BC, n_s
-     END SUBROUTINE paramsSimness_2d
+     END SUBROUTINE inputParams_2d
 
-     SUBROUTINE paramsSimness_3d(l_x, l_y, l_z, beta, vel, l_t, id_IC, id_BC, n_s)
+     SUBROUTINE inputParams_2d_eq(l_x, l_z, beta, l_t, id_IC, id_BC, n_s)
+        INTEGER(4), INTENT(out) :: l_x, l_z
+        REAL(8), INTENT(out) :: beta
+        INTEGER(4), INTENT(out) :: l_t, id_IC, id_BC, n_s
+
+        READ (*, *) l_x, l_z, beta, l_t, id_IC, id_BC, n_s
+     END SUBROUTINE inputParams_2d_eq
+
+     SUBROUTINE inputParams_3d(l_x, l_y, l_z, beta, vel, l_t, id_IC, id_BC, n_s)
         INTEGER(4), INTENT(out) :: l_x, l_y, l_z
         REAL(8), INTENT(out) :: beta
         INTEGER(4), INTENT(out) :: vel, l_t, id_IC, id_BC, n_s
 
         READ (*, *) l_x, l_y, l_z, beta, vel, l_t, id_IC, id_BC, n_s
-     END SUBROUTINE paramsSimness_3d
+     END SUBROUTINE inputParams_3d
+
+     SUBROUTINE inputParams_3d_eq(l_x, l_y, l_z, beta, l_t, id_IC, id_BC, n_s)
+        INTEGER(4), INTENT(out) :: l_x, l_y, l_z
+        REAL(8), INTENT(out) :: beta
+        INTEGER(4), INTENT(out) :: l_t, id_IC, id_BC, n_s
+
+        READ (*, *) l_x, l_y, l_z, beta, l_t, id_IC, id_BC, n_s
+     END SUBROUTINE inputParams_3d_eq
 
      SUBROUTINE paramsCorrelate_2d(l_x, l_z, beta, vel, l_t, n_s)
         INTEGER(4), INTENT(out) :: l_x, l_z

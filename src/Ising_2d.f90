@@ -22,8 +22,7 @@ PROGRAM main
 
   INTEGER(4) :: center, east, west, south, north
 
-  CALL paramsSimness_2d(l_x, l_z, beta, vel, l_t, id_IC, id_BC, n_s)
-  n_st = l_x * l_z / vel
+  CALL inputParams_2d(l_x, l_z, beta, vel, l_t, id_IC, id_BC, n_s); n_st = l_x * l_z / vel
   CALL countSamples(n_s, n_s0)
   CALL metropolis_2d(beta, p_2d)
 
@@ -35,8 +34,8 @@ PROGRAM main
   CALL initSp_2d(sp_ini(0:l_x + 1, 0:l_z + 1))
 
   !$omp parallel do schedule(static, 1) default(none) &
-  !$omp shared(s, n_s0, n_s, l_t, l_x, l_z, vel, n_st, sp_ini) &
-  !$omp private(sl_sp, sl_en, sl_eb, sl_ee, sl_m, sl_mb, sl_me, sl_p) &
+  !$omp shared(n_s0, n_s, l_t, l_x, l_z, vel, n_st, sp_ini) &
+  !$omp private(s, sl_sp, sl_en, sl_eb, sl_ee, sl_m, sl_mb, sl_me, sl_p) &
   !$omp private(i_st, t, i_v, err, str_x, str_z, str_p, r_x, r_z, r_p, ss, st, eb, ee, mb, sp, pmp)
   DO s = n_s0 + 1, n_s, 1
      sl_en = 20 + s + 0 * n_s
@@ -56,10 +55,10 @@ PROGRAM main
      OPEN(sl_mb, file="mb_sweep/m_bulk_s"//ss//"_sweep.bin", access="stream", status="new", buffered="YES")
      OPEN(sl_me, file="me_sweep/m_edge_s"//ss//"_sweep.bin", access="stream", status="new", buffered="YES")
      OPEN(sl_p, file="p_sweep/pump_s"//ss//"_sweep.bin", access="stream", status="new", buffered="YES")
-
-     err = vslnewstream(str_x, VSL_BRNG_MT19937, 100 + 3 * (s - 1) + 0)
-     err = vslnewstream(str_z, VSL_BRNG_MT19937, 100 + 3 * (s - 1) + 1)
-     err = vslnewstream(str_p, VSL_BRNG_MT19937, 100 + 3 * (s - 1) + 2)
+     
+     err = vslnewstream(str_p, VSL_BRNG_MT19937, 100 + 3 * (s - 1) + 0)
+     err = vslnewstream(str_x, VSL_BRNG_MT19937, 100 + 3 * (s - 1) + 1)
+     err = vslnewstream(str_z, VSL_BRNG_MT19937, 100 + 3 * (s - 1) + 3)
 
      CALL calcEn_2d(sp_ini(0:l_x + 1, 0:l_z + 1), eb(0))
      sp(0:l_x + 1, 0:l_z + 1) = sp_ini(0:l_x + 1, 0:l_z + 1)
@@ -67,9 +66,9 @@ PROGRAM main
      DO t = 1, l_t, 1
         DO i_v = 1, vel, 1
            CALL shift_2d(sp(0:l_x + 1, 0:l_z + 1), pmp(i_v), eb(0))
+           err = vdrnguniform(VSL_RNG_METHOD_UNIFORM_STD, str_p, n_st, r_p(1:n_st), 0.0d0, 1.0d0)
            err = virnguniform(VSL_RNG_METHOD_UNIFORM_STD, str_x, n_st, r_x(1:n_st), 1, l_x + 1)
            err = virnguniform(VSL_RNG_METHOD_UNIFORM_STD, str_z, n_st, r_z(1:n_st), 1, l_z + 1)
-           err = vdrnguniform(VSL_RNG_METHOD_UNIFORM_STD, str_p, n_st, r_p(1:n_st), 0.0d0, 1.0d0)
            CALL mSSFs_2d(r_x(1:n_st), r_z(1:n_st), r_p(1:n_st), sp(0:l_x + 1, 0:l_z + 1), eb(0:n_st), mb(0:n_st))
            ! WRITE(sl_en) eb(0:n_st)
            eb(0) = eb(n_st)

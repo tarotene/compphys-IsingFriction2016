@@ -22,8 +22,7 @@ PROGRAM main
 
   INTEGER(4) :: center, east, west, south, north
 
-  CALL paramsSimness_3d(l_x, l_y, l_z, beta, vel, l_t, id_IC, id_BC, n_s)
-  n_st = l_x * l_y * l_z / vel
+  CALL inputParams_3d(l_x, l_y, l_z, beta, vel, l_t, id_IC, id_BC, n_s); n_st = l_x * l_y * l_z / vel
   CALL countSamples(n_s, n_s0)
   CALL metropolis_3d(beta, p_3d)
 
@@ -35,8 +34,8 @@ PROGRAM main
   CALL initSp_3d(sp_ini(0:l_x + 1, 0:l_y + 1, 0:l_z + 1))
 
   !$omp parallel do schedule(static, 1) default(none) &
-  !$omp shared(s, n_s0, n_s, l_t, l_x, l_y, l_z, vel, n_st, sp_ini) &
-  !$omp private(sl_sp, sl_en, sl_eb, sl_ee, sl_m, sl_mb, sl_me, sl_p) &
+  !$omp shared(n_s0, n_s, l_t, l_x, l_y, l_z, vel, n_st, sp_ini) &
+  !$omp private(s, sl_sp, sl_en, sl_eb, sl_ee, sl_m, sl_mb, sl_me, sl_p) &
   !$omp private(i_st, t, i_v, err, str_x, str_y, str_z, str_p, r_x, r_y, r_z, r_p, ss, st, eb, ee, mb, sp, pmp)
   DO s = n_s0 + 1, n_s, 1
      sl_en = 20 + s + 0 * n_s

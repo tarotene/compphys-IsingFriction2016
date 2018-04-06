@@ -8,7 +8,7 @@ PROGRAM main
 
   IMPLICIT NONE
 
-  INTEGER(4), ALLOCATABLE :: sp(:, :, :), sp_ini(:, :, :), eb(:), mb(:), pmp(:)
+  INTEGER(4), ALLOCATABLE :: sp(:, :, :), sp_ini(:, :, :), eb(:), mb(:)
   INTEGER(4) :: ee, me
 
   INTEGER(4) :: err
@@ -22,22 +22,22 @@ PROGRAM main
 
   INTEGER(4) :: center, east, west, south, north
 
-  CALL paramsSimness_3d(l_x, l_y, l_z, beta, vel, l_t, id_IC, id_BC, n_s)
-  n_st = l_x * l_y * l_z / vel
+  CALL inputParams_3d_eq(l_x, l_y, l_z, beta, l_t, id_IC, id_BC, n_s); n_st = l_x * l_y * l_z
   CALL countSamples(n_s, n_s0)
   CALL metropolis_3d(beta, p_3d)
 
   ALLOCATE(r_x(1:n_st), r_y(1:n_st), r_z(1:n_st), r_p(1:n_st))
   ALLOCATE(eb(0:n_st), mb(0:n_st), sp(0:l_x + 1, 0:l_y + 1, 0:l_z + 1), sp_ini(0:l_x + 1, 0:l_y + 1, 0:l_z + 1))
-  ALLOCATE(pmp(1:vel))
   eb(0:n_st) = 0
   mb(0:n_st) = 0
   CALL initSp_3d(sp_ini(0:l_x + 1, 0:l_y + 1, 0:l_z + 1))
 
+  WRITE(0, *)  1
+
   !$omp parallel do schedule(static, 1) default(none) &
-  !$omp shared(s, n_s0, n_s, l_t, l_x, l_y, l_z, vel, n_st, sp_ini) &
-  !$omp private(sl_sp, sl_en, sl_eb, sl_ee, sl_m, sl_mb, sl_me, sl_p) &
-  !$omp private(i_st, t, i_v, err, str_x, str_y, str_z, str_p, r_x, r_y, r_z, r_p, ss, st, eb, ee, mb, sp, pmp)
+  !$omp shared(n_s0, n_s, l_t, l_x, l_y, l_z, vel, n_st, sp_ini) &
+  !$omp private(s, sl_sp, sl_en, sl_eb, sl_ee, sl_m, sl_mb, sl_me, sl_p) &
+  !$omp private(i_st, t, i_v, err, str_x, str_y, str_z, str_p, r_x, r_y, r_z, r_p, ss, st, eb, ee, mb, sp)
   DO s = n_s0 + 1, n_s, 1
      sl_en = 20 + s + 0 * n_s
      sl_m = 20 + s + 1 * n_s
@@ -45,16 +45,24 @@ PROGRAM main
      sl_mb = 20 + s + 4 * n_s
      sl_sp = 20 + s + 6 * n_s
 
+     WRITE(0, *)  2
+
      WRITE(ss, '(i0.4)') s
+
+     WRITE(0, *)  2.25
      ! OPEN(sl_en, file="en_step/en_s"//ss//"_step.bin", access="stream", status="new", buffered="YES")
      ! OPEN(sl_m, file="m_step/m_s"//ss//"_step.bin", access="stream", status="new", buffered="YES")
      OPEN(sl_eb, file="eb_sweep/en_bulk_s"//ss//"_sweep.bin", access="stream", status="new", buffered="YES")
      OPEN(sl_mb, file="mb_sweep/m_bulk_s"//ss//"_sweep.bin", access="stream", status="new", buffered="YES")
+
+     WRITE(0, *)  2.5
      
      err = vslnewstream(str_p, VSL_BRNG_MT19937, 100 + 3 * (s - 1) + 0)
      err = vslnewstream(str_x, VSL_BRNG_MT19937, 100 + 3 * (s - 1) + 1)
      err = vslnewstream(str_y, VSL_BRNG_MT19937, 100 + 3 * (s - 1) + 2)
      err = vslnewstream(str_z, VSL_BRNG_MT19937, 100 + 3 * (s - 1) + 3)
+
+     WRITE(0, *)  3
 
      CALL calcEn_3d(sp_ini(0:l_x + 1, 0:l_y + 1, 0:l_z + 1), eb(0))
      sp(0:l_x + 1, 0:l_y + 1, 0:l_z + 1) = sp_ini(0:l_x + 1, 0:l_y + 1, 0:l_z + 1)
@@ -77,6 +85,8 @@ PROGRAM main
         WRITE(sl_eb) eb(0)
         WRITE(sl_mb) mb(0)
      END DO
+
+     WRITE(0, *)  4
      
      err = vsldeletestream(str_p)
      err = vsldeletestream(str_x)
