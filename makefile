@@ -5,14 +5,14 @@ ifeq (${FC}, ifort)
 endif
 OBJS = obj/Ising_3d_eq.o obj/mod_proc.o obj/mod_global.o
 
-Ising_3d_eq: ${OBJS}
-	${FC} ${FFLAGS} ${LDFLAGS} -o ./bin/Ising_3d_eq ${OBJS}
+./bin/Ising_3d_eq: ${OBJS}
+	${FC} ${FFLAGS} ${LDFLAGS} -o $@ ${OBJS}
 
-obj/Ising_3d_eq.o: src/Ising_3d_eq.f90 obj/mod_proc.o obj/mod_global.o
-	${FC} ${FFLAGS} -c src/Ising_3d_eq.f90 -o obj/Ising_3d_eq.o
+./obj/Ising_3d_eq.o: src/Ising_3d_eq.f90 obj/mod_proc.o obj/mod_global.o
+	${FC} ${FFLAGS} -c $< -o $@
 
-obj/mod_proc.o: lib/mod_proc.f90 obj/mod_global.o
-	${FC} ${FFLAGS} -c lib/mod_proc.f90 -o obj/mod_proc.o
+./obj/mod_proc.o: lib/mod_proc.f90 obj/mod_global.o
+	${FC} ${FFLAGS} -c $< -o $@
 
-obj/mod_global.o: lib/mod_global.f90
-	${FC} ${FFLAGS} -c lib/mod_global.f90 -o obj/mod_global.o
+./obj/mod_global.o: lib/mod_global.f90
+	${FC} ${FFLAGS} -c $< -o $@
