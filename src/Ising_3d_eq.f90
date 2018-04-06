@@ -32,8 +32,6 @@ PROGRAM main
   mb(0:n_st) = 0
   CALL initSp_3d(sp_ini(0:l_x + 1, 0:l_y + 1, 0:l_z + 1))
 
-  WRITE(0, *)  1
-
   !$omp parallel do schedule(static, 1) default(none) &
   !$omp shared(n_s0, n_s, l_t, l_x, l_y, l_z, vel, n_st, sp_ini) &
   !$omp private(s, sl_sp, sl_en, sl_eb, sl_ee, sl_m, sl_mb, sl_me, sl_p) &
@@ -45,24 +43,16 @@ PROGRAM main
      sl_mb = 20 + s + 4 * n_s
      sl_sp = 20 + s + 6 * n_s
 
-     WRITE(0, *)  2
-
      WRITE(ss, '(i0.4)') s
-
-     WRITE(0, *)  2.25
      ! OPEN(sl_en, file="en_step/en_s"//ss//"_step.bin", access="stream", status="new", buffered="YES")
      ! OPEN(sl_m, file="m_step/m_s"//ss//"_step.bin", access="stream", status="new", buffered="YES")
      OPEN(sl_eb, file="eb_sweep/en_bulk_s"//ss//"_sweep.bin", access="stream", status="new", buffered="YES")
      OPEN(sl_mb, file="mb_sweep/m_bulk_s"//ss//"_sweep.bin", access="stream", status="new", buffered="YES")
-
-     WRITE(0, *)  2.5
      
      err = vslnewstream(str_p, VSL_BRNG_MT19937, 100 + 3 * (s - 1) + 0)
      err = vslnewstream(str_x, VSL_BRNG_MT19937, 100 + 3 * (s - 1) + 1)
      err = vslnewstream(str_y, VSL_BRNG_MT19937, 100 + 3 * (s - 1) + 2)
      err = vslnewstream(str_z, VSL_BRNG_MT19937, 100 + 3 * (s - 1) + 3)
-
-     WRITE(0, *)  3
 
      CALL calcEn_3d(sp_ini(0:l_x + 1, 0:l_y + 1, 0:l_z + 1), eb(0))
      sp(0:l_x + 1, 0:l_y + 1, 0:l_z + 1) = sp_ini(0:l_x + 1, 0:l_y + 1, 0:l_z + 1)
@@ -85,8 +75,6 @@ PROGRAM main
         WRITE(sl_eb) eb(0)
         WRITE(sl_mb) mb(0)
      END DO
-
-     WRITE(0, *)  4
      
      err = vsldeletestream(str_p)
      err = vsldeletestream(str_x)
