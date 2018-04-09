@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 
-echo "# beta, eb, err_eb, ee, err_ee, mb, err_mb, me, err_me, pump, err_pump" >physquan1.dat
-echo "# beta, cb, err_cb, ce, err_ce, chib, err_chib, chie, err_chie, ub, err_ub, ue, err_ue" >physquan2.dat
+echo "# l_z, beta, eb, err_eb, mb, err_mb" >physquan1.dat
+echo "# l_z, beta, cb, err_cb, chib, err_chib, ub, err_ub" >physquan2.dat
 for beta in `cat ../../list_beta.dat`; do
 	cd "beta${beta}"
-  echo "${l_x} ${l_z} ${beta} ${vel} ${l_t} ${n_s} ${l_th} ${n_b}" | ../../../../../bin/calc_2d_eq
+  echo "${l_x} ${l_z} ${beta} ${l_t} ${n_s} ${l_th} ${n_b}" | ../../../../../bin/calc_2d_eq
 	cd ../
 	cat "beta${beta}"/physquan1.dat >> physquan1.dat
 	cat "beta${beta}"/physquan2.dat >> physquan2.dat

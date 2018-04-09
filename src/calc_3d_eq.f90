@@ -83,8 +83,8 @@ PROGRAM main
   
   OPEN(10, file="physquan1.dat", status="replace")
   DO s = 1, n_s, 1
-     WRITE(10, '(i4, a, f0.4, a, i4, a, f0.8, a, f0.8, a, f0.8, a, f0.8)') &
-     l_z, ", ", beta, ", ", vel, ", ", avg_eb(s), ", ", err_eb(s), ", ", avg_mb(s), ", ", err_mb(s)
+     WRITE(10, '(i4, a, f0.4, a, f0.8, a, f0.8, a, f0.8, a, f0.8)') &
+     l_z, ", ", beta, ", ", avg_eb(s), ", ", err_eb(s), ", ", avg_mb(s), ", ", err_mb(s)
   END DO
   CLOSE(10)
 
