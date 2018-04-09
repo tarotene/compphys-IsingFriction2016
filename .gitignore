@@ -11,3 +11,6 @@ zip*/
 *.log
 /sh/*
 !/sh/_*.sh
+
+src/*.o
+lib/*.o
