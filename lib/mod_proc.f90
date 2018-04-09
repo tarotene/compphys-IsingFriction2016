@@ -1,5 +1,3 @@
-  INCLUDE'mkl_vsl.f90'
-
   MODULE mod_proc
      USE mod_global
      USE MKL_VSL_TYPE
@@ -48,6 +46,14 @@
         READ (*, *) l_x, l_z, beta, vel, l_t, n_s
      END SUBROUTINE paramsCorrelate_2d
 
+     SUBROUTINE paramsCorrelate_2d_eq(l_x, l_z, beta, l_t, n_s)
+        INTEGER(4), INTENT(out) :: l_x, l_z
+        REAL(8), INTENT(out) :: beta
+        INTEGER(4), INTENT(out) :: l_t, n_s
+
+        READ (*, *) l_x, l_z, beta, l_t, n_s
+     END SUBROUTINE paramsCorrelate_2d_eq
+
      SUBROUTINE paramsCorrelate_3d(l_x, l_y, l_z, beta, vel, l_t, n_s)
         INTEGER(4), INTENT(out) :: l_x, l_y, l_z
         REAL(8), INTENT(out) :: beta
@@ -55,6 +61,14 @@
 
         READ (*, *) l_x, l_y, l_z, beta, vel, l_t, n_s
      END SUBROUTINE paramsCorrelate_3d
+
+     SUBROUTINE paramsCorrelate_3d_eq(l_x, l_y, l_z, beta, l_t, n_s)
+        INTEGER(4), INTENT(out) :: l_x, l_y, l_z
+        REAL(8), INTENT(out) :: beta
+        INTEGER(4), INTENT(out) :: l_t, n_s
+
+        READ (*, *) l_x, l_y, l_z, beta, l_t, n_s
+     END SUBROUTINE paramsCorrelate_3d_eq
 
      SUBROUTINE paramsCalc_2d(l_x, l_z, beta, vel, l_t, n_s, l_th, l_b)
         INTEGER(4), INTENT(out) :: l_x, l_z
@@ -64,6 +78,14 @@
         READ (*, *) l_x, l_z, beta, vel, l_t, n_s, l_th, l_b
      END SUBROUTINE paramsCalc_2d
 
+     SUBROUTINE paramsCalc_2d_eq(l_x, l_z, beta, l_t, n_s, l_th, l_b)
+        INTEGER(4), INTENT(out) :: l_x, l_z
+        REAL(8), INTENT(out) :: beta
+        INTEGER(4), INTENT(out) :: l_t, n_s, l_th, l_b
+
+        READ (*, *) l_x, l_z, beta, l_t, n_s, l_th, l_b
+     END SUBROUTINE paramsCalc_2d_eq
+
      SUBROUTINE paramsCalc_3d(l_x, l_y, l_z, beta, vel, l_t, n_s, l_th, l_b)
         INTEGER(4), INTENT(out) :: l_x, l_y, l_z
         REAL(8), INTENT(out) :: beta
@@ -71,6 +93,14 @@
 
         READ (*, *) l_x, l_y, l_z, beta, vel, l_t, n_s, l_th, l_b
      END SUBROUTINE paramsCalc_3d
+
+     SUBROUTINE paramsCalc_3d_eq(l_x, l_y, l_z, beta, l_t, n_s, l_th, l_b)
+        INTEGER(4), INTENT(out) :: l_x, l_y, l_z
+        REAL(8), INTENT(out) :: beta
+        INTEGER(4), INTENT(out) :: l_t, n_s, l_th, l_b
+
+        READ (*, *) l_x, l_y, l_z, beta, l_t, n_s, l_th, l_b
+     END SUBROUTINE paramsCalc_3d_eq
 
      ! TODO: 名前に因んで関数化
      SUBROUTINE metropolis_2d(beta, p_2d)

@@ -67,7 +67,7 @@ PROGRAM main
     CALL convertStreamSamples(l_th, n_b, mb(1:l_t, s), b_mb(1:n_b, s))
   END DO
   !$omp end parallel do
-  DEALLOCATE(eb, mb, ee, me, p)
+  DEALLOCATE(eb, mb)
 
   !$omp parallel do schedule(static, 1) default(none) &
   !$omp shared(n_s, n_b, b_eb, b_mb) &
@@ -111,8 +111,8 @@ PROGRAM main
 
   OPEN(20, file="physquan2.dat", status="replace")
   DO s = 1, n_s, 1
-     WRITE(20, '(i4, a, f0.4, a, f0.8, a, f0.8, a, f0.8, a, f0.8, a, f0.8, a, f0.8') &
-     l_z, ", ", beta, ", ", cb(s), ", ", err_cb(s), ", ", chib(s), ", ", err_chib(s) ", ", ub(s), ", ", err_ub(s)
+     WRITE(20, '(i4, a, f0.4, a, f0.8, a, f0.8, a, f0.8, a, f0.8, a, f0.8, a, f0.8)') &
+     l_z, ", ", beta, ", ", cb(s), ", ", err_cb(s), ", ", chib(s), ", ", err_chib(s), ", ", ub(s), ", ", err_ub(s)
   END DO
   CLOSE(20)
 

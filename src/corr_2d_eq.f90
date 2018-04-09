@@ -7,7 +7,7 @@ PROGRAM main
 
   INTEGER(4) :: sl_eb, sl_ee, sl_mb, sl_me, sl_p
   INTEGER(4), ALLOCATABLE :: eb(:, :), mb(:, :), p(:, :)
-  INTEGER(4), ALLOCATABLE :: amb(:, :), 
+  INTEGER(4), ALLOCATABLE :: amb(:, :)
   INTEGER(4), ALLOCATABLE :: eb_sq(:, :), mb_sq(:, :)
   REAL(4), ALLOCATABLE :: ac_eb(:, :), ac_amb(:, :)
   REAL(4), ALLOCATABLE :: m_eb(:), m_amb(:)
