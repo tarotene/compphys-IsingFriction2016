@@ -1,6 +1,6 @@
 FC = ifort
 ifeq (${FC}, ifort)
-	FFLAGS += -I${MKLROOT}/include
+	FFLAGS += -I${MKLROOT}/include -fopenmp -parallel -fast
 	LDFLAGS += ${MKLROOT}/lib/libmkl_intel_lp64.a ${MKLROOT}/lib/libmkl_intel_thread.a ${MKLROOT}/lib/libmkl_core.a -liomp5 -lpthread -lm -ldl
 endif
 
