@@ -50,9 +50,9 @@ PROGRAM main
      OPEN(sl_eb, file="eb_sweep/en_bulk_s"//ss//"_sweep.bin", access="stream", status="new", buffered="YES")
      OPEN(sl_mb, file="mb_sweep/m_bulk_s"//ss//"_sweep.bin", access="stream", status="new", buffered="YES")
      
-     err = vslnewstream(str_p, VSL_BRNG_MT19937, 100 + 3 * (s - 1) + 0)
-     err = vslnewstream(str_x, VSL_BRNG_MT19937, 100 + 3 * (s - 1) + 1)
-     err = vslnewstream(str_z, VSL_BRNG_MT19937, 100 + 3 * (s - 1) + 3)
+     err = vslnewstream(str_p, VSL_BRNG_SFMT19937, 100 + 3 * (s - 1) + 0)
+     err = vslnewstream(str_x, VSL_BRNG_SFMT19937, 100 + 3 * (s - 1) + 1)
+     err = vslnewstream(str_z, VSL_BRNG_SFMT19937, 100 + 3 * (s - 1) + 3)
 
      CALL calcEn_2d(sp_ini(0:l_x + 1, 0:l_z + 1), eb(0))
      sp(0:l_x + 1, 0:l_z + 1) = sp_ini(0:l_x + 1, 0:l_z + 1)

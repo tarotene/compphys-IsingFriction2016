@@ -56,10 +56,10 @@ PROGRAM main
      OPEN(sl_me, file="me_sweep/m_edge_s"//ss//"_sweep.bin", access="stream", status="new", buffered="YES")
      OPEN(sl_p, file="p_sweep/pump_s"//ss//"_sweep.bin", access="stream", status="new", buffered="YES")
      
-     err = vslnewstream(str_p, VSL_BRNG_MT19937, 100 + 3 * (s - 1) + 0)
-     err = vslnewstream(str_x, VSL_BRNG_MT19937, 100 + 3 * (s - 1) + 1)
-     err = vslnewstream(str_y, VSL_BRNG_MT19937, 100 + 3 * (s - 1) + 2)
-     err = vslnewstream(str_z, VSL_BRNG_MT19937, 100 + 3 * (s - 1) + 3)
+     err = vslnewstream(str_p, VSL_BRNG_SFMT19937, 100 + 3 * (s - 1) + 0)
+     err = vslnewstream(str_x, VSL_BRNG_SFMT19937, 100 + 3 * (s - 1) + 1)
+     err = vslnewstream(str_y, VSL_BRNG_SFMT19937, 100 + 3 * (s - 1) + 2)
+     err = vslnewstream(str_z, VSL_BRNG_SFMT19937, 100 + 3 * (s - 1) + 3)
 
      CALL calcEn_3d(sp_ini(0:l_x + 1, 0:l_y + 1, 0:l_z + 1), eb(0))
      sp(0:l_x + 1, 0:l_y + 1, 0:l_z + 1) = sp_ini(0:l_x + 1, 0:l_y + 1, 0:l_z + 1)
