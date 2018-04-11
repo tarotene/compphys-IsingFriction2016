@@ -6,6 +6,8 @@ mod*/
 obj*/
 test*/
 zip*/
+sh/
+gp/
 *.mod
 *.dat
 *.log
