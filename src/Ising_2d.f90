@@ -41,7 +41,7 @@ PROGRAM main
   !$omp shared(n_s0, n_s, l_t, l_x, l_z, vel, n_st, sp_ini) &
   !$omp private(s, sl_sp, sl_en, sl_eb, sl_m, sl_mb) &
   !$omp private(i_st, t, i_v, err, str_x, str_z, str_p, r_x, r_z, r_p, ss, st, eb, mb, sp) &
-  !$omp private(sl_ee, sl_me, sl_p, ee, pmp) &
+  !$omp private(sl_ee, sl_me, sl_p, ee, pmp)
   DO s = n_s0 + 1, n_s, 1
      sl_sp = 20 + s + 0 * n_s
 

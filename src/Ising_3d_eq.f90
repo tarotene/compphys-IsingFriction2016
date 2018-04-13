@@ -8,7 +8,7 @@ PROGRAM main
 
   IMPLICIT NONE
 
-  INTEGER(4), ALLOCATABLE :: sp(:, :), sp_ini(:, :), eb(:), mb(:), r_x(:), r_y(:), r_z(:)
+  INTEGER(4), ALLOCATABLE :: sp(:, :, :), sp_ini(:, :, :), eb(:), mb(:), r_x(:), r_y(:), r_z(:)
   INTEGER(4) :: err
   INTEGER(4) :: i_st, i_v, t, s, x, y, z
   
@@ -30,7 +30,7 @@ PROGRAM main
   CALL metropolis_3d(beta, p_3d)
 
   ALLOCATE(r_x(1:n_st), r_y(1:n_st), r_z(1:n_st), r_p(1:n_st))
-  ALLOCATE(eb(0:n_st), mb(0:n_st), sp(0:l_x + 1, 0:l_z + 1), sp_ini(0:l_x + 1, 0:l_y + 1, 0:l_z + 1))
+  ALLOCATE(eb(0:n_st), mb(0:n_st), sp(0:l_x + 1, 0:l_y + 1, 0:l_z + 1), sp_ini(0:l_x + 1, 0:l_y + 1, 0:l_z + 1))
   eb(0:n_st) = 0
   mb(0:n_st) = 0
   CALL initSp_3d(sp_ini(0:l_x + 1, 0:l_y + 1, 0:l_z + 1))
@@ -77,7 +77,7 @@ PROGRAM main
       err = virnguniform(VSL_RNG_METHOD_UNIFORM_STD, str_x, n_st, r_x(1:n_st), 1, l_x + 1)
       err = virnguniform(VSL_RNG_METHOD_UNIFORM_STD, str_y, n_st, r_y(1:n_st), 1, l_y + 1)
       err = virnguniform(VSL_RNG_METHOD_UNIFORM_STD, str_z, n_st, r_z(1:n_st), 1, l_z + 1)
-      CALL mSSFs_3d(r_x(1:n_st), r_y(1:n_st), r_z(1:n_st), r_p(1:n_st), sp(0:l_x + 1, 0:l_z + 1), eb(0:n_st), mb(0:n_st))
+      CALL mSSFs_3d(r_x(1:n_st), r_y(1:n_st), r_z(1:n_st), r_p(1:n_st), sp(0:l_x + 1, 0:l_y + 1, 0:l_z + 1), eb(0:n_st), mb(0:n_st))
       ! WRITE(sl_en) eb(0:n_st)
       eb(0) = eb(n_st)
       ! WRITE(sl_m) mb(0:n_st)

@@ -8,7 +8,7 @@ PROGRAM main
 
   IMPLICIT NONE
 
-  INTEGER(4), ALLOCATABLE :: sp(:, :), sp_ini(:, :), eb(:), mb(:), r_x(:), r_y(:), r_z(:)
+  INTEGER(4), ALLOCATABLE :: sp(:, :, :), sp_ini(:, :, :), eb(:), mb(:), r_x(:), r_y(:), r_z(:)
   INTEGER(4) :: err
   INTEGER(4) :: i_st, i_v, t, s, x, y, z
   
@@ -41,7 +41,7 @@ PROGRAM main
   !$omp shared(n_s0, n_s, l_t, l_x, l_y,  l_z, vel, n_st, sp_ini) &
   !$omp private(s, sl_sp, sl_en, sl_eb, sl_m, sl_mb) &
   !$omp private(i_st, t, i_v, err, str_x, str_y, str_z, str_p, r_x, r_y, r_z, r_p, ss, st, eb, mb, sp) &
-  !$omp private(sl_ee, sl_me, sl_p, ee, pmp) &
+  !$omp private(sl_ee, sl_me, sl_p, ee, pmp)
   DO s = n_s0 + 1, n_s, 1
      sl_sp = 20 + s + 0 * n_s
 
@@ -80,7 +80,7 @@ PROGRAM main
            err = virnguniform(VSL_RNG_METHOD_UNIFORM_STD, str_x, n_st, r_x(1:n_st), 1, l_x + 1)
            err = virnguniform(VSL_RNG_METHOD_UNIFORM_STD, str_y, n_st, r_y(1:n_st), 1, l_y + 1)
            err = virnguniform(VSL_RNG_METHOD_UNIFORM_STD, str_z, n_st, r_z(1:n_st), 1, l_z + 1)
-           CALL mSSFs_2d(r_x(1:n_st), r_y(1:n_st), r_z(1:n_st), r_p(1:n_st), sp(0:l_x + 1, 0:l_y + 1, 0:l_z + 1), eb(0:n_st), mb(0:n_st))
+           CALL mSSFs_3d(r_x(1:n_st), r_y(1:n_st), r_z(1:n_st), r_p(1:n_st), sp(0:l_x + 1, 0:l_y + 1, 0:l_z + 1), eb(0:n_st), mb(0:n_st))
            ! WRITE(sl_en) eb(0:n_st)
            eb(0) = eb(n_st)
            ! WRITE(sl_m) mb(0:n_st)
