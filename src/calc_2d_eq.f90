@@ -87,6 +87,7 @@ PROGRAM main
   ! p(1:l_t, 1:n_s) = DBLE(ex_p(1:l_t, 1:n_s)) / DBLE(l_x)
 
   DEALLOCATE(ex_eb, ex_mb)
+
   ! DEALLOCATE(ex_ee, ex_me, ex_p)
 
   eb_sq(1:l_t, 1:n_s) = eb(1:l_t, 1:n_s) ** 2
@@ -109,7 +110,9 @@ PROGRAM main
   END DO
   !$omp end parallel do
 
-  DEALLOCATE(eb, mb, ee, me, p)
+  DEALLOCATE(eb, mb)
+
+  ! DEALLOCATE(ee, me, p)
 
   !$omp parallel do schedule(static, 1) default(none) &
   !$omp shared(n_s, l_th, l_t, n_b, eb_sq, mb_sq, mb_fp, b_eb_sq, b_mb_sq, b_mb_fp)
@@ -125,7 +128,7 @@ PROGRAM main
   !$omp end parallel do
 
   !$omp parallel do schedule(static, 1) default(none) &
-  !$omp shared(n_s, n_b, b_eb, b_mb, b_p, avg_eb, avg_mb, var_eb, var_mb, err_eb, err_mb, err_p)
+  !$omp shared(n_s, n_b, b_eb, b_mb, avg_eb, avg_mb, var_eb, var_mb, err_eb, err_mb)
   DO s = 1, n_s, 1
     CALL calcAvgVar(n_b, b_eb(1:n_b, s), avg_eb(s), var_eb(s))
     CALL calcAvgVar(n_b, b_mb(1:n_b, s), avg_mb(s), var_mb(s))
@@ -179,7 +182,7 @@ PROGRAM main
   "  ", l_z, ", ", beta, ", ", vel, ", ", &
   SUM(cb(1:n_s)) / DBLE(n_s), ", ", SUM(err_cb(1:n_s)) / DBLE(n_s), ", ", &
   SUM(chib(1:n_s)) / DBLE(n_s), ", ", SUM(err_chib(1:n_s)) / DBLE(n_s), ", ", &
-  SUM(ub(1:n_s)) / DBLE(n_s), ", ", SUM(err_ub(1:n_s)) / DBLE(n_s), ", ", &
+  SUM(ub(1:n_s)) / DBLE(n_s), ", ", SUM(err_ub(1:n_s)) / DBLE(n_s)
 
   ! SUM(ce(1:n_s)) / DBLE(n_s), ", ", SUM(err_ce(1:n_s)) / DBLE(n_s), ", ", &
   ! SUM(chie(1:n_s)) / DBLE(n_s), ", ", SUM(err_chie(1:n_s)) / DBLE(n_s), ", ", &

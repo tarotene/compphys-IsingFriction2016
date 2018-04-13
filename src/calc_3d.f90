@@ -81,12 +81,12 @@ PROGRAM main
   END DO
   !$omp end parallel do
 
-  eb(1:l_t, 1:n_s) = DBLE(ex_eb(1:l_t, 1:n_s)) / DBLE(l_x * l_z)
-  mb(1:l_t, 1:n_s) = DBLE(ABS(ex_mb(1:l_t, 1:n_s))) / DBLE(l_x * l_z)
+  eb(1:l_t, 1:n_s) = DBLE(ex_eb(1:l_t, 1:n_s)) / DBLE(l_x * l_y * l_z)
+  mb(1:l_t, 1:n_s) = DBLE(ABS(ex_mb(1:l_t, 1:n_s))) / DBLE(l_x * l_y * l_z)
 
-  ee(1:l_t, 1:n_s) = DBLE(ex_ee(1:l_t, 1:n_s)) / DBLE(l_x)
-  me(1:l_t, 1:n_s) = DBLE(ABS(ex_me(1:l_t, 1:n_s))) / DBLE(2 * l_x)
-  p(1:l_t, 1:n_s) = DBLE(ex_p(1:l_t, 1:n_s)) / DBLE(l_x)
+  ee(1:l_t, 1:n_s) = DBLE(ex_ee(1:l_t, 1:n_s)) / DBLE(l_x * l_y)
+  me(1:l_t, 1:n_s) = DBLE(ABS(ex_me(1:l_t, 1:n_s))) / DBLE(2 * l_x * l_y)
+  p(1:l_t, 1:n_s) = DBLE(ex_p(1:l_t, 1:n_s)) / DBLE(l_x * l_y)
 
   DEALLOCATE(ex_eb, ex_mb)
   DEALLOCATE(ex_ee, ex_me, ex_p)
@@ -112,7 +112,9 @@ PROGRAM main
   END DO
   !$omp end parallel do
 
-  DEALLOCATE(eb, mb, ee, me, p)
+  DEALLOCATE(eb, mb)
+  
+  DEALLOCATE(ee, me, p)
 
   !$omp parallel do schedule(static, 1) default(none) &
   !$omp shared(n_s, l_th, l_t, n_b, eb_sq, mb_sq, mb_fp, b_eb_sq, b_mb_sq, b_mb_fp) &
@@ -129,8 +131,8 @@ PROGRAM main
   !$omp end parallel do
 
   !$omp parallel do schedule(static, 1) default(none) &
-  !$omp shared(n_s, n_b, b_eb, b_mb, b_p, avg_eb, avg_mb, var_eb, var_mb, err_eb, err_mb, err_p) &
-  !$omp shared(b_ee, b_me, avg_ee, avg_me, avg_p, var_ee, var_me, var_p, err_ee, err_me)
+  !$omp shared(n_s, n_b, b_eb, b_mb, avg_eb, avg_mb, var_eb, var_mb, err_eb, err_mb) &
+  !$omp shared(b_ee, b_me, b_p, avg_ee, avg_me, avg_p, var_ee, var_me, var_p, err_ee, err_me, err_p)
   DO s = 1, n_s, 1
     CALL calcAvgVar(n_b, b_eb(1:n_b, s), avg_eb(s), var_eb(s))
     CALL calcAvgVar(n_b, b_mb(1:n_b, s), avg_mb(s), var_mb(s))
@@ -160,24 +162,24 @@ PROGRAM main
   CLOSE(10)
 
   !$omp parallel do schedule(static, 1) default(none) &
-  !$omp shared(n_s, n_b, beta, l_x, l_z, avg_eb, err_eb, avg_mb, err_mb, b_eb_sq, b_mb_sq, b_mb_fp, cb, err_cb, chib, err_chib, ub, err_ub) &
+  !$omp shared(n_s, n_b, beta, l_x, l_y, l_z, avg_eb, err_eb, avg_mb, err_mb, b_eb_sq, b_mb_sq, b_mb_fp, cb, err_cb, chib, err_chib, ub, err_ub) &
   !$omp shared(avg_ee, err_ee, avg_me, err_me, b_ee_sq, b_me_sq, b_me_fp, ce, err_ce, chie, err_chie, ue, err_ue)
   DO s = 1, n_s, 1
-    cb(s) = (beta ** 2) * (SUM(b_eb_sq(1:n_b, s)) / DBLE(n_b) - avg_eb(s) ** 2) * DBLE(l_x * l_z)
-    chib(s) = beta * (SUM(b_mb_sq(1:n_b, s)) / DBLE(n_b) - avg_mb(s) ** 2) * DBLE(l_x * l_z)
+    cb(s) = (beta ** 2) * (SUM(b_eb_sq(1:n_b, s)) / DBLE(n_b) - avg_eb(s) ** 2) * DBLE(l_x * L_y * l_z)
+    chib(s) = beta * (SUM(b_mb_sq(1:n_b, s)) / DBLE(n_b) - avg_mb(s) ** 2) * DBLE(l_x * L_y * l_z)
     ub(s) = 1 - (SUM(b_mb_fp(1:n_b, s)) / DBLE(n_b)) / (3.0d0 * (SUM(b_mb_fp(1:n_b, s)) / DBLE(n_b)) ** 2)
     
     !  TODO: 誤差の公式の確認
-    err_cb(s)    = (beta ** 2) * (4 * err_eb(s) + err_eb(s) ** 2) * DBLE(l_x * l_z)
-    err_chib(s)  = - beta * (4 * err_mb(s) + err_mb(s) ** 2) * DBLE(l_x * l_z)
+    err_cb(s)    = (beta ** 2) * (4 * err_eb(s) + err_eb(s) ** 2) * DBLE(l_x * L_y * l_z)
+    err_chib(s)  = - beta * (4 * err_mb(s) + err_mb(s) ** 2) * DBLE(l_x * L_y * l_z)
     err_ub(s)    = 4 * (err_mb(s) / avg_mb(s)) ** 2
 
-    ce(s) = (beta ** 2) * (SUM(b_ee_sq(1:n_b, s)) / DBLE(n_b) - avg_ee(s) ** 2) * DBLE(l_x)
-    chie(s) = beta * (SUM(b_me_sq(1:n_b, s)) / DBLE(n_b) - avg_me(s) ** 2) * DBLE(2 * l_x
+    ce(s) = (beta ** 2) * (SUM(b_ee_sq(1:n_b, s)) / DBLE(n_b) - avg_ee(s) ** 2) * DBLE(l_x * l_y)
+    chie(s) = beta * (SUM(b_me_sq(1:n_b, s)) / DBLE(n_b) - avg_me(s) ** 2) * DBLE(2 * l_x * l_y)
     ue(s) = 1 - (SUM(b_me_fp(1:n_b, s)) / DBLE(n_b)) / (3.0d0 * (SUM(b_me_fp(1:n_b, s)) / DBLE(n_b)) ** 2)
 
-    err_ce(s)    = (beta ** 2) * (4 * err_ee(s) + err_ee(s) ** 2) * DBLE(l_x)
-    err_chie(s)  = - beta * (4 * err_me(s) + err_me(s) ** 2) * DBLE(2 * l_x)
+    err_ce(s)    = (beta ** 2) * (4 * err_ee(s) + err_ee(s) ** 2) * DBLE(l_x * l_y)
+    err_chie(s)  = - beta * (4 * err_me(s) + err_me(s) ** 2) * DBLE(2 * l_x * l_y)
     err_ue(s)    = 4 * (err_me(s) / avg_me(s)) ** 2
   END DO
   !$omp end parallel do

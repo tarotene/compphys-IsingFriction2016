@@ -38,37 +38,37 @@
         READ (*, *) l_x, l_y, l_z, beta, l_t, id_IC, id_BC, n_s
      END SUBROUTINE inputParams_3d_eq
 
-     SUBROUTINE paramsCorrelate_2d(l_x, l_z, beta, vel, l_t, n_s)
+     SUBROUTINE paramsCorr_2d(l_x, l_z, beta, vel, l_t, n_s)
         INTEGER(4), INTENT(out) :: l_x, l_z
         REAL(8), INTENT(out) :: beta
         INTEGER(4), INTENT(out) :: vel, l_t, n_s
 
         READ (*, *) l_x, l_z, beta, vel, l_t, n_s
-     END SUBROUTINE paramsCorrelate_2d
+     END SUBROUTINE paramsCorr_2d
 
-     SUBROUTINE paramsCorrelate_2d_eq(l_x, l_z, beta, l_t, n_s)
+     SUBROUTINE paramsCorr_2d_eq(l_x, l_z, beta, l_t, n_s)
         INTEGER(4), INTENT(out) :: l_x, l_z
         REAL(8), INTENT(out) :: beta
         INTEGER(4), INTENT(out) :: l_t, n_s
 
         READ (*, *) l_x, l_z, beta, l_t, n_s
-     END SUBROUTINE paramsCorrelate_2d_eq
+     END SUBROUTINE paramsCorr_2d_eq
 
-     SUBROUTINE paramsCorrelate_3d(l_x, l_y, l_z, beta, vel, l_t, n_s)
+     SUBROUTINE paramsCorr_3d(l_x, l_y, l_z, beta, vel, l_t, n_s)
         INTEGER(4), INTENT(out) :: l_x, l_y, l_z
         REAL(8), INTENT(out) :: beta
         INTEGER(4), INTENT(out) :: vel, l_t, n_s
 
         READ (*, *) l_x, l_y, l_z, beta, vel, l_t, n_s
-     END SUBROUTINE paramsCorrelate_3d
+     END SUBROUTINE paramsCorr_3d
 
-     SUBROUTINE paramsCorrelate_3d_eq(l_x, l_y, l_z, beta, l_t, n_s)
+     SUBROUTINE paramsCorr_3d_eq(l_x, l_y, l_z, beta, l_t, n_s)
         INTEGER(4), INTENT(out) :: l_x, l_y, l_z
         REAL(8), INTENT(out) :: beta
         INTEGER(4), INTENT(out) :: l_t, n_s
 
         READ (*, *) l_x, l_y, l_z, beta, l_t, n_s
-     END SUBROUTINE paramsCorrelate_3d_eq
+     END SUBROUTINE paramsCorr_3d_eq
 
      SUBROUTINE paramsCalc_2d(l_x, l_z, beta, vel, l_t, n_s, l_th, l_b)
         INTEGER(4), INTENT(out) :: l_x, l_z
