@@ -8,6 +8,7 @@ PROGRAM main
 
   IMPLICIT NONE
 
+  INTEGER(1), ALLOCATABLE :: sp_ini1(:, :)
   INTEGER(4), ALLOCATABLE :: sp(:, :), sp_ini(:, :), eb(:), mb(:), r_x(:), r_z(:)
   INTEGER(4) :: err
   INTEGER(4) :: i_st, i_v, t, s, x, z
@@ -30,9 +31,10 @@ PROGRAM main
   CALL metropolis_2d(beta, p_2d)
 
   ALLOCATE(r_x(1:n_st), r_z(1:n_st), r_p(1:n_st))
+  ALLOCATE(sp_ini1(0:l_x + 1, 0:l_z + 1))
   ALLOCATE(eb(0:n_st), mb(0:n_st), sp(0:l_x + 1, 0:l_z + 1), sp_ini(0:l_x + 1, 0:l_z + 1))
-  eb(0:n_st) = 0
-  mb(0:n_st) = 0
+  ! eb(0:n_st) = 0
+  ! mb(0:n_st) = 0
   CALL initSp_2d(sp_ini(0:l_x + 1, 0:l_z + 1))
 
   ALLOCATE(pmp(1:vel))
@@ -40,10 +42,10 @@ PROGRAM main
   !$omp parallel do schedule(static, 1) default(none) &
   !$omp shared(n_s0, n_s, l_t, l_x, l_z, vel, n_st) &
   !$omp private(s, sl_sp, sl_en, sl_eb, sl_m, sl_mb) &
-  !$omp private(i_st, t, i_v, err, str_x, str_z, str_p, r_x, r_z, r_p, ss, st, sp) &
-  !$omp firstprivate(eb, mb, sp_ini) &
+  !$omp private(i_st, t, i_v, err, str_x, str_z, str_p, r_x, r_z, r_p, ss, st, eb, mb, sp, sp_ini1) &
+  !$omp firstprivate(sp_ini) &
   !$omp private(sl_ee, sl_me, sl_p, ee, pmp)
-  DO s = n_s0 + 1, n_s, 1
+  DO s = 1, n_s0, 1
      sl_sp = 20 + s + 0 * n_s
 
     !  sl_en = 20 + s + 1 * n_s
@@ -57,21 +59,27 @@ PROGRAM main
      sl_p = 20 + s + 7 * n_s
 
      WRITE(ss, '(i0.4)') s
-     ! OPEN(sl_en, file="en_step/en_s"//ss//"_step.bin", access="stream", status="replace")
-     ! OPEN(sl_m, file="m_step/m_s"//ss//"_step.bin", access="stream", status="replace")
-     OPEN(sl_eb, file="eb_sweep/en_bulk_s"//ss//"_sweep.bin", access="stream", status="replace")
-     OPEN(sl_mb, file="mb_sweep/m_bulk_s"//ss//"_sweep.bin", access="stream", status="replace")
+     ! OPEN(sl_en, file="en_step/en_s"//ss//"_step.bin", access="stream", status="old", position="append")
+     ! OPEN(sl_m, file="m_step/m_s"//ss//"_step.bin", access="stream", status="old", position="append")
+     OPEN(sl_eb, file="eb_sweep/en_bulk_s"//ss//"_sweep.bin", access="stream", status="old", position="append")
+     OPEN(sl_mb, file="mb_sweep/m_bulk_s"//ss//"_sweep.bin", access="stream", status="old", position="append")
 
-     OPEN(sl_ee, file="ee_sweep/en_edge_s"//ss//"_sweep.bin", access="stream", status="replace")
-     OPEN(sl_me, file="me_sweep/m_edge_s"//ss//"_sweep.bin", access="stream", status="replace")
-     OPEN(sl_p, file="p_sweep/pump_s"//ss//"_sweep.bin", access="stream", status="replace")
+     OPEN(sl_ee, file="ee_sweep/en_edge_s"//ss//"_sweep.bin", access="stream", status="old", position="append")
+     OPEN(sl_me, file="me_sweep/m_edge_s"//ss//"_sweep.bin", access="stream", status="old", position="append")
+     OPEN(sl_p, file="p_sweep/pump_s"//ss//"_sweep.bin", access="stream", status="old", position="append")
      
-     err = vslnewstream(str_p, VSL_BRNG_SFMT19937, 100 + 4 * (s - 1) + 0)
-     err = vslnewstream(str_x, VSL_BRNG_SFMT19937, 100 + 4 * (s - 1) + 1)
-     err = vslnewstream(str_z, VSL_BRNG_SFMT19937, 100 + 4 * (s - 1) + 3)
+     err = vslloadstreamf(str_p, "str_p_s"//ss//".bin")
+     err = vslloadstreamf(str_x, "str_x_s"//ss//".bin")
+     err = vslloadstreamf(str_z, "str_z_s"//ss//".bin")
 
+     OPEN(sl_sp, file="sp_fin_s"//ss//".bin", access="stream", status="old")
+     READ(sl_sp) sp_ini1(1:l_x, 1:l_z)
+     CLOSE(sl_sp)
+     sp_ini(1:l_x, 1:l_z) = INT4(sp_ini1(1:l_x, 1:l_z))
+  
      CALL calcEn_2d(sp_ini(0:l_x + 1, 0:l_z + 1), eb(0))
      mb(0) = SUM(sp_ini(1:l_x, 1:l_z))
+
      sp(0:l_x + 1, 0:l_z + 1) = sp_ini(0:l_x + 1, 0:l_z + 1)
 
      DO t = 1, l_t, 1
