@@ -20,7 +20,7 @@ PROGRAM main
 
   ALLOCATE(eb(1:n_s, 1:l_t), mb(1:n_s, 1:l_t), eb_sq(1:n_s, 1:l_t), mb_sq(1:n_s, 1:l_t), ac_eb(1:n_s, 1:l_t / 2), ac_mb(1:n_s, 1:l_t / 2))
 
-  ALLOCATE(ee(1:n_s, 1:l_t), me(1:n_s, 1:l_t), p(1:n_s, 1:l_t), ee_sq(1:n_s, 1:l_t), me_sq(1:n_s, 1:l_t), p_sq(1:n_s, 1:l_t), ac_ee(1:n_s, 1:l_t / 2), , , ac_me(1:n_s, 1:l_t / 2), ac_p(1:n_s, 1:l_t))
+  ALLOCATE(ee(1:n_s, 1:l_t), me(1:n_s, 1:l_t), p(1:n_s, 1:l_t), ee_sq(1:n_s, 1:l_t), me_sq(1:n_s, 1:l_t), p_sq(1:n_s, 1:l_t), ac_ee(1:n_s, 1:l_t / 2), ac_me(1:n_s, 1:l_t / 2), ac_p(1:n_s, 1:l_t))
 
   !$omp parallel do schedule(static, 1) default(none) &
   !$omp shared(n_s, l_t, eb, mb) &
