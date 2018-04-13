@@ -26,7 +26,7 @@ PROGRAM main
 
   CALL inputParams_3d(l_x, l_y, l_z, beta, vel, l_t, id_IC, id_BC, n_s)
   n_st = l_x * l_y * l_z / vel
-  CALL countSamples(n_s, n_s0)
+  CALL countSamples(n_s0)
   CALL metropolis_3d(beta, p_3d)
 
   ALLOCATE(r_x(1:n_st), r_y(1:n_st), r_z(1:n_st), r_p(1:n_st))
@@ -56,21 +56,22 @@ PROGRAM main
      sl_p = 20 + s + 7 * n_s
 
      WRITE(ss, '(i0.4)') s
-     ! OPEN(sl_en, file="en_step/en_s"//ss//"_step.bin", access="stream", status="new", buffered="YES")
-     ! OPEN(sl_m, file="m_step/m_s"//ss//"_step.bin", access="stream", status="new", buffered="YES")
-     OPEN(sl_eb, file="eb_sweep/en_bulk_s"//ss//"_sweep.bin", access="stream", status="new", buffered="YES")
-     OPEN(sl_mb, file="mb_sweep/m_bulk_s"//ss//"_sweep.bin", access="stream", status="new", buffered="YES")
+     ! OPEN(sl_en, file="en_step/en_s"//ss//"_step.bin", access="stream", status="replace")
+     ! OPEN(sl_m, file="m_step/m_s"//ss//"_step.bin", access="stream", status="replace")
+     OPEN(sl_eb, file="eb_sweep/en_bulk_s"//ss//"_sweep.bin", access="stream", status="replace")
+     OPEN(sl_mb, file="mb_sweep/m_bulk_s"//ss//"_sweep.bin", access="stream", status="replace")
 
-     OPEN(sl_ee, file="ee_sweep/en_edge_s"//ss//"_sweep.bin", access="stream", status="new", buffered="YES")
-     OPEN(sl_me, file="me_sweep/m_edge_s"//ss//"_sweep.bin", access="stream", status="new", buffered="YES")
-     OPEN(sl_p, file="p_sweep/pump_s"//ss//"_sweep.bin", access="stream", status="new", buffered="YES")
+     OPEN(sl_ee, file="ee_sweep/en_edge_s"//ss//"_sweep.bin", access="stream", status="replace")
+     OPEN(sl_me, file="me_sweep/m_edge_s"//ss//"_sweep.bin", access="stream", status="replace")
+     OPEN(sl_p, file="p_sweep/pump_s"//ss//"_sweep.bin", access="stream", status="replace")
      
-     err = vslnewstream(str_p, VSL_BRNG_SFMT19937, 100 + 3 * (s - 1) + 0)
-     err = vslnewstream(str_x, VSL_BRNG_SFMT19937, 100 + 3 * (s - 1) + 1)
-     err = vslnewstream(str_y, VSL_BRNG_SFMT19937, 100 + 3 * (s - 1) + 2)
-     err = vslnewstream(str_z, VSL_BRNG_SFMT19937, 100 + 3 * (s - 1) + 3)
+     err = vslnewstream(str_p, VSL_BRNG_SFMT19937, 100 + 4 * (s - 1) + 0)
+     err = vslnewstream(str_x, VSL_BRNG_SFMT19937, 100 + 4 * (s - 1) + 1)
+     err = vslnewstream(str_y, VSL_BRNG_SFMT19937, 100 + 4 * (s - 1) + 2)
+     err = vslnewstream(str_z, VSL_BRNG_SFMT19937, 100 + 4 * (s - 1) + 3)
 
      CALL calcEn_3d(sp_ini(0:l_x + 1, 0:l_y + 1, 0:l_z + 1), eb(0))
+     mb(0) = SUM(sp_ini(1:l_x, 1:l_y, 1:l_z))
      sp(0:l_x + 1, 0:l_y + 1, 0:l_z + 1) = sp_ini(0:l_x + 1, 0:l_y + 1, 0:l_z + 1)
 
      DO t = 1, l_t, 1
@@ -89,7 +90,7 @@ PROGRAM main
 
 
         WRITE(st, '(i0.8)') t
-        ! OPEN(sl_sp, file="sp_sweep/sp_s"//ss//"t"//st//"_sweep.bin", access="stream", status="new")
+        ! OPEN(sl_sp, file="sp_sweep/sp_s"//ss//"t"//st//"_sweep.bin", access="stream", status="replace")
         ! WRITE(sl_sp) INT1(sp(1:l_x, 1:l_z))
         ! CLOSE(sl_sp)
         WRITE(sl_eb) eb(0)
@@ -101,10 +102,15 @@ PROGRAM main
         WRITE(sl_p) SUM(pmp(1:vel))
      END DO
 
+     err = vslsavestreamf(str_p, "str_p_s"//ss//"_sweep.bin")
+     err = vslsavestreamf(str_x, "str_x_s"//ss//"_sweep.bin")
+     err = vslsavestreamf(str_y, "str_y_s"//ss//"_sweep.bin")
+     err = vslsavestreamf(str_z, "str_z_s"//ss//"_sweep.bin")
+
+     err = vsldeletestream(str_p)
      err = vsldeletestream(str_x)
      err = vsldeletestream(str_y)
      err = vsldeletestream(str_z)
-     err = vsldeletestream(str_p)
      ! CLOSE(sl_en)
      ! CLOSE(sl_m)
      
