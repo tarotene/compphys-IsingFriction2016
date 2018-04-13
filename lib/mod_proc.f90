@@ -174,13 +174,16 @@
         INTEGER(4) :: x, z, east, west, south, north
 
         en = 0
-        DO z = 1, l_z
-           DO x = 1, l_x
+        DO z = 1, l_z, 1
+           DO x = 1, l_x, 1
               CALL orient_2d(sp, x, z, east, west, south, north)
-              en = en - sp(x, z)*(east + west + south + north)
+              en = en - sp(x, z) * (east + west + south + north)
            END DO
         END DO
-        en = en/2
+        DO x = 1, l_x, 1
+          en = en - sp(x, 0) * sp(x, 1) - sp(x, l_z) * sp(x, l_z + 1)
+        END DO
+        en = en / 2
      END SUBROUTINE calcEn_2d
 
      SUBROUTINE calcEn_3d(sp, en)
@@ -190,15 +193,20 @@
         INTEGER(4) :: x, y, z, east, west, south, north, up, down
 
         en = 0
-        DO z = 1, l_z
-           DO y = 1, l_y
-              DO x = 1, l_x
+        DO z = 1, l_z, 1
+           DO y = 1, l_y, 1
+              DO x = 1, l_x, 1
                  CALL orient_3d(sp, x, y, z, east, west, south, north, up, down)
-                 en = en - sp(x, y, z)*(east + west + south + north + up + down)
+                 en = en - sp(x, y, z) * (east + west + south + north + up + down)
               END DO
            END DO
         END DO
-        en = en/2
+        DO y = 1, l_y, 1
+          DO x = 1, l_x, 1
+            en = en - sp(x, y, 0) * sp(x, y, 1) - sp(x, y, l_z) * sp(x, y, l_z + 1)
+          END DO
+        END DO
+        en = en / 2
      END SUBROUTINE calcEn_3d
 
      SUBROUTINE calcEE_2d(sp, en)
@@ -209,7 +217,7 @@
 
         en = 0
         DO x = 1, l_x, 1
-           en = en - sp(x, l_z/2)*sp(x, l_z/2 + 1)
+           en = en - sp(x, l_z / 2) * sp(x, l_z / 2 + 1)
         END DO
      END SUBROUTINE calcEE_2d
 
@@ -222,7 +230,7 @@
         en = 0
         DO y = 1, l_y, 1
            DO x = 1, l_x, 1
-              en = en - sp(x, y, l_z/2)*sp(x, y, l_z/2 + 1)
+              en = en - sp(x, y, l_z / 2) * sp(x, y, l_z / 2 + 1)
            END DO
         END DO
      END SUBROUTINE calcEE_3d
@@ -250,7 +258,8 @@
 
         SELECT CASE (id_IC)
         CASE (1)
-           sp(1:l_x, 1:l_z/2) = 1; sp(1:l_x, l_z/2 + 1:l_z) = -1
+           sp(1:l_x, 1:l_z/2) = 1
+           sp(1:l_x, l_z/2 + 1:l_z) = -1
         CASE (2)
            sp(1:l_x, 1:l_z) = 1
         CASE (3)
@@ -259,7 +268,7 @@
               err = virnguniform(VSL_RNG_METHOD_UNIFORM_STD, str_sp, l_x, sp(1:l_x, z), 0, 2)
            END DO
            err = vsldeletestream(str_sp)
-           sp(1:l_x, 1:l_z) = 2*sp(1:l_x, 1:l_z) - 1
+           sp(1:l_x, 1:l_z) = 2 * sp(1:l_x, 1:l_z) - 1
         END SELECT
      END SUBROUTINE initSp_2d
 
@@ -288,7 +297,8 @@
 
         SELECT CASE (id_IC)
         CASE (1)
-           sp(1:l_x, 1:l_y, 1:l_z/2) = 1; sp(1:l_x, 1:l_y, l_z/2 + 1:l_z) = -1
+           sp(1:l_x, 1:l_y, 1:l_z/2) = 1
+           sp(1:l_x, 1:l_y, l_z/2 + 1:l_z) = -1
         CASE (2)
            sp(1:l_x, 1:l_y, 1:l_z) = 1
         CASE (3)
@@ -299,7 +309,7 @@
               END DO
            END DO
            err = vsldeletestream(str_sp)
-           sp(1:l_x, 1:l_y, 1:l_z) = 2*sp(1:l_x, 1:l_y, 1:l_z) - 1
+           sp(1:l_x, 1:l_y, 1:l_z) = 2 * sp(1:l_x, 1:l_y, 1:l_z) - 1
         END SELECT
      END SUBROUTINE initSp_3d
 
@@ -315,10 +325,12 @@
         CALL orient_2d(sp(0:l_x + 1, 0:l_z + 1), x, z, east, west, south, north)
 
         IF (p <= p_2d(sp(x, z), east, west, south, north)) THEN
-           eb_nxt = eb_prv + 2*sp(x, z)*(east + west + south + north)
-           mb_nxt = mb_prv - 2*sp(x, z); sp(x, z) = -sp(x, z)
+           eb_nxt = eb_prv + 2 * sp(x, z) * (east + west + south + north)
+           mb_nxt = mb_prv - 2 * sp(x, z)
+           sp(x, z) = - sp(x, z)
         ELSE
-           eb_nxt = eb_prv; mb_nxt = mb_prv
+           eb_nxt = eb_prv
+           mb_nxt = mb_prv
         END IF
      END SUBROUTINE SSF_2d
 
@@ -334,10 +346,12 @@
         CALL orient_3d(sp(0:, 0:, 0:), x, y, z, east, west, south, north, up, down)
 
         IF (p <= p_3d(sp(x, y, z), east, west, south, north, up, down)) THEN
-           eb_nxt = eb_prv + 2*sp(x, y, z)*(east + west + south + north + up + down)
-           mb_nxt = mb_prv - 2*sp(x, y, z); sp(x, y, z) = -sp(x, y, z)
+           eb_nxt = eb_prv + 2 * sp(x, y, z) * (east + west + south + north + up + down)
+           mb_nxt = mb_prv - 2 * sp(x, y, z)
+           sp(x, y, z) = - sp(x, y, z)
         ELSE
-           eb_nxt = eb_prv; mb_nxt = mb_prv
+           eb_nxt = eb_prv
+           mb_nxt = mb_prv
         END IF
      END SUBROUTINE SSF_3d
 
@@ -406,16 +420,15 @@
         END DO
      END SUBROUTINE calcAC
 
-     SUBROUTINE countSamples(n_s, n_s0)
-        INTEGER(4), INTENT(in) :: n_s
+     SUBROUTINE countSamples(n_s0)
         INTEGER(4), INTENT(out) :: n_s0
         CHARACTER(4) :: ss
 
         INTEGER(4) :: s, st_sp
 
-        DO s = 1, n_s + 1, 1
+        DO s = 1, 5000000, 1
            WRITE (ss, '(i0.4)') s
-           st_sp = access("en_step/en_s"//ss//"_step.bin", " ")
+           st_sp = access("eb_sweep/en_bulk_s"//ss//"_sweep.bin", " ")
            IF (st_sp > 0) THEN
               n_s0 = s - 1; EXIT
            END IF
