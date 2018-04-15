@@ -59,13 +59,9 @@ PROGRAM main
      DO t = 1, l_t, 1
         DO i_v = 1, vel, 1
            CALL shift_2d(IS2(0:l_x + 1, 0:l_z + 1), pmp(i_v), eb(0))
-           err = vdrnguniform(VSL_RNG_METHOD_UNIFORM_STD, str_p, n_st, r_p(1:n_st), 0.0d0, 1.0d0)
            CALL updateDRand_Uniform(str_p, n_st, 0.0d0, 1.0d0, r_p(1:n_st))
            CALL updateIRand_Uniform(str_x, n_st, 1, l_x + 1, r_x(1:n_st))
            CALL updateIRand_Uniform(str_z, n_st, 1, l_z + 1, r_z(1:n_st))
-           err = virnguniform(VSL_RNG_METHOD_UNIFORM_STD, str_x, n_st, r_x(1:n_st), 1, l_x + 1)
-           err = virnguniform(VSL_RNG_METHOD_UNIFORM_STD, str_z, n_st, r_z(1:n_st), 1, l_z + 1)
-           CALL mSSFs_2d(r_x(1:n_st), r_z(1:n_st), r_p(1:n_st), IS2(0:l_x + 1, 0:l_z + 1), eb(0:n_st), mb(0:n_st))
            ! WRITE(sl_en) eb(0:n_st)
            eb(0) = eb(n_st)
            ! WRITE(sl_m) mb(0:n_st)
@@ -84,14 +80,14 @@ PROGRAM main
         WRITE(sl_me) SUM(IS2(1:l_x, l_z / 2:l_z / 2 + 1))
         WRITE(sl_p) SUM(pmp(1:vel))
      END DO
-
-     err = vslsavestreamf(str_p, "str_p_s"//ss//".bin")
-     err = vslsavestreamf(str_x, "str_x_s"//ss//".bin")
-     err = vslsavestreamf(str_z, "str_z_s"//ss//".bin")
-
-     err = vsldeletestream(str_p)
-     err = vsldeletestream(str_x)
-     err = vsldeletestream(str_z)
+     
+     CALL saveRand(str_p, "str_p_s"//ss//".bin")
+     CALL saveRand(str_x, "str_x_s"//ss//".bin")
+     CALL saveRand(str_z, "str_z_s"//ss//".bin")
+    
+     CALL destRnd(str_p)
+     CALL destRnd(str_x)
+     CALL destRnd(str_z)
      ! CLOSE(sl_en)
      ! CLOSE(sl_m)
      

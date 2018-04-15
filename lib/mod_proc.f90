@@ -7,12 +7,25 @@
      USE IFPORT, ONLY:access
      IMPLICIT NONE
   CONTAINS
-     SUBROUTINE constNewStream_SFMT19937(seed, stream)
+     SUBROUTINE constRand_SFMT19937(seed, stream)
         INTEGER(4), INTENT(in) :: seed
         TYPE(VSL_STREAM_STATE), INTENT(out) :: stream
         
         err = vslnewstream(stream, VSL_BRNG_SFMT19937, seed)
-     END SUBROUTINE constNewStream_SFMT19937
+     END SUBROUTINE constRand_SFMT19937
+
+     SUBROUTINE destRand(stream)
+        TYPE(VSL_STREAM_STATE), INTENT(in) :: stream
+        
+        err = vsldeletestream(stream)
+     END SUBROUTINE destRand
+
+     SUBROUTINE saveRand(stream, filename)
+        TYPE(VSL_STREAM_STATE), INTENT(in) :: stream
+        CHARACTER(30), intent(in) :: filename
+
+        err = vslsavestreamf(stream, TRIM(filename))
+     END SUBROUTINE saveRand
 
      SUBROUTINE updateDRand_Uniform(stream, len_rand, lbound, rbound, rand)
         TYPE(VSL_STREAM_STATE), INTENT(in) :: stream
@@ -23,14 +36,14 @@
         err = vdrnguniform(VSL_RNG_METHOD_UNIFORM_STD, stream, len_rand, rand(1:), lbound, rbound)
      END SUBROUTINE updateDRand_Uniform
 
-     SUBROUTINE updateDRand_Uniform(stream, len_rand, lbound, rbound, rand)
+     SUBROUTINE updateIRand_Uniform(stream, len_rand, lbound, rbound, rand)
         TYPE(VSL_STREAM_STATE), INTENT(in) :: stream
         INTEGER(4), INTENT(in) :: len_ran
-        REAL(8), INTENT(in) :: lbound, rbound
-        REAL(8), INTENT(out) :: rand(1:)
+        INTEGER(4), INTENT(in) :: lbound, rbound
+        INTEGER(4), INTENT(out) :: rand(1:)
         
-        err = vdrnguniform(VSL_RNG_METHOD_UNIFORM_STD, stream, len_rand, rand(1:), lbound, rbound)
-     END SUBROUTINE updateDRand_Uniform
+        err = virnguniform(VSL_RNG_METHOD_UNIFORM_STD, stream, len_rand, rand(1:), lbound, rbound)
+     END SUBROUTINE updateIRand_Uniform
 
      !TODO: 関数化
      SUBROUTINE inputParams_2d(l_x, l_z, beta, vel, l_t, id_IC, id_BC, n_s)
