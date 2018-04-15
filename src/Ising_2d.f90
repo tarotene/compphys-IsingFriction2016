@@ -1,3 +1,5 @@
+INCLUDE 'mkl_vsl.f90'
+
 PROGRAM main
   !$  USE omp_lib
   USE mod_global
