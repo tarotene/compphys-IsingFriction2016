@@ -9,6 +9,13 @@ zip*/
 *.mod
 *.dat
 *.log
+<<<<<<< HEAD
+=======
+/sh/*
+!/sh/_*.sh
+/gp/*
+!/sh/_*.gp
+>>>>>>> 1bb5fa59a0b8b4a0392e831fd28680198ec015b4
 
 src/*.o
 lib/*.o
