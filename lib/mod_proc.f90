@@ -1,3 +1,5 @@
+  INCLUDE 'mkl_vsl.f90'
+
   MODULE mod_proc
      USE mod_global
      USE MKL_VSL_TYPE
