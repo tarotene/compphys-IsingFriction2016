@@ -1,7 +1,17 @@
 FC = ifort
-ifeq (${FC}, ifort)
-	FFLAGS += -I${MKLROOT}/include# -parallel -fopenmp -fast
-	LDFLAGS += ${MKLROOT}/lib/libmkl_intel_lp64.a ${MKLROOT}/lib/libmkl_intel_thread.a ${MKLROOT}/lib/libmkl_core.a -liomp5 -lpthread -lm -ldl
+OS = MacOS
+
+ifeq (${OS}, MacOS)
+	ifeq (${FC}, ifort)
+		FFLAGS += -I${MKLROOT}/include -parallel -fopenmp -fast
+		LDFLAGS += ${MKLROOT}/lib/libmkl_intel_lp64.a ${MKLROOT}/lib/libmkl_intel_thread.a ${MKLROOT}/lib/libmkl_core.a -liomp5 -lpthread -lm -ldl
+	endif
+endif
+ifeq (${OS}, Linux)
+	ifeq (${FC}, ifort)
+		FFLAGS += -I${MKLROOT}/include -parallel -fopenmp -fast
+		LDFLAGS += -Wl,--start-group ${MKLROOT}/lib/intel64/libmkl_intel_lp64.a ${MKLROOT}/lib/intel64/libmkl_intel_thread.a ${MKLROOT}/lib/intel64/libmkl_core.a -Wl,--end-group -liomp5 -lpthread -lm -ldl
+	endif
 endif
 
 bin/Ising_2d: src/Ising_2d.o lib/mod_proc.o lib/mod_global.o
