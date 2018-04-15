@@ -3,14 +3,14 @@ OS = MacOS
 
 ifeq (${OS}, MacOS)
 	ifeq (${FC}, ifort)
-		FFLAGS += -I${MKLROOT}/include -parallel -fast -ip -ipo
-		LDFLAGS += ${MKLROOT}/lib/libmkl_intel_lp64.a ${MKLROOT}/lib/libmkl_intel_thread.a ${MKLROOT}/lib/libmkl_core.a -liomp5 -lpthread -lm -ldl -ipo
+		FFLAGS += -I${MKLROOT}/include
+		LDFLAGS += ${MKLROOT}/lib/libmkl_intel_lp64.a ${MKLROOT}/lib/libmkl_intel_thread.a ${MKLROOT}/lib/libmkl_core.a -liomp5 -lpthread -lm -ldl
 	endif
 endif
 ifeq (${OS}, Linux)
 	ifeq (${FC}, ifort)
-		FFLAGS += -I${MKLROOT}/include -parallel -fast -ip -ipo
-		LDFLAGS += -Wl,--start-group ${MKLROOT}/lib/intel64/libmkl_intel_lp64.a ${MKLROOT}/lib/intel64/libmkl_intel_thread.a ${MKLROOT}/lib/intel64/libmkl_core.a -Wl,--end-group -liomp5 -lpthread -lm -ldl -ipo
+		FFLAGS += -I${MKLROOT}/include
+		LDFLAGS += -Wl,--start-group ${MKLROOT}/lib/intel64/libmkl_intel_lp64.a ${MKLROOT}/lib/intel64/libmkl_intel_thread.a ${MKLROOT}/lib/intel64/libmkl_core.a -Wl,--end-group -liomp5 -lpthread -lm -ldl
 	endif
 endif
 
