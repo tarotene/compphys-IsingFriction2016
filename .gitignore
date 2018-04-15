@@ -6,13 +6,9 @@ mod*/
 obj*/
 test*/
 zip*/
-sh/
-gp/
 *.mod
 *.dat
 *.log
-/sh/*
-!/sh/_*.sh
 
 src/*.o
 lib/*.o
