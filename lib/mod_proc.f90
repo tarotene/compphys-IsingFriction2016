@@ -7,6 +7,31 @@
      USE IFPORT, ONLY:access
      IMPLICIT NONE
   CONTAINS
+     SUBROUTINE constNewStream_SFMT19937(seed, stream)
+        INTEGER(4), INTENT(in) :: seed
+        TYPE(VSL_STREAM_STATE), INTENT(out) :: stream
+        
+        err = vslnewstream(stream, VSL_BRNG_SFMT19937, seed)
+     END SUBROUTINE constNewStream_SFMT19937
+
+     SUBROUTINE updateDRand_Uniform(stream, len_rand, lbound, rbound, rand)
+        TYPE(VSL_STREAM_STATE), INTENT(in) :: stream
+        INTEGER(4), INTENT(in) :: len_ran
+        REAL(8), INTENT(in) :: lbound, rbound
+        REAL(8), INTENT(out) :: rand(1:)
+        
+        err = vdrnguniform(VSL_RNG_METHOD_UNIFORM_STD, stream, len_rand, rand(1:), lbound, rbound)
+     END SUBROUTINE updateDRand_Uniform
+
+     SUBROUTINE updateDRand_Uniform(stream, len_rand, lbound, rbound, rand)
+        TYPE(VSL_STREAM_STATE), INTENT(in) :: stream
+        INTEGER(4), INTENT(in) :: len_ran
+        REAL(8), INTENT(in) :: lbound, rbound
+        REAL(8), INTENT(out) :: rand(1:)
+        
+        err = vdrnguniform(VSL_RNG_METHOD_UNIFORM_STD, stream, len_rand, rand(1:), lbound, rbound)
+     END SUBROUTINE updateDRand_Uniform
+
      !TODO: 関数化
      SUBROUTINE inputParams_2d(l_x, l_z, beta, vel, l_t, id_IC, id_BC, n_s)
         INTEGER(4), INTENT(out) :: l_x, l_z
