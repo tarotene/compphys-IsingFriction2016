@@ -6,13 +6,13 @@ mod*/
 obj*/
 test*/
 zip*/
-sh/
-gp/
 *.mod
 *.dat
 *.log
 /sh/*
 !/sh/_*.sh
+/gp/*
+!/sh/_*.gp
 
 src/*.o
 lib/*.o
