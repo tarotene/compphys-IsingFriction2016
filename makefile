@@ -1,17 +1,8 @@
 FC = ifort
-OS = MacOS
 
-ifeq (${OS}, MacOS)
-	ifeq (${FC}, ifort)
-		FFLAGS += -I${MKLROOT}/include -fopenmp -parallel -O3 -xHOST -ip -ipo
-		LDFLAGS += ${MKLROOT}/lib/libmkl_intel_lp64.a ${MKLROOT}/lib/libmkl_intel_thread.a ${MKLROOT}/lib/libmkl_core.a -liomp5 -lpthread -lm -ldl
-	endif
-endif
-ifeq (${OS}, Linux)
-	ifeq (${FC}, ifort)
-		FFLAGS += -I${MKLROOT}/include -fopenmp -parallel -O3 -xHOST -ip -ipo
-		LDFLAGS += -Wl,--start-group ${MKLROOT}/lib/intel64/libmkl_intel_lp64.a ${MKLROOT}/lib/intel64/libmkl_intel_thread.a ${MKLROOT}/lib/intel64/libmkl_core.a -Wl,--end-group -liomp5 -lpthread -lm -ldl
-	endif
+ifeq (${FC}, ifort)
+	FFLAGS += -I${MKLROOT}/include -parallel -O3 -xHOST -ip -ipo
+	LDFLAGS += -mkl -fopenmp -ipo
 endif
 
 bin/Ising_2d: src/Ising_2d.o lib/mod_proc.o lib/mod_global.o
@@ -43,7 +34,7 @@ bin/calc_2d_eq: src/calc_2d_eq.o lib/mod_proc.o lib/mod_global.o
 bin/calc_3d_eq: src/calc_3d_eq.o lib/mod_proc.o lib/mod_global.o
 	${FC} ${LDFLAGS} -o $@ $^
 
-src/%.o : src/%.f90 lib/mod_proc.o
+src/%.o : src/%.f90 lib/mod_proc.o lib/mod_global.o
 	${FC} ${FFLAGS} -c $< -o $@
 lib/mod_proc.o : lib/mod_proc.f90 lib/mod_global.o
 	${FC} ${FFLAGS} -c $< -o $@
