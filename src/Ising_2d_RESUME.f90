@@ -1,8 +1,5 @@
 PROGRAM main
   !$  USE omp_lib
-  USE mod_global
-  USE MKL_VSL_TYPE
-  USE MKL_VSL
   USE mod_proc
   USE IFPORT, ONLY: access
 
@@ -14,7 +11,7 @@ PROGRAM main
   CALL metropolis_2d(beta, p_2d)
 
   ALLOCATE(r_x(1:n_st), r_z(1:n_st), r_p(1:n_st))
-  ALLOCATE(sp_ini1(0:l_x + 1, 0:l_z + 1))
+  ALLOCATE(IS2_ini1(0:l_x + 1, 0:l_z + 1))
   ALLOCATE(eb(0:n_st), mb(0:n_st), IS2(0:l_x + 1, 0:l_z + 1), IS2_ini(0:l_x + 1, 0:l_z + 1))
   ! eb(0:n_st) = 0
   ! mb(0:n_st) = 0
@@ -25,8 +22,8 @@ PROGRAM main
   !$omp parallel do schedule(static, 1) default(none) &
   !$omp shared(n_s0, n_s, l_t, l_x, l_z, vel, n_st) &
   !$omp private(s, sl_sp, sl_en, sl_eb, sl_m, sl_mb) &
-  !$omp private(i_st, t, i_v, err, str_x, str_z, str_p, r_x, r_z, r_p, ss, st, eb, mb, sp, sp_ini1) &
-  !$omp firstprivate(sp_ini) &
+  !$omp private(t, i_v, str_x, str_z, str_p, r_x, r_z, r_p, ss, st, eb, mb, IS2, IS2_ini1) &
+  !$omp firstprivate(IS2_ini) &
   !$omp private(sl_ee, sl_me, sl_p, ee, pmp)
   DO s = 1, n_s0, 1
      sl_sp = 20 + s + 0 * n_s
@@ -50,16 +47,16 @@ PROGRAM main
      OPEN(sl_ee, file="ee_sweep/en_edge_s"//ss//"_sweep.bin", access="stream", status="old", position="append")
      OPEN(sl_me, file="me_sweep/m_edge_s"//ss//"_sweep.bin", access="stream", status="old", position="append")
      OPEN(sl_p, file="p_sweep/pump_s"//ss//"_sweep.bin", access="stream", status="old", position="append")
-     
-     err = vslloadstreamf(str_p, "str_p_s"//ss//".bin")
-     err = vslloadstreamf(str_x, "str_x_s"//ss//".bin")
-     err = vslloadstreamf(str_z, "str_z_s"//ss//".bin")
+
+		 CALL constRand_SFMT19937(100 + 4 * (s - 1) + 0, str_p)
+     CALL constRand_SFMT19937(100 + 4 * (s - 1) + 1, str_x)
+     CALL constRand_SFMT19937(100 + 4 * (s - 1) + 3, str_z)
 
      OPEN(sl_sp, file="sp_fin_s"//ss//".bin", access="stream", status="old")
-     READ(sl_sp) sp_ini1(1:l_x, 1:l_z)
+     READ(sl_sp) IS2_ini1(1:l_x, 1:l_z)
      CLOSE(sl_sp)
-     IS2_ini(1:l_x, 1:l_z) = INT4(sp_ini1(1:l_x, 1:l_z))
-  
+     IS2_ini(1:l_x, 1:l_z) = INT4(IS2_ini1(1:l_x, 1:l_z))
+
      CALL calcEn_2d(IS2_ini(0:l_x + 1, 0:l_z + 1), eb(0))
      mb(0) = SUM(IS2_ini(1:l_x, 1:l_z))
 
@@ -68,9 +65,10 @@ PROGRAM main
      DO t = 1, l_t, 1
         DO i_v = 1, vel, 1
            CALL shift_2d(IS2(0:l_x + 1, 0:l_z + 1), pmp(i_v), eb(0))
-           err = vdrnguniform(VSL_RNG_METHOD_UNIFORM_STD, str_p, n_st, r_p(1:n_st), 0.0d0, 1.0d0)
-           err = virnguniform(VSL_RNG_METHOD_UNIFORM_STD, str_x, n_st, r_x(1:n_st), 1, l_x + 1)
-           err = virnguniform(VSL_RNG_METHOD_UNIFORM_STD, str_z, n_st, r_z(1:n_st), 1, l_z + 1)
+					 CALL updateDRand_Uniform(str_p, n_st, 0.0d0, 1.0d0, r_p(1:n_st))
+           CALL updateIRand_Uniform(str_x, n_st, 1, l_x + 1, r_x(1:n_st))
+           CALL updateIRand_Uniform(str_z, n_st, 1, l_z + 1, r_z(1:n_st))
+
            CALL mSSFs_2d(r_x(1:n_st), r_z(1:n_st), r_p(1:n_st), IS2(0:l_x + 1, 0:l_z + 1), eb(0:n_st), mb(0:n_st))
            ! WRITE(sl_en) eb(0:n_st)
            eb(0) = eb(n_st)
@@ -91,16 +89,16 @@ PROGRAM main
         WRITE(sl_p) SUM(pmp(1:vel))
      END DO
 
-     err = vslsavestreamf(str_p, "str_p_s"//ss//".bin")
-     err = vslsavestreamf(str_x, "str_x_s"//ss//".bin")
-     err = vslsavestreamf(str_z, "str_z_s"//ss//".bin")
+		 CALL saveRand(str_p, "str_p_s"//ss//".bin")
+     CALL saveRand(str_x, "str_x_s"//ss//".bin")
+     CALL saveRand(str_z, "str_z_s"//ss//".bin")
 
-     err = vsldeletestream(str_p)
-     err = vsldeletestream(str_x)
-     err = vsldeletestream(str_z)
+     CALL destRand(str_p)
+     CALL destRand(str_x)
+     CALL destRand(str_z)
      ! CLOSE(sl_en)
      ! CLOSE(sl_m)
-     
+
      CLOSE(sl_eb)
      CLOSE(sl_mb)
 
