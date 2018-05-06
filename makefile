@@ -1,8 +1,8 @@
 FC = ifort
 
 ifeq (${FC}, ifort)
-	FFLAGS += -I${MKLROOT}/include -parallel -O3 -xHOST -ip -ipo
-	LDFLAGS += -mkl -fopenmp -ipo
+	FFLAGS += -I${MKLROOT}/include -fopenmp -parallel -O3 -xHOST -ip -ipo
+	LDFLAGS += -mkl -ipo
 endif
 
 bin/Ising_2d: src/Ising_2d.o lib/mod_proc.o lib/mod_global.o
