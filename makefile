@@ -13,6 +13,8 @@ bin/Ising_3d: src/Ising_3d.o lib/mod_proc.o lib/mod_global.o
 	${FC} ${LDFLAGS} -o $@ $^
 bin/Ising_2d_eq: src/Ising_2d_eq.o lib/mod_proc.o lib/mod_global.o
 	${FC} ${LDFLAGS} -o $@ $^
+bin/MTC_Ising_2d_eq: src/MTC_Ising_2d_eq.o lib/mod_proc.o lib/mod_MSC.o lib/mod_global.o
+	${FC} ${LDFLAGS} -o $@ $^
 bin/Ising_2d_eq_RESUME: src/Ising_2d_eq_RESUME.o lib/mod_proc.o lib/mod_global.o
 	${FC} ${LDFLAGS} -o $@ $^
 bin/Ising_3d_eq: src/Ising_3d_eq.o lib/mod_proc.o lib/mod_global.o
@@ -39,10 +41,12 @@ src/%.o : src/%.f90 lib/mod_proc.o lib/mod_global.o
 lib/mod_proc.o : lib/mod_proc.f90 lib/mod_global.o
 	${FC} ${FFLAGS} -c $< -o $@
 lib/mod_global.o : lib/mod_global.f90
-	${FC} ${FFLAGS} -c $< -o $@
+	${FC} ${FFLAGS} ${LDFLAGS} -c $< -o $@
+lib/mod_MSC.o : lib/mod_MSC.f90
+	${FC} ${FFLAGS} ${LDFLAGS} -c $< -o $@
 
 .PHONY: all
-all: bin/Ising_2d bin/Ising_2d_RESUME bin/Ising_3d bin/Ising_2d_eq_RESUME bin/Ising_3d_eq bin/corr_2d bin/corr_3d bin/calc_2d bin/calc_3d bin/corr_2d_eq bin/corr_3d_eq bin/calc_2d_eq bin/calc_3d_eq
+all: bin/Ising_2d bin/Ising_2d_RESUME bin/Ising_3d bin/MTC_Ising_2d_eq bin/Ising_2d_eq_RESUME bin/Ising_3d_eq bin/corr_2d bin/corr_3d bin/calc_2d bin/calc_3d bin/corr_2d_eq bin/corr_3d_eq bin/calc_2d_eq bin/calc_3d_eq
 
 .PHONY: clean
 clean:

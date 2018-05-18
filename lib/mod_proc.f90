@@ -4,6 +4,22 @@ MODULE mod_proc
 
   IMPLICIT NONE
 CONTAINS
+  SUBROUTINE countLines(slot, filename, n_lines)
+    INTEGER(4), INTENT(in) :: slot
+    CHARACTER(*), INTENT(in) :: filename
+    INTEGER(4), INTENT(out) :: n_lines
+
+    INTEGER(4) :: i_beta, istat
+    
+    OPEN(slot, file=filename, status="old")
+    DO i_beta = 1, HUGE(1), 1
+      READ(slot, '()', iostat=istat)
+      if ( istat < 0 ) exit
+      n_lines = n_lines + 1
+    END DO
+    CLOSE(slot)
+  END SUBROUTINE countLines
+
   SUBROUTINE constRand_SFMT19937(seed, stream)
     INTEGER(4), INTENT(in) :: seed
     TYPE(VSL_STREAM_STATE), INTENT(out) :: stream
@@ -23,7 +39,7 @@ CONTAINS
 
   SUBROUTINE saveRand(stream, filename)
     TYPE(VSL_STREAM_STATE), INTENT(in) :: stream
-    CHARACTER(30), INTENT(in) :: filename
+    CHARACTER(14), INTENT(in) :: filename
 
     INTEGER(4) :: err
 
@@ -53,37 +69,65 @@ CONTAINS
   END SUBROUTINE updateIRand_Uniform
 
   !TODO: 関数化
-  SUBROUTINE inputParams_2d(l_x, l_z, beta, vel, l_t, id_IC, id_BC, n_s)
+  SUBROUTINE readParams_2d(l_x,l_z,beta,vel,l_t,id_IC,id_BC,n_s)
     INTEGER(4), INTENT(out) :: l_x, l_z
     REAL(8), INTENT(out) :: beta
     INTEGER(4), INTENT(out) :: vel, l_t, id_IC, id_BC, n_s
 
     READ (*, *) l_x, l_z, beta, vel, l_t, id_IC, id_BC, n_s
-  END SUBROUTINE inputParams_2d
+  END SUBROUTINE readParams_2d
 
-  SUBROUTINE inputParams_2d_eq(l_x, l_z, beta, l_t, id_IC, id_BC, n_s)
-    INTEGER(4), INTENT(out) :: l_x, l_z
-    REAL(8), INTENT(out) :: beta
-    INTEGER(4), INTENT(out) :: l_t, id_IC, id_BC, n_s
-
-    READ (*, *) l_x, l_z, beta, l_t, id_IC, id_BC, n_s
-  END SUBROUTINE inputParams_2d_eq
-
-  SUBROUTINE inputParams_3d(l_x, l_y, l_z, beta, vel, l_t, id_IC, id_BC, n_s)
+  SUBROUTINE readParams_3d(l_x,l_y,l_z,beta,vel,l_t,id_IC,id_BC,n_s)
     INTEGER(4), INTENT(out) :: l_x, l_y, l_z
     REAL(8), INTENT(out) :: beta
     INTEGER(4), INTENT(out) :: vel, l_t, id_IC, id_BC, n_s
 
     READ (*, *) l_x, l_y, l_z, beta, vel, l_t, id_IC, id_BC, n_s
-  END SUBROUTINE inputParams_3d
+  END SUBROUTINE readParams_3d
 
-  SUBROUTINE inputParams_3d_eq(l_x, l_y, l_z, beta, l_t, id_IC, id_BC, n_s)
+  SUBROUTINE readParams_2d_eq(l_x,l_z,beta,l_t0,l_t1,id_IC,id_BC,n_s)
+    INTEGER(4), INTENT(out) :: l_x, l_z
+    REAL(8), INTENT(out) :: beta
+    INTEGER(4), INTENT(out) :: l_t0, l_t1, id_IC, id_BC, n_s
+    READ (*, *) l_x, l_z, beta, l_t0, l_t1, id_IC, id_BC, n_s
+  END SUBROUTINE readParams_2d_eq
+
+  SUBROUTINE readParams_3d_eq(l_x,l_y,l_z,beta,l_t,id_IC,id_BC,n_s)
     INTEGER(4), INTENT(out) :: l_x, l_y, l_z
     REAL(8), INTENT(out) :: beta
     INTEGER(4), INTENT(out) :: l_t, id_IC, id_BC, n_s
 
     READ (*, *) l_x, l_y, l_z, beta, l_t, id_IC, id_BC, n_s
-  END SUBROUTINE inputParams_3d_eq
+  END SUBROUTINE readParams_3d_eq
+
+  SUBROUTINE MTC_readParams_2d(l_x,l_z,beta,vel,l_t0,l_t1,id_IC,id_BC)
+    INTEGER(4), INTENT(out) :: l_x, l_z
+    REAL(8), INTENT(out) :: beta
+    INTEGER(4), INTENT(out) :: vel, l_t0,l_t1, id_IC, id_BC
+
+    READ (*, *) l_x, l_z, beta, vel, l_t0, l_t1, id_IC, id_BC
+  END SUBROUTINE MTC_readParams_2d
+
+  SUBROUTINE MTC_readParams_3d(l_x,l_y,l_z,vel,l_t,id_IC,id_BC)
+    INTEGER(4), INTENT(out) :: l_x, l_y, l_z
+    INTEGER(4), INTENT(out) :: vel, l_t, id_IC, id_BC
+
+    READ (*, *) l_x, l_y, l_z, vel, l_t, id_IC, id_BC
+  END SUBROUTINE MTC_readParams_3d
+
+  SUBROUTINE MTC_readParams_2d_eq(l_x,l_z,l_t0,l_t1,id_IC,id_BC)
+    INTEGER(4), INTENT(out) :: l_x, l_z
+    INTEGER(4), INTENT(out) :: l_t0, l_t1, id_IC, id_BC
+
+    READ (*, *) l_x, l_z, beta, l_t0, l_t1, id_IC, id_BC
+  END SUBROUTINE MTC_readParams_2d_eq
+
+  SUBROUTINE MTC_readParams_3d_eq(l_x,l_y,l_z,l_t,id_IC,id_BC)
+    INTEGER(4), INTENT(out) :: l_x, l_y, l_z
+    INTEGER(4), INTENT(out) :: l_t, id_IC, id_BC
+
+    READ (*, *) l_x, l_y, l_z, l_t, id_IC, id_BC
+  END SUBROUTINE MTC_readParams_3d_eq
 
   SUBROUTINE paramsCorr_2d(l_x, l_z, beta, vel, l_t, n_s)
     INTEGER(4), INTENT(out) :: l_x, l_z
@@ -175,66 +219,65 @@ CONTAINS
     WHERE (p_3d >= 1.0d0) p_3d = 1.0d0
   END SUBROUTINE metropolis_3d
 
-  ! TODO: 名前に因んで関数化
-  SUBROUTINE orient_2d(sp, x, z, east, west, south, north)
-    INTEGER(4), INTENT(in) :: sp(0:, 0:), x, z
-    INTEGER(4), INTENT(out) :: east, west, south, north
+  SUBROUTINE setOrient_2d(sp,x,z,e,w,s,n)
+    INTEGER(4), INTENT(in) :: IS2(0:, 0:), x, z
+    INTEGER(4), POINTER :: east, west, south, north
 
-    east = sp(MOD(x, l_x) + 1, z)
-    IF (x == 1) THEN
-       west = sp(l_x, z)
+    e => IS2(MOD(x,l_x)+1,z)
+    IF (x==1) THEN
+       w => IS2(l_x,z)
     ELSE
-       west = sp(x - 1, z)
+       w => IS2(x-1,z)
     END IF
-
-    south = sp(x, z - 1)
-    north = sp(x, z + 1)
-  END SUBROUTINE orient_2d
+    s => IS2(x,z-1)
+    n => IS2(x,z+1)
+  END SUBROUTINE setOrient_2d
 
   ! TODO: 名前に因んで関数化
   SUBROUTINE orient_3d(sp, x, y, z, east, west, south, north, up, down)
-    INTEGER(4), INTENT(in) :: sp(0:, 0:, 0:), x, y, z
+    INTEGER(4), INTENT(in) :: IS2(0:, 0:, 0:), x, y, z
     INTEGER(4), INTENT(out) :: east, west, south, north, up, down
 
-    east = sp(MOD(x, l_x) + 1, y, z)
+    east = IS2(MOD(x, l_x) + 1, y, z)
     IF (x == 1) THEN
-       west = sp(l_x, y, z)
+       west = IS2(l_x, y, z)
     ELSE
-       west = sp(x - 1, y, z)
+       west = IS2(x - 1, y, z)
     END IF
 
-    south = sp(x, MOD(y, l_y) + 1, z)
+    south = IS2(x, MOD(y, l_y) + 1, z)
     IF (y == 1) THEN
-       north = sp(x, l_y, z)
+       north = IS2(x, l_y, z)
     ELSE
-       north = sp(x, y - 1, z)
+       north = IS2(x, y - 1, z)
     END IF
 
-    up = sp(x, y, z - 1)
-    down = sp(x, y, z + 1)
+    up = IS2(x, y, z - 1)
+    down = IS2(x, y, z + 1)
   END SUBROUTINE orient_3d
 
-  SUBROUTINE calcEn_2d(sp, en)
-    INTEGER(4), INTENT(in) :: sp(0:, 0:)
-    INTEGER(4), INTENT(out) :: en
+  SUBROUTINE calcEB_2d(IS2, eb)
+    INTEGER(4), INTENT(in) :: IS2(0:, 0:)
+    INTEGER(4), INTENT(out) :: eb
 
-    INTEGER(4) :: x, z, east, west, south, north
+    INTEGER(4) :: x,z
+    INTEGER(4), POINTER :: e,w,s,n
 
-    en = 0
+    eb = 0
     DO z = 1, l_z, 1
        DO x = 1, l_x, 1
-          CALL orient_2d(sp, x, z, east, west, south, north)
-          en = en - sp(x, z) * (east + west + south + north)
+          CALL orient_2d(IS(x,z),x,z,e,w,s,n)
+          en = en - IS2(x,z) * (e+w+s+n)
        END DO
     END DO
     DO x = 1, l_x, 1
-       en = en - sp(x, 0) * sp(x, 1) - sp(x, l_z) * sp(x, l_z + 1)
+       eb = eb - IS2(x,0)*IS2(x,1) - IS2(x,l_z)*IS2(x,l_z+1)
     END DO
-    en = en / 2
-  END SUBROUTINE calcEn_2d
+    eb = eb / 2
+  END SUBROUTINE calcEB_2d
 
   SUBROUTINE calcEn_3d(sp, en)
-    INTEGER(4), INTENT(in) :: sp(0:, 0:, 0:)
+    INTEGER(4), INTENT(in) :: IS2(0:, 0:, 0:)
     INTEGER(4), INTENT(out) :: en
 
     INTEGER(4) :: x, y, z, east, west, south, north, up, down
@@ -244,32 +287,32 @@ CONTAINS
        DO y = 1, l_y, 1
           DO x = 1, l_x, 1
              CALL orient_3d(sp, x, y, z, east, west, south, north, up, down)
-             en = en - sp(x, y, z) * (east + west + south + north + up + down)
+             en = en - IS2(x, y, z) * (east + west + south + north + up + down)
           END DO
        END DO
     END DO
     DO y = 1, l_y, 1
        DO x = 1, l_x, 1
-          en = en - sp(x, y, 0) * sp(x, y, 1) - sp(x, y, l_z) * sp(x, y, l_z + 1)
+          en = en - IS2(x, y, 0) * IS2(x, y, 1) - IS2(x, y, l_z) * IS2(x, y, l_z + 1)
        END DO
     END DO
     en = en / 2
   END SUBROUTINE calcEn_3d
 
   SUBROUTINE calcEE_2d(sp, en)
-    INTEGER(4), INTENT(in) :: sp(0:, 0:)
+    INTEGER(4), INTENT(in) :: IS2(0:, 0:)
     INTEGER(4), INTENT(out) :: en
 
     INTEGER(4) :: x
 
     en = 0
     DO x = 1, l_x, 1
-       en = en - sp(x, l_z / 2) * sp(x, l_z / 2 + 1)
+       en = en - IS2(x, l_z / 2) * IS2(x, l_z / 2 + 1)
     END DO
   END SUBROUTINE calcEE_2d
 
   SUBROUTINE calcEE_3d(sp, en)
-    INTEGER(4), INTENT(in) :: sp(0:, 0:, 0:)
+    INTEGER(4), INTENT(in) :: IS2(0:, 0:, 0:)
     INTEGER(4), INTENT(out) :: en
 
     INTEGER(4) :: x, y
@@ -277,104 +320,104 @@ CONTAINS
     en = 0
     DO y = 1, l_y, 1
        DO x = 1, l_x, 1
-          en = en - sp(x, y, l_z / 2) * sp(x, y, l_z / 2 + 1)
+          en = en - IS2(x, y, l_z / 2) * IS2(x, y, l_z / 2 + 1)
        END DO
     END DO
   END SUBROUTINE calcEE_3d
 
   SUBROUTINE initSp_2d(sp)
-    INTEGER(4), INTENT(inout) :: sp(0:, 0:)
+    INTEGER(4), INTENT(inout) :: IS2(0:, 0:)
 
     INTEGER(4) :: err, z
     TYPE(VSL_STREAM_STATE) :: str_sp
 
-    sp(0, 0:l_z + 1) = 0
-    sp(l_x + 1, 0:l_z + 1) = 0
+    IS2(0, 0:l_z + 1) = 0
+    IS2(l_x + 1, 0:l_z + 1) = 0
 
     SELECT CASE (id_BC)
     CASE (1) !BC: anti-parallel
-       sp(1:l_x, 0) = 1
-       sp(1:l_x, l_z + 1) = -1
+       IS2(1:l_x, 0) = 1
+       IS2(1:l_x, l_z + 1) = -1
     CASE (2) !BC: parallel
-       sp(1:l_x, 0) = 1
-       sp(1:l_x, l_z + 1) = 1
+       IS2(1:l_x, 0) = 1
+       IS2(1:l_x, l_z + 1) = 1
     CASE (3) !BC: free
-       sp(1:l_x, 0) = 0
-       sp(1:l_x, l_z + 1) = 0
+       IS2(1:l_x, 0) = 0
+       IS2(1:l_x, l_z + 1) = 0
     END SELECT
 
     SELECT CASE (id_IC)
     CASE (1)
-       sp(1:l_x, 1:l_z/2) = 1
-       sp(1:l_x, l_z/2 + 1:l_z) = -1
+       IS2(1:l_x, 1:l_z/2) = 1
+       IS2(1:l_x, l_z/2 + 1:l_z) = -1
     CASE (2)
-       sp(1:l_x, 1:l_z) = 1
+       IS2(1:l_x, 1:l_z) = 1
     CASE (3)
        err = vslnewstream(str_sp, VSL_BRNG_MT19937, 50)
        DO z = 1, l_z, 1
-          err = virnguniform(VSL_RNG_METHOD_UNIFORM_STD, str_sp, l_x, sp(1:l_x, z), 0, 2)
+          err = virnguniform(VSL_RNG_METHOD_UNIFORM_STD, str_sp, l_x, IS2(1:l_x, z), 0, 2)
        END DO
        err = vsldeletestream(str_sp)
-       sp(1:l_x, 1:l_z) = 2 * sp(1:l_x, 1:l_z) - 1
+       IS2(1:l_x, 1:l_z) = 2 * IS2(1:l_x, 1:l_z) - 1
     END SELECT
   END SUBROUTINE initSp_2d
 
   SUBROUTINE initSp_3d(sp)
-    INTEGER(4), INTENT(inout) :: sp(0:, 0:, 0:)
+    INTEGER(4), INTENT(inout) :: IS2(0:, 0:, 0:)
 
     INTEGER(4) :: err, x, y, z
     TYPE(VSL_STREAM_STATE) :: str_sp
 
-    sp(0, 0, 0:l_z + 1) = 0
-    sp(0, l_y + 1, 0:l_z + 1) = 0
-    sp(l_x + 1, 0, 0:l_z + 1) = 0
-    sp(l_x + 1, l_y + 1, 0:l_z + 1) = 0
+    IS2(0, 0, 0:l_z + 1) = 0
+    IS2(0, l_y + 1, 0:l_z + 1) = 0
+    IS2(l_x + 1, 0, 0:l_z + 1) = 0
+    IS2(l_x + 1, l_y + 1, 0:l_z + 1) = 0
 
     SELECT CASE (id_BC)
     CASE (1) !BC: anti-parallel
-       sp(1:l_x, 1:l_y, 0) = 1
-       sp(1:l_x, 1:l_y, l_z + 1) = -1
+       IS2(1:l_x, 1:l_y, 0) = 1
+       IS2(1:l_x, 1:l_y, l_z + 1) = -1
     CASE (2) !BC: parallel
-       sp(1:l_x, 1:l_y, 0) = 1
-       sp(1:l_x, 1:l_y, l_z + 1) = 1
+       IS2(1:l_x, 1:l_y, 0) = 1
+       IS2(1:l_x, 1:l_y, l_z + 1) = 1
     CASE (3) !BC: free
-       sp(1:l_x, 1:l_y, 0) = 0
-       sp(1:l_x, 1:l_y, l_z + 1) = 0
+       IS2(1:l_x, 1:l_y, 0) = 0
+       IS2(1:l_x, 1:l_y, l_z + 1) = 0
     END SELECT
 
     SELECT CASE (id_IC)
     CASE (1)
-       sp(1:l_x, 1:l_y, 1:l_z/2) = 1
-       sp(1:l_x, 1:l_y, l_z/2 + 1:l_z) = -1
+       IS2(1:l_x, 1:l_y, 1:l_z/2) = 1
+       IS2(1:l_x, 1:l_y, l_z/2 + 1:l_z) = -1
     CASE (2)
-       sp(1:l_x, 1:l_y, 1:l_z) = 1
+       IS2(1:l_x, 1:l_y, 1:l_z) = 1
     CASE (3)
        err = vslnewstream(str_sp, VSL_BRNG_MT19937, 50)
        DO z = 1, l_z, 1
           DO y = 1, l_y, 1
-             err = virnguniform(VSL_RNG_METHOD_UNIFORM_STD, str_sp, l_x, sp(1:l_x, y, z), 0, 2)
+             err = virnguniform(VSL_RNG_METHOD_UNIFORM_STD, str_sp, l_x, IS2(1:l_x, y, z), 0, 2)
           END DO
        END DO
        err = vsldeletestream(str_sp)
-       sp(1:l_x, 1:l_y, 1:l_z) = 2 * sp(1:l_x, 1:l_y, 1:l_z) - 1
+       IS2(1:l_x, 1:l_y, 1:l_z) = 2 * IS2(1:l_x, 1:l_y, 1:l_z) - 1
     END SELECT
   END SUBROUTINE initSp_3d
 
   SUBROUTINE SSF_2d(x, z, p, sp, eb_prv, eb_nxt, mb_prv, mb_nxt)
     INTEGER(4), INTENT(in) :: x, z
     REAL(8), INTENT(in) :: p
-    INTEGER(4), INTENT(inout) :: sp(0:, 0:)
+    INTEGER(4), INTENT(inout) :: IS2(0:, 0:)
     INTEGER(4), INTENT(in) :: eb_prv, mb_prv
     INTEGER(4), INTENT(out) :: eb_nxt, mb_nxt
 
     INTEGER(4) :: east, west, south, north
 
-    CALL orient_2d(sp(0:l_x + 1, 0:l_z + 1), x, z, east, west, south, north)
+    CALL orient_2d(IS2(0:l_x + 1, 0:l_z + 1), x, z, east, west, south, north)
 
-    IF (p <= p_2d(sp(x, z), east, west, south, north)) THEN
-       eb_nxt = eb_prv + 2 * sp(x, z) * (east + west + south + north)
-       mb_nxt = mb_prv - 2 * sp(x, z)
-       sp(x, z) = - sp(x, z)
+    IF (p <= p_2d(IS2(x, z), east, west, south, north)) THEN
+       eb_nxt = eb_prv + 2 * IS2(x, z) * (east + west + south + north)
+       mb_nxt = mb_prv - 2 * IS2(x, z)
+       IS2(x, z) = - IS2(x, z)
     ELSE
        eb_nxt = eb_prv
        mb_nxt = mb_prv
@@ -384,18 +427,18 @@ CONTAINS
   SUBROUTINE SSF_3d(x, y, z, p, sp, eb_prv, eb_nxt, mb_prv, mb_nxt)
     INTEGER(4), INTENT(in) :: x, y, z
     REAL(8), INTENT(in) :: p
-    INTEGER(4), INTENT(inout) :: sp(0:, 0:, 0:)
+    INTEGER(4), INTENT(inout) :: IS2(0:, 0:, 0:)
     INTEGER(4), INTENT(in) :: eb_prv, mb_prv
     INTEGER(4), INTENT(out) :: eb_nxt, mb_nxt
 
     INTEGER(4) :: east, west, south, north, up, down
 
-    CALL orient_3d(sp(0:, 0:, 0:), x, y, z, east, west, south, north, up, down)
+    CALL orient_3d(IS2(0:, 0:, 0:), x, y, z, east, west, south, north, up, down)
 
-    IF (p <= p_3d(sp(x, y, z), east, west, south, north, up, down)) THEN
-       eb_nxt = eb_prv + 2 * sp(x, y, z) * (east + west + south + north + up + down)
-       mb_nxt = mb_prv - 2 * sp(x, y, z)
-       sp(x, y, z) = - sp(x, y, z)
+    IF (p <= p_3d(IS2(x, y, z), east, west, south, north, up, down)) THEN
+       eb_nxt = eb_prv + 2 * IS2(x, y, z) * (east + west + south + north + up + down)
+       mb_nxt = mb_prv - 2 * IS2(x, y, z)
+       IS2(x, y, z) = - IS2(x, y, z)
     ELSE
        eb_nxt = eb_prv
        mb_nxt = mb_prv
@@ -405,49 +448,49 @@ CONTAINS
   SUBROUTINE mSSFs_2d(r_x, r_z, r_p, sp, eb, mb)
     INTEGER(4), INTENT(in) :: r_x(1:), r_z(1:)
     REAL(8), INTENT(in) :: r_p(1:)
-    INTEGER(4), INTENT(inout) :: sp(0:, 0:), eb(0:), mb(0:)
+    INTEGER(4), INTENT(inout) :: IS2(0:, 0:), eb(0:), mb(0:)
 
     INTEGER(4) :: i_st, rel
 
     DO i_st = 1, n_st, 1
-       CALL SSF_2d(r_x(i_st), r_z(i_st), r_p(i_st), sp(0:, 0:), eb(i_st - 1), eb(i_st), mb(i_st - 1), mb(i_st))
+       CALL SSF_2d(r_x(i_st), r_z(i_st), r_p(i_st), IS2(0:, 0:), eb(i_st - 1), eb(i_st), mb(i_st - 1), mb(i_st))
     END DO
   END SUBROUTINE mSSFs_2d
 
   SUBROUTINE mSSFs_3d(r_x, r_y, r_z, r_p, sp, eb, mb)
     INTEGER(4), INTENT(in) :: r_x(1:), r_y(1:), r_z(1:)
     REAL(8), INTENT(in) :: r_p(1:)
-    INTEGER(4), INTENT(inout) :: sp(0:, 0:, 0:), eb(0:), mb(0:)
+    INTEGER(4), INTENT(inout) :: IS2(0:, 0:, 0:), eb(0:), mb(0:)
 
     INTEGER(4) :: i_st, rel
 
     DO i_st = 1, n_st, 1
-       CALL SSF_3d(r_x(i_st), r_y(i_st), r_z(i_st), r_p(i_st), sp(0:, 0:, 0:), eb(i_st - 1), eb(i_st), mb(i_st - 1), mb(i_st))
+       CALL SSF_3d(r_x(i_st), r_y(i_st), r_z(i_st), r_p(i_st), IS2(0:, 0:, 0:), eb(i_st - 1), eb(i_st), mb(i_st - 1), mb(i_st))
     END DO
   END SUBROUTINE mSSFs_3d
 
   SUBROUTINE shift_2d(sp, pmp, eb)
-    INTEGER(4), INTENT(inout) :: sp(0:, 0:), eb
+    INTEGER(4), INTENT(inout) :: IS2(0:, 0:), eb
     INTEGER(4), INTENT(out) :: pmp
 
     INTEGER(4) :: eb_prv, eb_nxt
 
-    CALL calcEE_2d(sp(0:, 0:), eb_prv)
-    sp(1:l_x, 1:l_z/2) = CSHIFT(sp(1:l_x, 1:l_z/2), 1, 1)
-    CALL calcEE_2d(sp(0:, 0:), eb_nxt)
+    CALL calcEE_2d(IS2(0:, 0:), eb_prv)
+    IS2(1:l_x, 1:l_z/2) = CSHIFT(IS2(1:l_x, 1:l_z/2), 1, 1)
+    CALL calcEE_2d(IS2(0:, 0:), eb_nxt)
     pmp = eb_nxt - eb_prv
     eb = eb + pmp
   END SUBROUTINE shift_2d
 
   SUBROUTINE shift_3d(sp, pmp, eb)
-    INTEGER(4), INTENT(inout) :: sp(0:, 0:, 0:), eb
+    INTEGER(4), INTENT(inout) :: IS2(0:, 0:, 0:), eb
     INTEGER(4), INTENT(out) :: pmp
 
     INTEGER(4) :: eb_prv, eb_nxt
 
-    CALL calcEE_3d(sp(0:, 0:, 0:), eb_prv)
-    sp(1:l_x, 1:l_y, 1:l_z/2) = CSHIFT(sp(1:l_x, 1:l_y, 1:l_z/2), 1, 1)
-    CALL calcEE_3d(sp(0:, 0:, 0:), eb_nxt)
+    CALL calcEE_3d(IS2(0:, 0:, 0:), eb_prv)
+    IS2(1:l_x, 1:l_y, 1:l_z/2) = CSHIFT(IS2(1:l_x, 1:l_y, 1:l_z/2), 1, 1)
+    CALL calcEE_3d(IS2(0:, 0:, 0:), eb_nxt)
     pmp = eb_nxt - eb_prv
     eb = eb + pmp
   END SUBROUTINE shift_3d
