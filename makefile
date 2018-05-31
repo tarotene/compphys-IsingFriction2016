@@ -1,7 +1,7 @@
 FC = ifort
 
 ifeq (${FC}, ifort)
-	FFLAGS += -I${MKLROOT}/include -fopenmp -parallel -O3 -xHOST -ip -ipo
+	FFLAGS += -I${MKLROOT}/include -fopenmp -parallel -O3 -xHOST -ip -ipo -CB
 	LDFLAGS += -mkl -ipo
 endif
 
@@ -12,8 +12,6 @@ bin/Ising_2d_RESUME: src/Ising_2d_RESUME.o lib/mod_proc.o lib/mod_global.o
 bin/Ising_3d: src/Ising_3d.o lib/mod_proc.o lib/mod_global.o
 	${FC} ${LDFLAGS} -o $@ $^
 bin/Ising_2d_eq: src/Ising_2d_eq.o lib/mod_proc.o lib/mod_global.o
-	${FC} ${LDFLAGS} -o $@ $^
-bin/MTC_Ising_2d_eq: src/MTC_Ising_2d_eq.o lib/mod_proc.o lib/mod_MSC.o lib/mod_global.o
 	${FC} ${LDFLAGS} -o $@ $^
 bin/Ising_2d_eq_RESUME: src/Ising_2d_eq_RESUME.o lib/mod_proc.o lib/mod_global.o
 	${FC} ${LDFLAGS} -o $@ $^
@@ -36,13 +34,16 @@ bin/calc_2d_eq: src/calc_2d_eq.o lib/mod_proc.o lib/mod_global.o
 bin/calc_3d_eq: src/calc_3d_eq.o lib/mod_proc.o lib/mod_global.o
 	${FC} ${LDFLAGS} -o $@ $^
 
-src/%.o : src/%.f90 lib/mod_proc.o lib/mod_global.o
+bin/MTC_Ising_2d_eq: src/MTC_Ising_2d_eq.o lib/mod_proc.o lib/mod_MSC.o lib/mod_global.o
+	${FC} ${LDFLAGS} -o $@ $^
+
+src/%.o : src/%.f90 lib/mod_proc.o lib/mod_global.o lib/mod_MSC.o
 	${FC} ${FFLAGS} -c $< -o $@
 lib/mod_proc.o : lib/mod_proc.f90 lib/mod_global.o
 	${FC} ${FFLAGS} -c $< -o $@
-lib/mod_global.o : lib/mod_global.f90
+lib/mod_MSC.o : lib/mod_MSC.f90 lib/mod_global.o
 	${FC} ${FFLAGS} ${LDFLAGS} -c $< -o $@
-lib/mod_MSC.o : lib/mod_MSC.f90
+lib/mod_global.o : lib/mod_global.f90
 	${FC} ${FFLAGS} ${LDFLAGS} -c $< -o $@
 
 .PHONY: all
