@@ -28,7 +28,7 @@ PROGRAM main
 
   ! STEP-00: Set Params except for Temperature
   WRITE(0,'(a)',advance='no') "Setting Params except for Temperature... "
-  CALL MTC_readParams_2d_eq(10,"params_sim",l_x,l_z,l_t0,l_t1,id_IC,id_BC); n_st = l_x*l_z
+  CALL MTC_readParams_2d(10,"params_sim",l_x,l_z,vel,l_t0,l_t1,id_IC,id_BC); n_st1 = l_x*l_z; n_st2 = l_x*l_z/vel
   ALLOCATE(r_l(1:n_st),r_x(1:n_st),r_z(1:n_st))
   ALLOCATE(ex(1:l_x,1:l_z),ez(1:l_x,1:l_z),wx(1:l_x,1:l_z),wz(1:l_x,1:l_z),sx(1:l_x,1:l_z),sz(1:l_x,1:l_z),nx(1:l_x,1:l_z),nz(1:l_x,1:l_z))
   CALL applyPBC_2d(l_x,l_z,ex(1:l_x,1:l_z),ez(1:l_x,1:l_z),wx(1:l_x,1:l_z),wz(1:l_x,1:l_z),sx(1:l_x,1:l_z),sz(1:l_x,1:l_z),nx(1:l_x,1:l_z),nz(1:l_x,1:l_z))
@@ -38,23 +38,24 @@ PROGRAM main
   WRITE(0,'(a)',advance='no') "Setting Array and Making Labels of Temperatures... "
   CALL countLines(10,"list_beta",n_betas); n_w = n_betas/64
   ALLOCATE(MSC_beta(1:n_w,0:63),sbeta(1:n_w,0:63),MSC_sl_iw(1:n_w),MSC_sl_eb(1:n_w,0:63),MSC_sl_mb(1:n_w,0:63))
+	ALLOCATE(MSC_sl_ee(1:n_w,0:63),MSC_sl_me(1:n_w,0:63),MSC_sl_pu(1:n_w,0:63))
   CALL MTC_readBetas(10,"list_beta",MSC_beta(1:n_w,0:63),n_w,n_betas)
   CALL MTC_makeLabelsBeta(MSC_beta(1:n_w,0:63),n_w,sbeta(1:n_w,0:63))
   WRITE(0,'(a)') ": Done"
 
   ! STEP-00: Set Array of Slots
   WRITE(0,'(a)',advance='no') "Setting Array of Slots... "
-  CALL MSC_setSlots(n_w,MSC_sl_iw(1:n_w),MSC_sl_eb(1:n_w,0:63),MSC_sl_mb(1:n_w,0:63))
+  CALL MSC_setSlots(n_w,MSC_sl_iw(1:n_w),MSC_sl_eb(1:n_w,0:63),MSC_sl_mb(1:n_w,0:63),MSC_sl_ee(1:n_w,0:63),MSC_sl_me(1:n_w,0:63),MSC_sl_pu(1:n_w,0:63))
   WRITE(0,'(a)') ": Done"
 
   ! STEP-00: Open All Slots
   WRITE(0,'(a)',advance='no') "Opening All Slots... "
-  CALL MSC_openSlots_rep(n_w,n_betas,sbeta(1:n_w,0:63),MSC_sl_eb(1:n_w,0:63),MSC_sl_mb(1:n_w,0:63))
+  CALL MSC_openSlots_rep(n_w,n_betas,sbeta(1:n_w,0:63),MSC_sl_eb(1:n_w,0:63),MSC_sl_mb(1:n_w,0:63),MSC_sl_ee(1:n_w,0:63),MSC_sl_me(1:n_w,0:63),MSC_sl_pu(1:n_w,0:63))
   WRITE(0,'(a)') ": Done"
 
   ! STEP-00: Allocate Vars. and Obs.
   WRITE(0,'(a)',advance='no') "Allocating Vars. and Obs... "
-  ALLOCATE(IW2(1:n_w,1:l_x,0:l_z+1),MSC_eb(1:n_w,0:63),MSC_mb(1:n_w,0:63))
+  ALLOCATE(IW2(1:n_w,1:l_x,0:l_z+1),MSC_eb(1:n_w,0:63),MSC_mb(1:n_w,0:63),MSC_sl_ee(1:n_w,0:63),MSC_sl_me(1:n_w,0:63),MSC_sl_pu(1:n_w,0:63))
   ! ALLOCATE(MSC_ee(1:n_w,0:63),MSC_me(1:n_w,0:63),MSC_pu(1:n_w,0:63))
   WRITE(0,'(a)') ": Done"
 
@@ -90,7 +91,7 @@ PROGRAM main
         CALL updateIRand_Uniform(str_l,n_st,0,max_l,r_l(1:n_st))
         CALL updateIRand_Uniform(str_x,n_st,1,l_x+1,r_x(1:n_st))
         CALL updateIRand_Uniform(str_z,n_st,1,l_z+1,r_z(1:n_st))
-        CALL MSC_mSSFs_2d_THERMALIZE(r_l(1:n_st),r_x(1:n_st),r_z(1:n_st),n_st,&
+        CALL MSC_mSSFs_2d_THERMALIZE(r_l(1:n_st),r_x(1:n_st),r_z(1:n_st),vel,n_st2,l_x,l_z,&
              ex(1:l_x,1:l_z),ez(1:l_x,1:l_z),wx(1:l_x,1:l_z),wz(1:l_x,1:l_z),&
              sx(1:l_x,1:l_z),sz(1:l_x,1:l_z),nx(1:l_x,1:l_z),nz(1:l_x,1:l_z),&
              r_a(i_w,0:3,0:max_l-1),IW2(i_w,1:l_x,0:l_z+1))
@@ -111,6 +112,8 @@ PROGRAM main
   DO i_w = 1, n_w, 1
      CALL MSC_calcEB_2d(IW2(i_w,1:l_x,0:l_z+1),l_x,l_z,MSC_eb(i_w,0:63))
      CALL MSC_calcMB_2d(IW2(i_w,1:l_x,1:l_z),l_x,l_z,MSC_mb(i_w,0:63))
+     CALL MSC_calcEE_2d(IW2(i_w,1:l_x,l_z/2:l_z/2+1),l_x,l_z,MSC_eb(i_w,0:63))
+     CALL MSC_calcME_2d(IW2(i_w,1:l_x,l_z/2:l_z/2+1),l_x,l_z,MSC_mb(i_w,0:63))
   END DO
 
   ! DEBUG
@@ -139,15 +142,21 @@ PROGRAM main
         CALL updateIRand_Uniform(str_l,n_st,0,max_l,r_l(1:n_st))
         CALL updateIRand_Uniform(str_x,n_st,1,l_x+1,r_x(1:n_st))
         CALL updateIRand_Uniform(str_z,n_st,1,l_z+1,r_z(1:n_st))
-        CALL MSC_mSSFs_2d_OBSERVE(r_l(1:n_st),r_x(1:n_st),r_z(1:n_st),n_st,&
+        CALL MSC_mSSFs_2d(r_l(1:n_st),r_x(1:n_st),r_z(1:n_st),vel,n_st2,&
              ex(1:l_x,1:l_z),ez(1:l_x,1:l_z),wx(1:l_x,1:l_z),wz(1:l_x,1:l_z),&
              sx(1:l_x,1:l_z),sz(1:l_x,1:l_z),nx(1:l_x,1:l_z),nz(1:l_x,1:l_z),&
-             r_a(i_w,0:3,0:max_l-1),IW2(i_w,1:l_x,0:l_z+1),&
-             d_eb(0:1,0:1,0:1,0:1),d_mb(0:1,0:1),MSC_eb(i_w,0:63),MSC_mb(i_w,0:63))
+             r_a(i_w,0:3,0:max_l-1),IW2(i_w,1:l_x,0:l_z+1),MSC_eb(i_w,0:63),MSC_mb(i_w,0:63),MSC_ee(i_w,0:63),MSC_pu(i_w,0:63))
+
+        CALL MSC_calcEB_2d(IW2(i_w,1:l_x,0:l_z+1),l_x,l_z,MSC_eb(i_w,0:63))
+        CALL MSC_calcMB_2d(IW2(i_w,1:l_x,1:l_z),l_x,l_z,MSC_mb(i_w,0:63))
+        CALL MSC_calcME_2d(IW2(i_w,1:l_x,l_z/2:l_z/2+1),l_x,l_z,MSC_mb(i_w,0:63))
 
         DO i_bit = 0, 63, 1
            WRITE(MSC_sl_eb(i_w,i_bit)) MSC_eb(i_w,i_bit)
            WRITE(MSC_sl_mb(i_w,i_bit)) MSC_mb(i_w,i_bit)
+           WRITE(MSC_sl_ee(i_w,i_bit)) MSC_ee(i_w,i_bit)
+           WRITE(MSC_sl_me(i_w,i_bit)) MSC_me(i_w,i_bit)
+           WRITE(MSC_sl_pu(i_w,i_bit)) MSC_pu(i_w,i_bit)
         END DO
      END DO
   END DO
