@@ -12,5 +12,3 @@ zip*/
 
 src/*.o
 lib/*.o
-
-makefile
