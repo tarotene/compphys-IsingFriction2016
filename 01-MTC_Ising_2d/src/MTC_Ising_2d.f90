@@ -28,7 +28,7 @@ PROGRAM main
 
   ! STEP-00: Set Params except for Temperature
   WRITE(0,'(a)',advance='no') "Setting Params except for Temperature... "
-  CALL MTC_readParams_2d(10,"params_sim",l_x,l_z,vel,l_t0,l_t1,id_IC,id_BC); n_st1 = l_x*l_z; n_st2 = l_x*l_z/vel
+  CALL MTC_readParams_2d(10,"params_sim",l_x,l_z,vel,l_t0,l_t1,id_BC,id_IC); n_st1 = l_x*l_z; n_st2 = l_x*l_z/vel
   ALLOCATE(r_l(1:n_st1),r_x(1:n_st1),r_z(1:n_st1))
   ALLOCATE(ex(1:l_x,1:l_z),ez(1:l_x,1:l_z),wx(1:l_x,1:l_z),wz(1:l_x,1:l_z),sx(1:l_x,1:l_z),sz(1:l_x,1:l_z),nx(1:l_x,1:l_z),nz(1:l_x,1:l_z))
   CALL applyPBC_2d(l_x,l_z,ex(1:l_x,1:l_z),ez(1:l_x,1:l_z),wx(1:l_x,1:l_z),wz(1:l_x,1:l_z),sx(1:l_x,1:l_z),sz(1:l_x,1:l_z),nx(1:l_x,1:l_z),nz(1:l_x,1:l_z))
