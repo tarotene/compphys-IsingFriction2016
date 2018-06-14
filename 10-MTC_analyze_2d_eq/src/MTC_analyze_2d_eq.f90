@@ -9,9 +9,11 @@ PROGRAM main
   INTEGER(4) :: t
   ! statistical vars
   INTEGER(4) :: lb, nb
-  REAL(8), ALLOCATABLE :: bin_eb(:,:,:), bin_mb(:,:,:), bin_cb(:,:,:), bin_chib(:,:,:), bin_ub(:,:,:)
-  REAL(8), ALLOCATABLE :: mean_eb(:,:), mean_mb(:,:), mean_cb(:,:), mean_chib(:,:), mean_ub(:,:)
-  REAL(8), ALLOCATABLE :: err_eb(:,:), err_mb(:,:), err_cb(:,:), err_chib(:,:), err_ub(:,:)
+  REAL(8), ALLOCATABLE :: bin_eb(:,:,:), mean_eb(:,:), err_eb(:,:)
+  REAL(8), ALLOCATABLE :: bin_mb(:,:,:), mean_mb(:,:), err_mb(:,:)
+  REAL(8), ALLOCATABLE :: bin_cb(:,:,:), mean_cb(:,:), err_cb(:,:)
+  REAL(8), ALLOCATABLE :: bin_xb(:,:,:), mean_xb(:,:), err_xb(:,:)
+  REAL(8), ALLOCATABLE :: bin_ub(:,:,:), mean_ub(:,:), err_ub(:,:)
   ! MSC timeseries
   INTEGER(4), ALLOCATABLE :: MSC_TS_eb(:,:,:), MSC_TS_mb(:,:,:)
 
@@ -40,11 +42,11 @@ PROGRAM main
   WRITE(0,'(a)') ": Done"
 
   ! STEP-02: Load files
-  ALLOCATE(bin_eb(1:n_w,0:63,1:nb),bin_mb(1:n_w,0:63,1:nb),bin_cb(1:n_w,0:63,1:nb),bin_chib(1:n_w,0:63,1:nb),bin_ub(1:n_w,0:63,1:nb))
+  ALLOCATE(bin_eb(1:n_w,0:63,1:nb),bin_mb(1:n_w,0:63,1:nb),bin_cb(1:n_w,0:63,1:nb),bin_xb(1:n_w,0:63,1:nb),bin_ub(1:n_w,0:63,1:nb))
   ALLOCATE(MSC_TS_eb(1:n_w,0:63,1:lb),MSC_TS_mb(1:n_w,0:63,1:lb))
   WRITE(0, '(a)',advance='no') "Loading files... "
   !$omp parallel do schedule(static,1) default(none) &
-  !$omp shared(n_betas,nb,lb,MSC_beta,MSC_sl_eb,MSC_sl_mb,MSC_TS_eb,MSC_TS_mb,bin_eb,bin_mb,bin_cb,bin_chib,bin_ub) &
+  !$omp shared(n_betas,nb,lb,MSC_beta,MSC_sl_eb,MSC_sl_mb,MSC_TS_eb,MSC_TS_mb,bin_eb,bin_mb,bin_cb,bin_xb,bin_ub) &
   !$omp shared(n_w,l_t1,l_x,l_z) &
   !$omp private(i_bit,ib)
   DO i_w = 1, n_w, 1
@@ -56,7 +58,7 @@ PROGRAM main
            bin_mb(i_w,i_bit,ib) = DBLE(SUM(ABS(MSC_TS_mb(i_w,i_bit,1:lb))))/DBLE(l_x*l_z*lb)
 
            bin_cb(i_w,i_bit,ib) = MSC_beta(i_w,i_bit) ** 2 * (SUM(DBLE(MSC_TS_eb(i_w,i_bit,1:lb)**2)/DBLE(l_x*l_z))/DBLE(lb) - DBLE(l_x*l_z) * bin_eb(i_w,i_bit,ib) ** 2)
-           bin_chib(i_w,i_bit,ib) = MSC_beta(i_w,i_bit) * (SUM(DBLE(MSC_TS_mb(i_w,i_bit,1:lb)**2)/DBLE(l_x*l_z))/DBLE(lb) - DBLE(l_x*l_z) * bin_mb(i_w,i_bit,ib) ** 2)
+           bin_xb(i_w,i_bit,ib) = MSC_beta(i_w,i_bit) * (SUM(DBLE(MSC_TS_mb(i_w,i_bit,1:lb)**2)/DBLE(l_x*l_z))/DBLE(lb) - DBLE(l_x*l_z) * bin_mb(i_w,i_bit,ib) ** 2)
            bin_ub(i_w,i_bit,ib) = 1.5d0 - 0.5d0 * DBLE(lb) * SUM((DBLE(MSC_TS_mb(i_w,i_bit,1:lb))/DBLE(l_x*l_z))**4) / SUM((DBLE(MSC_TS_mb(i_w,i_bit,1:lb))/DBLE(l_x*l_z))**2) ** 2
         END DO
      END DO
@@ -70,55 +72,53 @@ PROGRAM main
   CALL MSC_closeSlots(n_w,n_betas,MSC_sl_eb(1:n_w,0:63),MSC_sl_mb(1:n_w,0:63))
   WRITE(0,'(a)') ": Done"
 
-	! !DEBUG
-	! DO i_w = 1, n_w, 1
+  ! !DEBUG
+  ! DO i_w = 1, n_w, 1
   !    DO i_bit = 0, MIN(n_betas-64*(i_w-1),63), 1
-	! 		 DO ib = 1, nb, 1
-	! 			 WRITE(0, *) "bin_eb(",i_w,",",i_bit,",",ib,") =",bin_eb(i_w,i_bit,ib)
-	! 		 END DO
-	! 	 END DO
-	! END DO
-	! STOP
+  ! 		 DO ib = 1, nb, 1
+  ! 			 WRITE(0, *) "bin_eb(",i_w,",",i_bit,",",ib,") =",bin_eb(i_w,i_bit,ib)
+  ! 		 END DO
+  ! 	 END DO
+  ! END DO
+  ! STOP
 
   ! STEP-04: Make Stats
   WRITE(0, '(a)',advance='no') "Making Stats... "
-  ALLOCATE(mean_eb(1:n_w,0:63), mean_mb(1:n_w,0:63), mean_cb(1:n_w,0:63), mean_chib(1:n_w,0:63), mean_ub(1:n_w,0:63))
-  ALLOCATE(err_eb(1:n_w,0:63), err_mb(1:n_w,0:63), err_cb(1:n_w,0:63), err_chib(1:n_w,0:63), err_ub(1:n_w,0:63))
+  ALLOCATE(mean_eb(1:n_w,0:63),err_eb(1:n_w,0:63))
+  ALLOCATE(mean_mb(1:n_w,0:63),err_mb(1:n_w,0:63))
+  ALLOCATE(mean_cb(1:n_w,0:63),err_cb(1:n_w,0:63))
+  ALLOCATE(mean_xb(1:n_w,0:63),err_xb(1:n_w,0:63))
+  ALLOCATE(mean_ub(1:n_w,0:63),err_ub(1:n_w,0:63))
   !$omp parallel do schedule(static,1) default(none) &
   !$omp shared(MSC_beta, n_betas, nb) &
-  !$omp shared(bin_eb, bin_mb, bin_cb, bin_chib, bin_ub) &
-  !$omp shared(mean_eb, mean_mb, mean_cb, mean_chib, mean_ub) &
-  !$omp shared(err_eb, err_mb, err_cb, err_chib, err_ub) &
+  !$omp shared(bin_eb, bin_mb, bin_cb, bin_xb, bin_ub) &
+  !$omp shared(mean_eb, mean_mb, mean_cb, mean_xb, mean_ub) &
+  !$omp shared(err_eb, err_mb, err_cb, err_xb, err_ub) &
   !$omp shared(n_w, l_t1, l_x, l_z) &
   !$omp private(i_bit)
   DO i_w = 1, n_w, 1
      DO i_bit = 0, MIN(n_betas-64*(i_w-1),63), 1
         CALL makeStats(nb,bin_eb(i_w,i_bit,1:nb),mean_eb(i_w,i_bit),err_eb(i_w,i_bit))
         CALL makeStats(nb,bin_mb(i_w,i_bit,1:nb),mean_mb(i_w,i_bit),err_mb(i_w,i_bit))
-
-				! mean_cb(i_w,i_bit) = MSC_beta(i_w,i_bit) ** 2 * (SUM(bin_eb(i_w,i_bit,1:nb)**2)/DBLE(nb) - mean_eb(i_w,i_bit) ** 2) * DBLE(l_x*l_z)
-				! mean_chib(i_w,i_bit) = MSC_beta(i_w,i_bit) * (SUM(bin_mb(i_w,i_bit,1:nb)**2)/DBLE(nb) - mean_mb(i_w,i_bit) ** 2) * DBLE(l_x*l_z)
-				! mean_ub = 1.5d0 - 0.5d0 * DBLE(nb) * SUM((bin_mb(i_w,i_bit,1:nb)/DBLE(l_x*l_z))**4) / SUM((bin_mb(i_w,i_bit,1:nb)/DBLE(l_x*l_z))**2) ** 2
-
         CALL makeStats(nb,bin_cb(i_w,i_bit,1:nb),mean_cb(i_w,i_bit),err_cb(i_w,i_bit))
-        CALL makeStats(nb,bin_chib(i_w,i_bit,1:nb),mean_chib(i_w,i_bit),err_chib(i_w,i_bit))
+        CALL makeStats(nb,bin_xb(i_w,i_bit,1:nb),mean_xb(i_w,i_bit),err_xb(i_w,i_bit))
         CALL makeStats(nb,bin_ub(i_w,i_bit,1:nb),mean_ub(i_w,i_bit),err_ub(i_w,i_bit))
      END DO
   END DO
   !$omp end parallel do
-  DEALLOCATE(bin_eb,bin_cb,bin_mb,bin_chib,bin_ub)
+  DEALLOCATE(bin_eb,bin_cb,bin_mb,bin_xb,bin_ub)
   WRITE(0,'(a)') ": Done"
 
   ! STEP-05: Write Stats
   WRITE(0, '(a)',advance='no') "Writing Stats... "
   OPEN(10, file="analysis.dat", status="replace")
-  WRITE(10, '(a)') "# beta , eb          , err_eb      , mb          , err_mb      , cb          , err_cb      , chib        , err_chib    , ub          , err_ub"
+  WRITE(10, '(a)') "# beta , eb          , err_eb      , mb          , err_mb      , cb          , err_cb      , xb        , err_xb    , ub          , err_ub"
   DO i_w = 1, n_w, 1
      DO i_bit = 0, MIN(n_betas-64*(i_w-1),63), 1
         WRITE(10, '(f7.4,5(", ",f12.4,", ",f12.10))') &
              MSC_beta(i_w,i_bit),&
              mean_eb(i_w,i_bit),err_eb(i_w,i_bit),mean_mb(i_w,i_bit),err_mb(i_w,i_bit),&
-             mean_cb(i_w,i_bit),err_cb(i_w,i_bit),mean_chib(i_w,i_bit),err_chib(i_w,i_bit),mean_ub(i_w,i_bit),err_ub(i_w,i_bit)
+             mean_cb(i_w,i_bit),err_cb(i_w,i_bit),mean_xb(i_w,i_bit),err_xb(i_w,i_bit),mean_ub(i_w,i_bit),err_ub(i_w,i_bit)
      END DO
   END DO
   CLOSE(10)

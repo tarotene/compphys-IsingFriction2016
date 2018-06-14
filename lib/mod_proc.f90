@@ -336,7 +336,7 @@
 
       OPEN(slot,file=filename//".dat",status="old")
       DO i_w = 1, n_w, 1
-         DO i_bit = 0, MIN(n_betas-64*(i_w-1),63), 1
+         DO i_bit = 0, MIN(n_betas-64*(i_w-1),64) - 1, 1
             READ(slot, *) MSC_beta(i_w,i_bit)
          END DO
       END DO
@@ -508,7 +508,39 @@
       END DO
     END SUBROUTINE MSC_mSSFs_2d_THERMALIZE
 
-    SUBROUTINE MSC_mSSFs_2d_OBSERVE(r_l,r_x,r_z,vel,n_st2,l_x,l_z,ex,ez,wx,wz,sx,sz,nx,nz,r_a,IW2,eb,mb,ee,pu)
+    SUBROUTINE MSC_calcEE_2d(IW2_,l_x,l_z,ee)
+      INTEGER(8), INTENT(in) :: IW2_(1:,1:)
+      INTEGER(4), INTENT(in) :: l_x, l_z
+      INTEGER(4), INTENT(out) :: ee(0:)
+
+      INTEGER(4) :: i_bit
+      INTEGER(4) :: x
+
+      ee(0:63) = 0
+      DO i_bit = 0, 63, 1
+         DO x = 1, l_x, 1
+            ee(i_bit) = ee(i_bit) + IBITS(IEOR(IW2_(x,l_z/2),IW2_(x,l_z/2+1)),i_bit,1)
+         END DO
+      END DO
+      ee(0:63) = 2 * ee(0:63) - l_x
+    END SUBROUTINE MSC_calcEE_2d
+
+    SUBROUTINE MSC_calcME_2d(IW2_,l_x,l_z,me)
+      INTEGER(8), INTENT(in) :: IW2_(1:,1:)
+      INTEGER(4), INTENT(in) :: l_x, l_z
+      INTEGER(4), INTENT(out) :: me(0:)
+
+      INTEGER(4) :: i_bit
+      INTEGER(4) :: x
+
+      me(0:63) = 0
+      DO i_bit = 0, 63, 1
+         me(i_bit) = SUM(IBITS(IW2_(1:l_x,l_z/2:l_z/2+1),i_bit,1))
+      END DO
+      me(0:63) = 2 * (me(0:63) - l_x)
+    END SUBROUTINE MSC_calcME_2d
+
+    SUBROUTINE MSC_mSSFs_2d_OBSERVE(r_l,r_x,r_z,vel,n_st2,l_x,l_z,ex,ez,wx,wz,sx,sz,nx,nz,r_a,IW2_,ee,pu)
       INTEGER(4), INTENT(in) :: r_l(1:)
       INTEGER(4), INTENT(in) :: r_x(1:), r_z(1:)
       INTEGER(4), INTENT(in) :: vel, n_st2, l_x, l_z
@@ -517,8 +549,9 @@
       INTEGER(4), INTENT(in) :: sx(1:,1:), sz(1:,1:)
       INTEGER(4), INTENT(in) :: nx(1:,1:), nz(1:,1:)
       INTEGER(8), INTENT(in) :: r_a(0:,0:)
-      INTEGER(8), TARGET, INTENT(inout) :: IW2(1:,0:)
-      INTEGER(4), INTENT(inout) :: eb(0:), mb(0:), ee(0:), pu(0:)
+      INTEGER(8), TARGET, INTENT(inout) :: IW2_(1:,0:)
+      INTEGER(4), INTENT(inout) :: ee(0:)
+      INTEGER(4), INTENT(out) :: pu(0:)
 
       INTEGER(4) :: i_vel, i_bit
       INTEGER(4) :: x, i_st
@@ -528,29 +561,20 @@
 
       pu(0:63) = 0
       DO i_vel = 1, vel, 1
-         IW2(1:l_x,1:l_z/2) = CSHIFT(IW2(1:l_x,1:l_z/2),1,1)
-
-         ! TODO: サブルーチンに書き換え（名前: MSC_calcEE_2d）
-        !  CALL MSC_calcEE_2d(IW2(1:l_x,0:l_z+1),l_x,l_z,ee_next(0:63))
-         ee_next(0:63) = 0
-         DO i_bit = 0, 63, 1
-            DO x = 1, l_x, 1
-               ee_next(i_bit) = ee_next(i_bit) + IBITS(IEOR(IW2(x,l_z/2),IW2(x,l_z/2+1)),i_bit,1)
-            END DO
-         END DO
-         ee_next(0:63) = ee_next(0:63) * 2 - l_x
-
+         IW2_(1:l_x,1:l_z/2) = CSHIFT(IW2_(1:l_x,1:l_z/2),1,1)
+         CALL MSC_calcEE_2d(IW2_(1:l_x,1:l_z),l_x,l_z,ee_next(0:63))
          pu(0:63) = pu(0:63) + ee_next(0:63) - ee(0:63)
-         ee(0:63) = ee_next(0:63)
 
          DO i_st = 1, n_st2, 1
-            c => IW2(r_x(i_st),r_z(i_st))
-            e => IW2(ex(r_x(i_st),r_z(i_st)), ez(r_x(i_st),r_z(i_st)))
-            w => IW2(wx(r_x(i_st),r_z(i_st)), wz(r_x(i_st),r_z(i_st)))
-            s => IW2(sx(r_x(i_st),r_z(i_st)), sz(r_x(i_st),r_z(i_st)))
-            n => IW2(nx(r_x(i_st),r_z(i_st)), nz(r_x(i_st),r_z(i_st)))
+            c => IW2_(r_x(i_st),r_z(i_st))
+            e => IW2_(ex(r_x(i_st),r_z(i_st)),ez(r_x(i_st),r_z(i_st)))
+            w => IW2_(wx(r_x(i_st),r_z(i_st)),wz(r_x(i_st),r_z(i_st)))
+            s => IW2_(sx(r_x(i_st),r_z(i_st)),sz(r_x(i_st),r_z(i_st)))
+            n => IW2_(nx(r_x(i_st),r_z(i_st)),nz(r_x(i_st),r_z(i_st)))
             CALL MSC_SSF_2d(c,e,w,s,n,r_a(0:3,r_l(i_st+(i_vel-1)*n_st2)),a,b(0:2),b1(0:1),b2(0:1))
          END DO
+
+         CALL MSC_calcEE_2d(IW2_(1:l_x,1:l_z),l_x,l_z,ee(0:63))
       END DO
     END SUBROUTINE MSC_mSSFs_2d_OBSERVE
 
@@ -609,7 +633,7 @@
       INTEGER(4) :: i_w, i_bit
 
       DO i_w = 1, n_w, 1
-         DO i_bit = 0, MIN(n_betas-64*(i_w-1),63), 1
+         DO i_bit = 0, MIN(n_betas-64*(i_w-1),64) - 1, 1
             IF (PRESENT(MSC_sl_eb)) OPEN(MSC_sl_eb(i_w,i_bit),file="_eb_"//sbeta(i_w,i_bit)//".bin",access="stream",status="replace")
             IF (PRESENT(MSC_sl_mb)) OPEN(MSC_sl_mb(i_w,i_bit),file="_mb_"//sbeta(i_w,i_bit)//".bin",access="stream",status="replace")
             IF (PRESENT(MSC_sl_ee)) OPEN(MSC_sl_ee(i_w,i_bit),file="_ee_"//sbeta(i_w,i_bit)//".bin",access="stream",status="replace")
@@ -632,7 +656,7 @@
       INTEGER(4) :: i_w, i_bit
 
       DO i_w = 1, n_w, 1
-         DO i_bit = 0, MIN(n_betas-64*(i_w-1),63), 1
+         DO i_bit = 0, MIN(n_betas-64*(i_w-1),64) - 1, 1
             IF (PRESENT(MSC_sl_eb)) OPEN(MSC_sl_eb(i_w,i_bit),file="_eb_"//sbeta(i_w,i_bit)//".bin",access="stream",status="old")
             IF (PRESENT(MSC_sl_mb)) OPEN(MSC_sl_mb(i_w,i_bit),file="_mb_"//sbeta(i_w,i_bit)//".bin",access="stream",status="old")
             IF (PRESENT(MSC_sl_ee)) OPEN(MSC_sl_ee(i_w,i_bit),file="_ee_"//sbeta(i_w,i_bit)//".bin",access="stream",status="old")
@@ -654,7 +678,7 @@
       INTEGER(4) :: i_w, i_bit
 
       DO i_w = 1, n_w, 1
-         DO i_bit = 0, MIN(n_betas-64*(i_w-1),63), 1
+         DO i_bit = 0, MIN(n_betas-64*(i_w-1),64) - 1, 1
             IF (PRESENT(MSC_sl_eb)) CLOSE(MSC_sl_eb(i_w,i_bit))
             IF (PRESENT(MSC_sl_mb)) CLOSE(MSC_sl_mb(i_w,i_bit))
             IF (PRESENT(MSC_sl_ee)) CLOSE(MSC_sl_ee(i_w,i_bit))

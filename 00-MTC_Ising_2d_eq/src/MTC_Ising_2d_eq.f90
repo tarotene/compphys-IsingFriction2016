@@ -143,11 +143,11 @@ PROGRAM main
              ex(1:l_x,1:l_z),ez(1:l_x,1:l_z),wx(1:l_x,1:l_z),wz(1:l_x,1:l_z),&
              sx(1:l_x,1:l_z),sz(1:l_x,1:l_z),nx(1:l_x,1:l_z),nz(1:l_x,1:l_z),&
              r_a(i_w,0:3,0:max_l-1),IW2(i_w,1:l_x,0:l_z+1))
-             
+
         CALL MSC_calcEB_2d(IW2(i_w,1:l_x,0:l_z+1),l_x,l_z,MSC_eb(i_w,0:63))
         CALL MSC_calcMB_2d(IW2(i_w,1:l_x,1:l_z),l_x,l_z,MSC_mb(i_w,0:63))
 
-        DO i_bit = 0, 63, 1
+        DO i_bit = 0, MIN(n_betas-64*(i_w-1),64) - 1, 1
            WRITE(MSC_sl_eb(i_w,i_bit)) MSC_eb(i_w,i_bit)
            WRITE(MSC_sl_mb(i_w,i_bit)) MSC_mb(i_w,i_bit)
         END DO
