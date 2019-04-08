@@ -129,7 +129,7 @@ PROGRAM main
   ! STEP-02: Observe
   WRITE(0, '(a)',advance='no') "Observing... "
   !$omp parallel do schedule(static,1) default(none) &
-  !$omp shared(n_w,l_t1,n_st,max_l,l_x,l_z) &
+  !$omp shared(n_betas,n_w,l_t1,n_st,max_l,l_x,l_z) &
   !$omp shared(IW2,r_l,r_x,r_z,r_a,str_l,str_x,str_z) &
   !$omp shared(ex,ez,wx,wz,sx,sz,nx,nz) &
   !$omp shared(d_eb,d_mb,MSC_eb,MSC_mb,MSC_sl_eb,MSC_sl_mb) &

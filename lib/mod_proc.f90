@@ -1,7 +1,7 @@
   INCLUDE 'mkl_vsl.f90'
   MODULE mod_proc
-    USE MKL_VSL
-    USE MKL_VSL_TYPE
+    USE mkl_vsl
+    USE mkl_vsl_type
     USE IFPORT, ONLY:access
 
     IMPLICIT NONE
